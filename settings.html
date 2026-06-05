@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Settings - Honestly, it.....</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .settings-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .setting-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .setting-description {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        
+        .danger-zone {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 20, 147, 0.1);
+            border-radius: 10px;
+            border: 1px solid #ff1493;
+        }
+        
+        .danger-zone h3 {
+            color: #ff1493;
+            margin-bottom: 1rem;
+        }
+        
+        .delete-btn {
+            background: #ff1493;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-text">Honestly, it.....</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+                <li><a href="community.html">Community</a></li>
+            </ul>
+            <div class="user-menu">
+                <div id="authButtons">
+                    <button id="signInBtn" class="auth-nav-btn">Sign In</button>
+                    <button id="signUpBtn" class="auth-nav-btn-primary">Sign Up</button>
+                </div>
+                <div id="userAvatarContainer" style="display: none;">
+                    <button id="userAvatarBtn" class="user-avatar-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="white"/>
+                        </svg>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown" style="display: none;">
+                        <div class="user-dropdown-email" id="userEmailDisplay"></div>
+                        <a href="profile.html" class="user-dropdown-item">My Profile</a>
+                        <a href="settings.html" class="user-dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <button id="signOutBtn" class="user-dropdown-item" style="color: #ff1493;">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="settingsContent" class="settings-container">
+            <div style="text-align: center; padding: 3rem;">
+                <p>Loading settings...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // ========== DARK MODE INITIALIZATION - FIXED ==========
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            // Also update the toggle switch if it exists
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            if (darkModeToggle) {
+                darkModeToggle.checked = darkMode;
+            }
+        }
+        
+        // Call immediately
+        initDarkMode();
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
+  authDomain: "honestly-it.firebaseapp.com",
+  projectId: "honestly-it",
+  storageBucket: "honestly-it.firebasestorage.app",
+  messagingSenderId: "938783642355",
+  appId: "1:938783642355:web:330ad714c0f79b7eb25d86",
+  measurementId: "G-R8Q5308Y8K"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        function loadSettings() {
+            const container = document.getElementById('settingsContent');
+            
+            onAuthStateChanged(auth, (user) => {
+                if (!user) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem;">
+                            <h2>Please Sign In</h2>
+                            <p>You need to be signed in to access settings.</p>
+                            <a href="index.html" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: #ff1493; color: white; text-decoration: none; border-radius: 8px;">← Back to Home</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Load saved preferences
+                const darkMode = localStorage.getItem('darkMode') === 'true';
+                const emailNotifications = localStorage.getItem('emailNotifications') !== 'false';
+                const commentNotifications = localStorage.getItem('commentNotifications') !== 'false';
+                
+                container.innerHTML = `
+                    <h2 style="margin-bottom: 1.5rem;">⚙️ Account Settings</h2>
+                    
+                    <div class="setting-item">
+                        <div class="setting-title">🌙 Dark Mode</div>
+                        <div class="setting-description">Switch between light and dark theme</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkModeToggle" ${darkMode ? 'checked' : ''}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-title">📧 Email Notifications</div>
+                        <div class="setting-description">Receive email updates about new reviews and replies</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="emailNotifications" ${emailNotifications ? 'checked' : ''}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-title">💬 Comment Notifications</div>
+                        <div class="setting-description">Get notified when someone replies to your comment</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="commentNotifications" ${commentNotifications ? 'checked' : ''}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="danger-zone">
+                        <h3>⚠️ Danger Zone</h3>
+                        <div class="setting-item" style="border-bottom: none; padding-bottom: 0;">
+                            <div class="setting-title">Delete Account</div>
+                            <div class="setting-description">Permanently delete your account and all your data. This action cannot be undone.</div>
+                            <button onclick="showDeleteConfirm()" class="delete-btn">Delete Account</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Setup event listeners
+                document.getElementById('darkModeToggle').addEventListener('change', (e) => {
+                    localStorage.setItem('darkMode', e.target.checked);
+                    if (e.target.checked) {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
+                    // Dispatch event for other tabs/windows
+                    window.dispatchEvent(new StorageEvent('storage', {
+                        key: 'darkMode',
+                        newValue: e.target.checked,
+                        oldValue: !e.target.checked
+                    }));
+                });
+                
+                document.getElementById('emailNotifications').addEventListener('change', (e) => {
+                    localStorage.setItem('emailNotifications', e.target.checked);
+                });
+                
+                document.getElementById('commentNotifications').addEventListener('change', (e) => {
+                    localStorage.setItem('commentNotifications', e.target.checked);
+                });
+            });
+        }
+        
+        window.showDeleteConfirm = function() {
+            const password = prompt('Please enter your password to confirm account deletion:');
+            if (password) {
+                deleteAccount(password);
+            }
+        };
+        
+        async function deleteAccount(password) {
+            const user = auth.currentUser;
+            const { EmailAuthProvider, reauthenticateWithCredential, deleteUser } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+            
+            try {
+                const credential = EmailAuthProvider.credential(user.email, password);
+                await reauthenticateWithCredential(user, credential);
+                await deleteUser(user);
+                alert('Account deleted successfully.');
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Error deleting account: ' + error.message);
+            }
+        }
+        
+        // Auth state for navigation
+        onAuthStateChanged(auth, (user) => {
+            const authDiv = document.getElementById('authButtons');
+            const avatarDiv = document.getElementById('userAvatarContainer');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            
+            if (user) {
+                authDiv.style.display = 'none';
+                avatarDiv.style.display = 'block';
+                if (userEmailDisplay) userEmailDisplay.textContent = user.email;
+            } else {
+                authDiv.style.display = 'flex';
+                avatarDiv.style.display = 'none';
+            }
+        });
+        
+        loadSettings();
+        
+        // Auth button handlers
+        document.getElementById('signOutBtn')?.addEventListener('click', () => auth.signOut());
+        document.getElementById('signInBtn')?.addEventListener('click', () => window.location.href = 'index.html');
+        document.getElementById('signUpBtn')?.addEventListener('click', () => window.location.href = 'index.html');
+        
+        // Dropdown toggle
+        window.toggleUserDropdown = function() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            }
+        };
+        document.getElementById('userAvatarBtn')?.addEventListener('click', toggleUserDropdown);
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('userDropdown');
+            const avatarBtn = document.getElementById('userAvatarBtn');
+            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

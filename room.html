@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Chat Room - Honestly, it.....</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .chat-room-page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .chat-container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+            min-height: 500px;
+        }
+        
+        .chat-header {
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .room-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .room-details h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .room-details p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .room-tags {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.25rem;
+        }
+        
+        .room-tag {
+            background: rgba(255,20,147,0.15);
+            color: #ff1493;
+            padding: 0.15rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+        }
+        
+        .back-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+        
+        .main-chat-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .chat-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        /* Message - Fixed alignment - avatar top aligned with message */
+        .message {
+            display: flex;
+            gap: 0.75rem;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        .message-own {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            flex-shrink: 0;
+        }
+        
+        .message-avatar-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .message-content {
+            max-width: 65%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message-own .message-content {
+            align-items: flex-end;
+        }
+        
+        .message-header {
+            display: flex;
+            gap: 0.5rem;
+            align-items: baseline;
+            margin-bottom: 0.2rem;
+        }
+        
+        .message-username {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #ff1493;
+        }
+        
+        .message-time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+        
+        .message-bubble {
+            background: var(--bg-secondary);
+            border-radius: 18px;
+            padding: 0.6rem 1rem;
+        }
+        
+        .message-own .message-bubble {
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            color: white;
+        }
+        
+        .message-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        
+        .message-text img {
+            max-width: 200px;
+            border-radius: 12px;
+        }
+        
+        .reply-preview {
+            background: rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 0.3rem 0.6rem;
+            margin-bottom: 0.4rem;
+            font-size: 0.7rem;
+            border-left: 3px solid #ff1493;
+        }
+        
+        .message-own .reply-preview {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .edited-badge {
+            font-size: 0.6rem;
+            opacity: 0.6;
+            margin-left: 0.3rem;
+        }
+        
+        .message-actions {
+            display: none;
+            gap: 0.5rem;
+            margin-top: 0.2rem;
+        }
+        
+        .message:hover .message-actions {
+            display: flex;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        
+        .action-btn:hover {
+            background: rgba(255,20,147,0.15);
+            color: #ff1493;
+        }
+        
+        .reply-indicator {
+            background: rgba(255,20,147,0.1);
+            border-radius: 12px;
+            padding: 0.4rem 0.8rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+        }
+        
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+        
+        .input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            background: var(--bg-secondary);
+            border-radius: 28px;
+            padding: 0.3rem 0.5rem;
+        }
+        
+        .input-buttons {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .icon-btn {
+            background: none;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        
+        .icon-btn:hover {
+            background: rgba(255,20,147,0.15);
+            color: #ff1493;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 0.6rem 0.5rem;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            resize: none;
+            font-family: inherit;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            border: none;
+            border-radius: 28px;
+            padding: 0.5rem 1.2rem;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .gif-picker {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            padding: 1rem;
+            width: 360px;
+            max-height: 450px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+            border: 1px solid var(--border-color);
+        }
+        
+        .gif-search-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .gif-search {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 40px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .gif-search-btn {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        
+        .gif-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .gif-item {
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .gif-item:hover {
+            transform: scale(1.03);
+        }
+        
+        .gif-loading {
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-muted);
+        }
+        
+        .emoji-picker {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            padding: 0.75rem;
+            width: 320px;
+            display: none;
+            z-index: 100;
+            border: 1px solid var(--border-color);
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0.25rem;
+        }
+        
+        .emoji-btn {
+            font-size: 1.2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 8px;
+        }
+        
+        .emoji-btn:hover {
+            background: rgba(255,20,147,0.2);
+        }
+        
+        .room-sidebar {
+            width: 260px;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-section h4 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .member-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem;
+            border-radius: 8px;
+        }
+        
+        .member-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: white;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .main-chat-area { flex-direction: column; }
+            .room-sidebar { width: 100%; border-left: none; border-top: 1px solid var(--border-color); }
+            .message-content { max-width: 85%; }
+            .gif-picker { width: 280px; right: 10px; }
+            .emoji-picker { width: 260px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-text">Honestly, it.....</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+                <li><a href="community.html">Community</a></li>
+            </ul>
+            <div class="user-menu">
+                <div id="authButtons">
+                    <button id="signInBtn" class="auth-nav-btn">Sign In</button>
+                    <button id="signUpBtn" class="auth-nav-btn-primary">Sign Up</button>
+                </div>
+                <div id="userAvatarContainer" style="display: none;">
+                    <button id="userAvatarBtn" class="user-avatar-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="white"/>
+                        </svg>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown" style="display: none;">
+                        <div class="user-dropdown-email" id="userEmailDisplay"></div>
+                        <a href="profile.html" class="user-dropdown-item">My Profile</a>
+                        <a href="settings.html" class="user-dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <button id="signOutBtn" class="user-dropdown-item">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="chat-room-page">
+        <div id="chatContent" class="chat-container">
+            <div style="text-align: center; padding: 3rem;">Loading chat room...</div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
+  authDomain: "honestly-it.firebaseapp.com",
+  projectId: "honestly-it",
+  storageBucket: "honestly-it.firebasestorage.app",
+  messagingSenderId: "938783642355",
+  appId: "1:938783642355:web:330ad714c0f79b7eb25d86",
+  measurementId: "G-R8Q5308Y8K"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('id');
+
+        let currentUser = null;
+        let currentRoom = null;
+        let unsubscribeMessages = null;
+        let replyingTo = null;
+
+        const GIPHY_API_KEY = "cuOMbA9124xmAePzoND3WSlBybRkrWHo";
+
+        async function searchGifs(query) {
+            const gifResults = document.getElementById('gifResults');
+            if (!gifResults) return;
+            gifResults.innerHTML = '<div class="gif-loading">Loading...</div>';
+            
+            try {
+                let url;
+                if (query && query.trim()) {
+                    url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=20&rating=g`;
+                } else {
+                    url = `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=20&rating=g`;
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.data && data.data.length > 0) {
+                    gifResults.innerHTML = data.data.map(gif => `
+                        <img src="${gif.images.fixed_height_small.url}" class="gif-item" onclick="sendGif('${gif.images.fixed_height.url}')">
+                    `).join('');
+                } else {
+                    gifResults.innerHTML = '<div class="gif-loading">No GIFs found</div>';
+                }
+            } catch (error) {
+                console.error('GIPHY error:', error);
+                gifResults.innerHTML = '<div class="gif-loading">Failed to load GIFs</div>';
+            }
+        }
+
+        const emojis = ['😀', '😍', '🎵', '🎸', '🎤', '🎧', '🔥', '💯', '❤️', '👍', '😂', '🤣', '🎉', '✨', '💜', '🤘'];
+
+        async function loadRoom() {
+            const container = document.getElementById('chatContent');
+            
+            if (!roomId) {
+                container.innerHTML = '<div style="text-align: center; padding: 3rem;">No room selected. <a href="community.html">Back to Community</a></div>';
+                return;
+            }
+            
+            try {
+                const roomRef = doc(db, 'chatrooms', roomId);
+                const roomDoc = await getDoc(roomRef);
+                
+                if (!roomDoc.exists()) {
+                    container.innerHTML = '<div style="text-align: center; padding: 3rem;">Room not found. <a href="community.html">Back to Community</a></div>';
+                    return;
+                }
+                
+                currentRoom = { id: roomId, ...roomDoc.data() };
+                renderChatUI();
+                loadMessages();
+            } catch (error) {
+                console.error("Error loading room:", error);
+                container.innerHTML = '<div style="text-align: center; padding: 3rem;">Error loading room. <a href="community.html">Back to Community</a></div>';
+            }
+        }
+        
+        function renderChatUI() {
+            const container = document.getElementById('chatContent');
+            
+            container.innerHTML = `
+                <div class="chat-header">
+                    <div class="chat-header-info">
+                        <div class="room-avatar">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" fill="white" opacity="0.3"/>
+                                <path d="M12 6L14 9L11 12L8 9L12 6Z" fill="white"/>
+                                <path d="M12 10L16 14H8L12 10Z" fill="white"/>
+                            </svg>
+                        </div>
+                        <div class="room-details">
+                            <h2>${escapeHtml(currentRoom.name)}</h2>
+                            <p>Music Chat</p>
+                            <div class="room-tags">
+                                ${currentRoom.genres ? currentRoom.genres.slice(0, 3).map(g => `<span class="room-tag">${escapeHtml(g)}</span>`).join('') : '<span class="room-tag">Music</span>'}
+                            </div>
+                        </div>
+                    </div>
+                    <a href="community.html" class="back-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Exit
+                    </a>
+                </div>
+                
+                <div class="main-chat-area">
+                    <div class="chat-content">
+                        <div id="chatMessages" class="chat-messages">
+                            <div style="text-align: center; padding: 2rem;">Loading messages...</div>
+                        </div>
+                        
+                        <div class="chat-input-area">
+                            <div id="replyIndicator" style="display: none;" class="reply-indicator">
+                                <span>Replying to <strong id="replyingToName"></strong></span>
+                                <button class="action-btn" onclick="cancelReply()">Cancel</button>
+                            </div>
+                            <div class="input-wrapper">
+                                <div class="input-buttons">
+                                    <button class="icon-btn" id="emojiBtn" title="Emoji">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                            <circle cx="8.5" cy="9.5" r="1.5" fill="currentColor"/>
+                                            <circle cx="15.5" cy="9.5" r="1.5" fill="currentColor"/>
+                                            <path d="M15 15C13.5 17 10.5 17 9 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        </svg>
+                                    </button>
+                                    <button class="icon-btn" id="gifBtn" title="GIF">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                            <path d="M8 12h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                            <path d="M12 8v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <textarea id="messageInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
+                                <button id="sendBtn" class="send-btn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="white"/>
+                                    </svg>
+                                    Send
+                                </button>
+                            </div>
+                            <div id="emojiPicker" class="emoji-picker">
+                                <div class="emoji-grid">
+                                    ${emojis.map(emoji => `<button class="emoji-btn" onclick="insertEmoji('${emoji}')">${emoji}</button>`).join('')}
+                                </div>
+                            </div>
+                            <div id="gifPicker" class="gif-picker">
+                                <div class="gif-search-container">
+                                    <input type="text" id="gifSearch" class="gif-search" placeholder="Search GIFs...">
+                                    <button id="gifSearchBtn" class="gif-search-btn">Search</button>
+                                </div>
+                                <div id="gifResults" class="gif-grid">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="room-sidebar">
+                        <div class="sidebar-section">
+                            <h4>About</h4>
+                            <p style="font-size: 0.8rem;">${escapeHtml(currentRoom.description || 'No description')}</p>
+                        </div>
+                        <div class="sidebar-section">
+                            <h4>Created by</h4>
+                            <p style="font-size: 0.8rem;">${escapeHtml(currentRoom.createdByName || 'Anonymous')}</p>
+                        </div>
+                        <div class="sidebar-section">
+                            <h4>Members Online</h4>
+                            <div id="memberList" class="member-list">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('sendBtn').addEventListener('click', sendMessage);
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            const emojiBtn = document.getElementById('emojiBtn');
+            const emojiPicker = document.getElementById('emojiPicker');
+            emojiBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
+                document.getElementById('gifPicker').style.display = 'none';
+            });
+            
+            const gifBtn = document.getElementById('gifBtn');
+            const gifPicker = document.getElementById('gifPicker');
+            gifBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                gifPicker.style.display = gifPicker.style.display === 'block' ? 'none' : 'block';
+                document.getElementById('emojiPicker').style.display = 'none';
+                if (gifPicker.style.display === 'block') searchGifs('');
+            });
+            
+            document.getElementById('gifSearchBtn')?.addEventListener('click', () => {
+                searchGifs(document.getElementById('gifSearch').value);
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (emojiPicker && !emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+                    emojiPicker.style.display = 'none';
+                }
+                if (gifPicker && !gifPicker.contains(e.target) && e.target !== gifBtn) {
+                    gifPicker.style.display = 'none';
+                }
+            });
+        }
+        
+        window.sendGif = function(gifUrl) {
+            sendMessageWithGif(gifUrl);
+            document.getElementById('gifPicker').style.display = 'none';
+        };
+        
+        async function sendMessageWithGif(gifUrl) {
+            if (!currentUser) return;
+            try {
+                await addDoc(collection(db, 'chatrooms', roomId, 'messages'), {
+                    text: '',
+                    gifUrl: gifUrl,
+                    userName: currentUser.displayName || currentUser.email.split('@')[0],
+                    userId: currentUser.uid,
+                    timestamp: new Date()
+                });
+            } catch (error) {
+                console.error('Error sending GIF:', error);
+            }
+        }
+        
+        window.insertEmoji = function(emoji) {
+            const input = document.getElementById('messageInput');
+            input.value += emoji;
+            document.getElementById('emojiPicker').style.display = 'none';
+            input.focus();
+        };
+        
+        window.editMessage = async function(messageId, currentText) {
+            const newText = prompt('Edit your message:', currentText);
+            if (newText && newText.trim()) {
+                try {
+                    await updateDoc(doc(db, 'chatrooms', roomId, 'messages', messageId), {
+                        text: newText.trim(),
+                        edited: true,
+                        editedAt: new Date()
+                    });
+                } catch (error) { alert('Error editing message'); }
+            }
+        };
+        
+        window.deleteMessage = async function(messageId) {
+            if (confirm('Delete this message?')) {
+                try { await deleteDoc(doc(db, 'chatrooms', roomId, 'messages', messageId)); }
+                catch (error) { alert('Error deleting message'); }
+            }
+        };
+        
+        window.replyToMessage = function(userName, messageId) {
+            replyingTo = { userName, messageId };
+            const replyIndicator = document.getElementById('replyIndicator');
+            document.getElementById('replyingToName').textContent = userName;
+            replyIndicator.style.display = 'flex';
+            document.getElementById('messageInput').focus();
+        };
+        
+        window.cancelReply = function() {
+            replyingTo = null;
+            document.getElementById('replyIndicator').style.display = 'none';
+        };
+        
+        async function sendMessage() {
+            if (!currentUser) { alert('Please sign in'); return; }
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const replyData = replyingTo ? { ...replyingTo } : null;
+            cancelReply();
+            
+            try {
+                await addDoc(collection(db, 'chatrooms', roomId, 'messages'), {
+                    text: message,
+                    replyTo: replyData,
+                    userName: currentUser.displayName || currentUser.email.split('@')[0],
+                    userId: currentUser.uid,
+                    timestamp: new Date()
+                });
+                input.value = '';
+            } catch (error) { alert('Error sending message'); }
+        }
+        
+        function loadMessages() {
+            if (!roomId) return;
+            const messagesRef = collection(db, 'chatrooms', roomId, 'messages');
+            const q = query(messagesRef, orderBy('timestamp', 'asc'));
+            
+            unsubscribeMessages = onSnapshot(q, (snapshot) => {
+                const messagesDiv = document.getElementById('chatMessages');
+                if (!messagesDiv) return;
+                
+                if (snapshot.empty) {
+                    messagesDiv.innerHTML = '<div style="text-align: center; padding: 2rem;">No messages yet. Start the conversation!</div>';
+                    return;
+                }
+                
+                messagesDiv.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const msg = doc.data();
+                    const messageId = doc.id;
+                    const time = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+                    const isOwn = currentUser && msg.userId === currentUser.uid;
+                    const avatar = msg.userName?.charAt(0).toUpperCase() || 'U';
+                    const editedBadge = msg.edited ? '<span class="edited-badge">edited</span>' : '';
+                    
+                    let replyHtml = msg.replyTo ? `<div class="reply-preview">↳ Replying to ${escapeHtml(msg.replyTo.userName)}</div>` : '';
+                    let messageContent = msg.gifUrl ? `<img src="${msg.gifUrl}">` : escapeHtml(msg.text);
+                    
+                    messagesDiv.innerHTML += `
+                        <div class="message ${isOwn ? 'message-own' : ''}">
+                            <div class="message-avatar">
+                                <div class="message-avatar-img">${avatar}</div>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="message-username">${escapeHtml(msg.userName)}</span>
+                                    <span class="message-time">${time}</span>
+                                    ${editedBadge}
+                                </div>
+                                ${replyHtml}
+                                <div class="message-bubble">
+                                    <div class="message-text">${messageContent}</div>
+                                </div>
+                                <div class="message-actions">
+                                    ${isOwn ? `
+                                        <button class="action-btn" onclick="editMessage('${messageId}', '${escapeHtml(msg.text || '').replace(/'/g, "\\'")}')">Edit</button>
+                                        <button class="action-btn" onclick="deleteMessage('${messageId}')">Delete</button>
+                                    ` : ''}
+                                    <button class="action-btn" onclick="replyToMessage('${escapeHtml(msg.userName)}', '${messageId}')">Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+            loadMembers();
+        }
+        
+        async function loadMembers() {
+            const roomDoc = await getDoc(doc(db, 'chatrooms', roomId));
+            const members = roomDoc.data()?.activeUsers || [];
+            const memberList = document.getElementById('memberList');
+            if (memberList) {
+                if (members.length === 0) memberList.innerHTML = '<div>No active members</div>';
+                else memberList.innerHTML = members.map(() => `
+                    <div class="member-item">
+                        <div class="member-avatar">🎵</div>
+                        <span>Music Fan</span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const authDiv = document.getElementById('authButtons');
+            const avatarDiv = document.getElementById('userAvatarContainer');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            
+            if (user) {
+                if (authDiv) authDiv.style.display = 'none';
+                if (avatarDiv) avatarDiv.style.display = 'block';
+                if (userEmailDisplay) userEmailDisplay.textContent = user.email;
+            } else {
+                if (authDiv) authDiv.style.display = 'flex';
+                if (avatarDiv) avatarDiv.style.display = 'none';
+            }
+            loadRoom();
+        });
+        
+        window.toggleUserDropdown = function() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        };
+        
+        document.getElementById('signOutBtn')?.addEventListener('click', async () => { await signOut(auth); window.location.href = 'index.html'; });
+        document.getElementById('signInBtn')?.addEventListener('click', () => window.location.href = 'index.html');
+        document.getElementById('signUpBtn')?.addEventListener('click', () => window.location.href = 'index.html');
+        
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('userDropdown');
+            const avatarBtn = document.getElementById('userAvatarBtn');
+            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

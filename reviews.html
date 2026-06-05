@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>All Reviews - Honestly, it.....</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .reviews-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-header p {
+            color: var(--text-muted);
+        }
+        
+        .search-filter-bar {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-input-wrapper {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 0.85rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #ff1493;
+        }
+        
+        .search-btn {
+            padding: 0.85rem 1.5rem;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .clear-search {
+            padding: 0.85rem 1.5rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sort-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .sort-option {
+            padding: 0.5rem 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            color: var(--text-primary);
+        }
+        
+        .sort-option:hover {
+            border-color: #ff1493;
+        }
+        
+        .sort-option.active {
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .results-info {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        .reviews-grid-page {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .review-card-horizontal {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        
+        .review-card-horizontal:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .review-card-image {
+            flex: 0 0 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            background: var(--bg-secondary);
+        }
+        
+        .review-card-image img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .review-card-image .no-image {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .review-card-content {
+            flex: 1;
+            padding: 1rem;
+        }
+        
+        .review-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .review-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--text-primary);
+        }
+        
+        .review-card-artist {
+            color: #ff1493;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .review-card-year {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+        
+        .review-card-rating {
+            text-align: right;
+        }
+        
+        .rating-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .review-card-genre {
+            display: inline-block;
+            background: var(--bg-secondary);
+            color: #ff1493;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-top: 0.5rem;
+        }
+        
+        .review-card-preview {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin: 0.5rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .read-more-btn {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: #ff1493;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .page-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .page-btn:hover:not(:disabled) {
+            background: #ff1493;
+            color: white;
+            border-color: #ff1493;
+        }
+        
+        .page-btn.active {
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .page-btn.disabled, .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .review-card-horizontal {
+                flex-direction: column;
+            }
+            
+            .review-card-image {
+                flex: 0 0 auto;
+                padding: 15px;
+            }
+            
+            .search-input-wrapper {
+                flex-direction: column;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-text">Honestly, it.....</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reviews.html" class="active">Reviews</a></li>
+                <li><a href="community.html">Community</a></li>
+            </ul>
+            <div class="user-menu">
+                <div id="authButtons">
+                    <button id="signInBtn" class="auth-nav-btn">Sign In</button>
+                    <button id="signUpBtn" class="auth-nav-btn-primary">Sign Up</button>
+                </div>
+                <div id="userAvatarContainer" style="display: none;">
+                    <button id="userAvatarBtn" class="user-avatar-btn" onclick="toggleUserDropdown()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="white"/>
+                        </svg>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown" style="display: none;">
+                        <div class="user-dropdown-email" id="userEmailDisplay"></div>
+                        <a href="profile.html" class="user-dropdown-item">My Profile</a>
+                        <a href="settings.html" class="user-dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <button id="signOutBtn" class="user-dropdown-item" style="color: #ff1493;">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="reviews-page">
+        <div class="page-header">
+            <h1>All Reviews</h1>
+            <p>Browse through our complete collection of album reviews</p>
+        </div>
+
+        <div class="search-filter-bar">
+            <div class="search-input-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by album, artist, or genre...">
+                <button id="searchBtn" class="search-btn">Search</button>
+                <button id="clearSearchBtn" class="clear-search">Clear</button>
+            </div>
+            <div class="filter-row">
+                <div class="sort-buttons">
+                    <button class="sort-option active" data-sort="newest">Newest</button>
+                    <button class="sort-option" data-sort="oldest">Oldest</button>
+                    <button class="sort-option" data-sort="rating">Top Rated</button>
+                    <button class="sort-option" data-sort="artist">Artist A-Z</button>
+                </div>
+                <div class="results-info" id="resultsInfo"></div>
+            </div>
+        </div>
+
+        <div id="reviewsContainer" class="reviews-grid-page">
+            <div class="loading-spinner">Loading reviews...</div>
+        </div>
+
+        <div id="pagination" class="pagination"></div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Firebase Config - REPLACE WITH YOURS
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
+  authDomain: "honestly-it.firebaseapp.com",
+  projectId: "honestly-it",
+  storageBucket: "honestly-it.firebasestorage.app",
+  messagingSenderId: "938783642355",
+  appId: "1:938783642355:web:330ad714c0f79b7eb25d86",
+  measurementId: "G-R8Q5308Y8K"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Dark mode initialization
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+        }
+        initDarkMode();
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'darkMode') {
+                if (e.newValue === 'true') {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+            }
+        });
+
+        let allReviews = [];
+        let currentPage = 1;
+        let currentSort = "newest";
+        let currentSearch = "";
+        const itemsPerPage = 10;
+
+        function loadReviews() {
+            const stored = localStorage.getItem('musicReviews');
+            if (stored) {
+                allReviews = JSON.parse(stored);
+                console.log("Loaded", allReviews.length, "reviews");
+            } else {
+                allReviews = [];
+            }
+            applyFiltersAndSort();
+        }
+
+        function applySearch() {
+            if (!currentSearch) return allReviews;
+            const searchLower = currentSearch.toLowerCase();
+            return allReviews.filter(review => 
+                review.title.toLowerCase().includes(searchLower) ||
+                review.artist.toLowerCase().includes(searchLower) ||
+                (Array.isArray(review.genre) && review.genre.some(g => g.toLowerCase().includes(searchLower))) ||
+                (typeof review.genre === 'string' && review.genre.toLowerCase().includes(searchLower))
+            );
+        }
+
+        function sortReviews(reviews) {
+            const sorted = [...reviews];
+            switch(currentSort) {
+                case "newest":
+                    return sorted.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+                case "oldest":
+                    return sorted.sort((a, b) => new Date(a.dateAdded) - new Date(b.dateAdded));
+                case "rating":
+                    return sorted.sort((a, b) => b.rating - a.rating);
+                case "artist":
+                    return sorted.sort((a, b) => a.artist.localeCompare(b.artist));
+                default:
+                    return sorted;
+            }
+        }
+
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating / 2);
+            const decimal = rating / 2 - fullStars;
+            let starsHTML = '';
+            for (let i = 0; i < fullStars; i++) starsHTML += '<span style="color: #ffd700;">★</span>';
+            if (decimal >= 0.5) starsHTML += '<span style="color: #ffd700;">½</span>';
+            const emptyStars = 5 - Math.ceil(rating / 2);
+            for (let i = 0; i < emptyStars; i++) starsHTML += '<span style="color: var(--text-muted);">☆</span>';
+            return starsHTML;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function applyFiltersAndSort() {
+            const container = document.getElementById('reviewsContainer');
+            const resultsInfo = document.getElementById('resultsInfo');
+            
+            let filtered = applySearch();
+            let sorted = sortReviews(filtered);
+            
+            const totalItems = sorted.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedReviews = sorted.slice(startIndex, startIndex + itemsPerPage);
+            
+            resultsInfo.textContent = `Showing ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, totalItems)} of ${totalItems} reviews`;
+            
+            if (paginatedReviews.length === 0) {
+                container.innerHTML = '<div class="no-results">No reviews found. Try a different search!</div>';
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+            
+            container.innerHTML = paginatedReviews.map(review => `
+                <div class="review-card-horizontal">
+                    <div class="review-card-image">
+                        ${review.albumArt ? 
+                            `<img src="${review.albumArt}" alt="${review.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'no-image\'>🎵</div>'">` : 
+                            `<div class="no-image">🎵</div>`
+                        }
+                    </div>
+                    <div class="review-card-content">
+                        <div class="review-card-header">
+                            <div>
+                                <h3 class="review-card-title">${escapeHtml(review.title)}</h3>
+                                <p class="review-card-artist">${escapeHtml(review.artist)}</p>
+                                <p class="review-card-year">${review.year || 'Release year N/A'}</p>
+                                <span class="review-card-genre">${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre}</span>
+                            </div>
+                            <div class="review-card-rating">
+                                <div><span class="rating-number">${review.rating.toFixed(1)}</span><span style="font-size: 0.8rem;">/10</span></div>
+                                <div style="font-size: 0.7rem;">${renderStars(review.rating)}</div>
+                            </div>
+                        </div>
+                        <p class="review-card-preview">${escapeHtml(review.shortPreview || review.review.substring(0, 120))}...</p>
+                        <a href="review.html?id=${review.id}" class="read-more-btn">Read full review →</a>
+                    </div>
+                </div>
+            `).join('');
+            
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const paginationDiv = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                paginationDiv.innerHTML = '';
+                return;
+            }
+            
+            let html = `<button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>← Previous</button>`;
+            
+            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            if (totalPages > 5) {
+                html += `<span>...</span>`;
+                html += `<button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+            }
+            
+            html += `<button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next →</button>`;
+            
+            paginationDiv.innerHTML = html;
+        }
+
+        window.changePage = function(page) {
+            if (page < 1) return;
+            currentPage = page;
+            applyFiltersAndSort();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        function setupEventListeners() {
+            document.getElementById('searchBtn').addEventListener('click', () => {
+                currentSearch = document.getElementById('searchInput').value;
+                currentPage = 1;
+                applyFiltersAndSort();
+            });
+            
+            document.getElementById('clearSearchBtn').addEventListener('click', () => {
+                document.getElementById('searchInput').value = '';
+                currentSearch = '';
+                currentPage = 1;
+                applyFiltersAndSort();
+            });
+            
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    currentSearch = e.target.value;
+                    currentPage = 1;
+                    applyFiltersAndSort();
+                }
+            });
+            
+            document.querySelectorAll('.sort-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.sort-option').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSort = btn.getAttribute('data-sort');
+                    currentPage = 1;
+                    applyFiltersAndSort();
+                });
+            });
+        }
+
+        // Auth state listener - THIS KEEPS USER LOGGED IN ACROSS ALL PAGES
+        onAuthStateChanged(auth, (user) => {
+            const authDiv = document.getElementById('authButtons');
+            const avatarDiv = document.getElementById('userAvatarContainer');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            
+            if (user) {
+                authDiv.style.display = 'none';
+                avatarDiv.style.display = 'block';
+                if (userEmailDisplay) userEmailDisplay.textContent = user.email;
+            } else {
+                authDiv.style.display = 'flex';
+                avatarDiv.style.display = 'none';
+            }
+        });
+
+        // Dropdown functions
+        window.toggleUserDropdown = function() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            }
+        };
+
+        // Sign out
+        document.getElementById('signOutBtn')?.addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        });
+        
+        document.getElementById('signInBtn')?.addEventListener('click', () => window.location.href = 'index.html');
+        document.getElementById('signUpBtn')?.addEventListener('click', () => window.location.href = 'index.html');
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('userDropdown');
+            const avatarBtn = document.getElementById('userAvatarBtn');
+            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Initialize
+        loadReviews();
+        setupEventListeners();
+    </script>
+</body>
+</html>

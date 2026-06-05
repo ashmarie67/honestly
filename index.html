@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Honestly, it..... - Music Reviews</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Auth Modal Styles */
+        .auth-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .auth-modal {
+            background: var(--card-bg);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 440px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .auth-modal-header {
+            padding: 1.5rem 1.5rem 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .auth-modal-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .auth-close {
+            font-size: 1.75rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        
+        .auth-close:hover {
+            color: #ff1493;
+        }
+        
+        .auth-modal-body {
+            padding: 1.5rem;
+        }
+        
+        .auth-input-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .auth-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .auth-input:focus {
+            outline: none;
+            border-color: #ff1493;
+        }
+        
+        .auth-btn-primary {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .auth-btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        
+        .auth-divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+        }
+        
+        .auth-divider span {
+            background: var(--card-bg);
+            padding: 0 1rem;
+            position: relative;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .auth-switch a {
+            color: #ff1493;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .auth-error {
+            background: rgba(255, 20, 147, 0.1);
+            border: 1px solid #ff1493;
+            border-radius: 10px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            color: #ff1493;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        
+        /* User Menu */
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-avatar-btn {
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .user-avatar-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            min-width: 200px;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: background 0.2s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .user-dropdown-item:hover {
+            background: var(--bg-secondary);
+        }
+        
+        .user-dropdown-email {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+            word-break: break-all;
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 0;
+        }
+        
+        .sign-out-item {
+            color: #ff1493;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- New Logo - Cursive style without emoji -->
+            <div class="logo">
+                <span class="logo-text">Honestly, it.....</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+                <li><a href="community.html">Community</a></li>
+            </ul>
+            
+            <!-- User Menu (keeping as is) -->
+            <div class="user-menu">
+                <div id="authButtons">
+                    <button id="signInBtn" class="auth-nav-btn">Sign In</button>
+                    <button id="signUpBtn" class="auth-nav-btn-primary">Sign Up</button>
+                </div>
+                <div id="userAvatarContainer" style="display: none;">
+                    <button id="userAvatarBtn" class="user-avatar-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="white"/>
+                        </svg>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown" style="display: none;">
+                        <div class="user-dropdown-email" id="userEmailDisplay"></div>
+                        <a href="profile.html" class="user-dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
+                            </svg>
+                            My Profile
+                        </a>
+                        <a href="settings.html" class="user-dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.33-.02-.64-.06-.94l2.02-1.58c.18-.14.23-.38.12-.56l-1.89-3.28c-.12-.19-.36-.26-.56-.18l-2.38.96c-.5-.38-1.06-.68-1.66-.88L14.45 3.5c-.04-.2-.2-.34-.4-.34h-3.78c-.2 0-.36.14-.4.34l-.3 2.52c-.6.2-1.16.5-1.66.88l-2.38-.96c-.2-.08-.44-.01-.56.18l-1.89 3.28c-.12.19-.07.42.12.56l2.02 1.58c-.04.3-.06.61-.06.94 0 .33.02.64.06.94l-2.02 1.58c-.18.14-.23.38-.12.56l1.89 3.28c.12.19.36.26.56.18l2.38-.96c.5.38 1.06.68 1.66.88l.3 2.52c.04.2.2.34.4.34h3.78c.2 0 .36-.14.4-.34l.3-2.52c.6-.2 1.16-.5 1.66-.88l2.38.96c.2.08.44.01.56-.18l1.89-3.28c.12-.19.07-.42-.12-.56l-2.02-1.58zM12 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill="currentColor"/>
+                            </svg>
+                            Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button id="signOutBtn" class="user-dropdown-item" style="color: #ff1493;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
+                            </svg>
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-badge">EST. 2026</div>
+            <h1 class="hero-title">Discover the <span class="hero-highlight">Music</span><br>That Moves You</h1>
+            <p class="hero-subtitle">Expert reviews, critical analysis, and the latest in music culture.</p>
+            <a href="#reviews" class="hero-cta">Explore Reviews →</a>
+        </div>
+    </header>
+
+<!-- Add this spacer div -->
+<div style="height: 2rem;"></div>
+
+<section class="featured-section" id="featured">
+
+    <section class="reviews-section" id="reviews">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Latest & Greatest</span>
+                <h2 class="section-title">All Reviews</h2>
+                <p class="section-subtitle">Browse our complete collection of album reviews</p>
+            </div>
+            
+            <div class="sort-controls">
+                <div class="sort-buttons">
+                    <button class="sort-btn active" data-sort="rating">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline; margin-right: 4px;">
+                            <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" fill="currentColor"/>
+                        </svg>
+                        Rating
+                    </button>
+                    <button class="sort-btn" data-sort="newest">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline; margin-right: 4px;">
+                            <path d="M12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12.5 7H11V13L16.2 16.2L17 14.9L12.5 12.2V7Z" fill="currentColor"/>
+                        </svg>
+                        Newest
+                    </button>
+                    <button class="sort-btn" data-sort="artist">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline; margin-right: 4px;">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
+                        </svg>
+                        Artist
+                    </button>
+                    <button class="sort-btn" data-sort="title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline; margin-right: 4px;">
+                            <path d="M5 4V20H19V4H5ZM17 18H7V16H17V18ZM17 14H7V12H17V14ZM17 10H7V8H17V10Z" fill="currentColor"/>
+                        </svg>
+                        Album
+                    </button>
+                </div>
+                <div class="results-count"><span id="resultsCount">0</span> reviews</div>
+            </div>
+            
+            <div class="reviews-grid" id="reviewsGrid"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Honestly, it..... All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal-overlay">
+        <div class="auth-modal">
+            <div class="auth-modal-header">
+                <h2 id="authModalTitle">Welcome Back</h2>
+                <span class="auth-close" id="closeAuthModalBtn">&times;</span>
+            </div>
+            <div class="auth-modal-body" id="authModalBody"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // REPLACE WITH YOUR FIREBASE CONFIG
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
+  authDomain: "honestly-it.firebaseapp.com",
+  projectId: "honestly-it",
+  storageBucket: "honestly-it.firebasestorage.app",
+  messagingSenderId: "938783642355",
+  appId: "1:938783642355:web:330ad714c0f79b7eb25d86",
+  measurementId: "G-R8Q5308Y8K"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // DOM Elements
+        const authButtons = document.getElementById('authButtons');
+        const userAvatarContainer = document.getElementById('userAvatarContainer');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const userAvatarBtn = document.getElementById('userAvatarBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const signOutBtn = document.getElementById('signOutBtn');
+        const signInBtn = document.getElementById('signInBtn');
+        const signUpBtn = document.getElementById('signUpBtn');
+        const authModal = document.getElementById('authModal');
+        const authModalTitle = document.getElementById('authModalTitle');
+        const authModalBody = document.getElementById('authModalBody');
+        const closeModalBtn = document.getElementById('closeAuthModalBtn');
+
+        // Toggle dropdown
+        function toggleDropdown(e) {
+            if (e) e.stopPropagation();
+            if (userDropdown) {
+                userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        // Close dropdown
+        function closeDropdown() {
+            if (userDropdown) userDropdown.style.display = 'none';
+        }
+
+        // Show auth modal
+        function showAuthModal(type) {
+            if (type === 'login') {
+                authModalTitle.innerHTML = 'Welcome Back';
+                authModalBody.innerHTML = `
+                    <div id="loginError" class="auth-error" style="display: none;"></div>
+                    <div class="auth-input-group">
+                        <input type="email" id="loginEmail" class="auth-input" placeholder="Email address">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
+                    </div>
+                    <button id="doLoginBtn" class="auth-btn-primary">Sign In</button>
+                    <div class="auth-divider"><span>or</span></div>
+                    <div class="auth-switch">New here? <a id="switchToSignup">Create an account</a></div>
+                    <div class="auth-switch" style="margin-top: 0.5rem;"><a id="forgotPasswordLink">Forgot password?</a></div>
+                `;
+                
+                document.getElementById('doLoginBtn')?.addEventListener('click', handleLogin);
+                document.getElementById('switchToSignup')?.addEventListener('click', () => showAuthModal('signup'));
+                document.getElementById('forgotPasswordLink')?.addEventListener('click', showForgotPassword);
+            } else {
+                authModalTitle.innerHTML = 'Create Account';
+                authModalBody.innerHTML = `
+                    <div id="signupError" class="auth-error" style="display: none;"></div>
+                    <div class="auth-input-group">
+                        <input type="text" id="signupName" class="auth-input" placeholder="Display name">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="email" id="signupEmail" class="auth-input" placeholder="Email address">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" id="signupPassword" class="auth-input" placeholder="Password (min 6 characters)">
+                    </div>
+                    <button id="doSignupBtn" class="auth-btn-primary">Create Account</button>
+                    <div class="auth-divider"><span>or</span></div>
+                    <div class="auth-switch">Already have an account? <a id="switchToLogin">Sign In</a></div>
+                `;
+                
+                document.getElementById('doSignupBtn')?.addEventListener('click', handleSignup);
+                document.getElementById('switchToLogin')?.addEventListener('click', () => showAuthModal('login'));
+            }
+            authModal.style.display = 'flex';
+        }
+
+        function closeAuthModal() {
+            authModal.style.display = 'none';
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail')?.value;
+            const password = document.getElementById('loginPassword')?.value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (!email || !password) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Please enter both email and password';
+                return;
+            }
+            
+            errorDiv.style.display = 'none';
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                closeAuthModal();
+            } catch (error) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = error.code === 'auth/invalid-credential' ? 'Invalid email or password' : error.message;
+            }
+        }
+
+        async function handleSignup() {
+            const name = document.getElementById('signupName')?.value;
+            const email = document.getElementById('signupEmail')?.value;
+            const password = document.getElementById('signupPassword')?.value;
+            const errorDiv = document.getElementById('signupError');
+            
+            if (!name || !email || !password) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Please fill in all fields';
+                return;
+            }
+            
+            if (password.length < 6) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Password must be at least 6 characters';
+                return;
+            }
+            
+            errorDiv.style.display = 'none';
+            
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(userCredential.user, { displayName: name });
+                closeAuthModal();
+            } catch (error) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = error.code === 'auth/email-already-in-use' ? 'Email already in use' : error.message;
+            }
+        }
+
+        async function showForgotPassword() {
+            authModalTitle.innerHTML = 'Reset Password';
+            authModalBody.innerHTML = `
+                <div id="resetError" class="auth-error" style="display: none;"></div>
+                <p style="margin-bottom: 1rem;">Enter your email to receive a reset link.</p>
+                <div class="auth-input-group">
+                    <input type="email" id="resetEmail" class="auth-input" placeholder="Email address">
+                </div>
+                <button id="sendResetBtn" class="auth-btn-primary">Send Reset Link</button>
+                <div class="auth-switch" style="margin-top: 1rem;"><a id="backToLogin">Back to Sign In</a></div>
+            `;
+            
+            document.getElementById('sendResetBtn')?.addEventListener('click', async () => {
+                const email = document.getElementById('resetEmail')?.value;
+                const errorDiv = document.getElementById('resetError');
+                
+                if (!email) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Please enter your email';
+                    return;
+                }
+                
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    errorDiv.style.display = 'block';
+                    errorDiv.style.background = 'rgba(255,215,0,0.1)';
+                    errorDiv.style.borderColor = '#ffd700';
+                    errorDiv.style.color = '#ffd700';
+                    errorDiv.textContent = `Reset email sent to ${email}!`;
+                    setTimeout(() => closeAuthModal(), 3000);
+                } catch (error) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = error.message;
+                }
+            });
+            document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
+        }
+
+        // Sign out
+        async function handleSignOut() {
+            await signOut(auth);
+            closeDropdown();
+        }
+
+        // Auth state listener
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                authButtons.style.display = 'none';
+                userAvatarContainer.style.display = 'block';
+                userEmailDisplay.textContent = user.email;
+            } else {
+                authButtons.style.display = 'flex';
+                userAvatarContainer.style.display = 'none';
+                closeDropdown();
+            }
+        });
+
+        // Event listeners
+        signInBtn?.addEventListener('click', () => showAuthModal('login'));
+        signUpBtn?.addEventListener('click', () => showAuthModal('signup'));
+        userAvatarBtn?.addEventListener('click', toggleDropdown);
+        signOutBtn?.addEventListener('click', handleSignOut);
+        closeModalBtn?.addEventListener('click', closeAuthModal);
+        
+        // Close modal when clicking outside
+        authModal?.addEventListener('click', (e) => {
+            if (e.target === authModal) closeAuthModal();
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (userDropdown && userAvatarBtn && !userAvatarBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.style.display = 'none';
+            }
+        });
+
+        console.log('Firebase auth ready');
+    </script>
+</body>
+</html>

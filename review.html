@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Review - Honestly, it.....</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .review-page {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .review-header {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .review-album-art {
+            flex: 0 0 300px;
+        }
+        
+        .review-album-art img {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .review-album-art .no-image {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+        
+        .review-info {
+            flex: 1;
+        }
+        
+        .review-genre {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-secondary);
+            color: #ff1493;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        
+        .review-title {
+            font-size: 2.5rem;
+            margin: 0 0 0.25rem 0;
+        }
+        
+        .review-artist {
+            font-size: 1.25rem;
+            color: #ff1493;
+            margin-bottom: 0.5rem;
+        }
+        
+        .review-year {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .review-rating-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .embed-container {
+            margin: 2rem 0;
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+        
+        .embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .spotify-embed {
+            margin: 2rem 0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .review-section {
+            margin: 2rem 0;
+        }
+        
+        .review-section h3 {
+            color: #ff1493;
+            margin-bottom: 1rem;
+        }
+        
+        .track-list {
+            margin-top: 2rem;
+        }
+        
+        .track-item-page {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+        }
+        
+        .track-header-page {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+        
+        .track-name-page {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .track-rating-page {
+            background: #ff1493;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85rem;
+        }
+        
+        .back-button {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            color: #ff1493;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .back-button:hover {
+            background: #ff1493;
+            color: white;
+        }
+        
+        /* Comments Section */
+        .comments-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .comments-section h3 {
+            color: #ff1493;
+            margin-bottom: 1.5rem;
+        }
+        
+        .comment-form {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        
+        .comment-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+        
+        .comment-input:focus {
+            outline: none;
+            border-color: #ff1493;
+        }
+        
+        .post-comment-btn {
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .post-comment-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .auth-prompt {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+        
+        .auth-prompt p {
+            margin-bottom: 1rem;
+        }
+        
+        .auth-prompt-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .auth-prompt-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .auth-prompt-btn.signin {
+            background: none;
+            border: 2px solid #ff1493;
+            color: #ff1493;
+        }
+        
+        .auth-prompt-btn.signup {
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            border: none;
+            color: white;
+        }
+        
+        .comment-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .comment-avatar {
+            flex-shrink: 0;
+        }
+        
+        .comment-avatar-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .comment-avatar-img img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .comment-username {
+            font-weight: 600;
+            color: #ff1493;
+        }
+        
+        .comment-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .edited-badge {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .comment-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+        
+        .comment-action-btn:hover {
+            color: #ff1493;
+        }
+        
+        .edit-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            resize: vertical;
+            margin-bottom: 0.5rem;
+        }
+        
+        .edit-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .save-edit-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .cancel-edit-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .comment-text {
+            line-height: 1.5;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+        
+        .no-comments {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 3rem;
+            color: #ff1493;
+        }
+        
+        @media (max-width: 768px) {
+            .review-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .review-title {
+                font-size: 1.75rem;
+            }
+            
+            .review-rating {
+                justify-content: center;
+            }
+            
+            .review-album-art {
+                flex: 0 0 auto;
+            }
+            
+            .review-album-art img,
+            .review-album-art .no-image {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .comment-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-text">Honestly, it.....</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#reviews">Reviews</a></li>
+                <li><a href="community.html">Community</a></li>
+            </ul>
+            <div class="user-menu">
+                <div id="authButtons" style="display: flex; gap: 0.75rem;">
+                    <button id="signInBtn" class="auth-nav-btn">Sign In</button>
+                    <button id="signUpBtn" class="auth-nav-btn-primary">Sign Up</button>
+                </div>
+                <div id="userAvatarContainer" style="display: none;">
+                    <button id="userAvatarBtn" class="user-avatar-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="white"/>
+                        </svg>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown" style="display: none;">
+                        <div class="user-dropdown-email" id="userEmailDisplay"></div>
+                        <a href="profile.html" class="user-dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
+                            </svg>
+                            My Profile
+                        </a>
+                        <a href="settings.html" class="user-dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.33-.02-.64-.06-.94l2.02-1.58c.18-.14.23-.38.12-.56l-1.89-3.28c-.12-.19-.36-.26-.56-.18l-2.38.96c-.5-.38-1.06-.68-1.66-.88L14.45 3.5c-.04-.2-.2-.34-.4-.34h-3.78c-.2 0-.36.14-.4.34l-.3 2.52c-.6.2-1.16.5-1.66.88l-2.38-.96c-.2-.08-.44-.01-.56.18l-1.89 3.28c-.12.19-.07.42.12.56l2.02 1.58c-.04.3-.06.61-.06.94 0 .33.02.64.06.94l-2.02 1.58c-.18.14-.23.38-.12.56l1.89 3.28c.12.19.36.26.56.18l2.38-.96c.5.38 1.06.68 1.66.88l.3 2.52c.04.2.2.34.4.34h3.78c.2 0 .36-.14.4-.34l.3-2.52c.6-.2 1.16-.5 1.66-.88l2.38.96c.2.08.44.01.56-.18l1.89-3.28c.12-.19.07-.42-.12-.56l-2.02-1.58zM12 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill="currentColor"/>
+                            </svg>
+                            Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button id="signOutBtn" class="user-dropdown-item" style="color: #ff1493;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
+                            </svg>
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="reviewContent" class="review-page">
+            <div class="loading-spinner">
+                <p>Loading review...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Dark mode initialization
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            const toggleIcon = document.querySelector('.toggle-icon');
+            if (toggleIcon) {
+                toggleIcon.textContent = darkMode ? '☀️' : '🌙';
+            }
+        }
+        initDarkMode();
+
+        // Listen for dark mode changes from localStorage
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'darkMode') {
+                if (e.newValue === 'true') {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+            }
+        });
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
+  authDomain: "honestly-it.firebaseapp.com",
+  projectId: "honestly-it",
+  storageBucket: "honestly-it.firebasestorage.app",
+  messagingSenderId: "938783642355",
+  appId: "1:938783642355:web:330ad714c0f79b7eb25d86",
+  measurementId: "G-R8Q5308Y8K"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const reviewId = urlParams.get('id');
+        
+        let currentUser = null;
+        
+        function getUserAvatar(userId) {
+            return localStorage.getItem(`avatar_${userId}`);
+        }
+        
+        function getRelativeTime(timestamp) {
+            if (!timestamp) return 'Just now';
+            const now = new Date();
+            const commentDate = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const diffMs = now - commentDate;
+            const diffSecs = Math.floor(diffMs / 1000);
+            const diffMins = Math.floor(diffSecs / 60);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            const diffWeeks = Math.floor(diffDays / 7);
+            const diffMonths = Math.floor(diffDays / 30);
+            const diffYears = Math.floor(diffDays / 365);
+            
+            if (diffSecs < 60) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffWeeks === 1) return '1 week ago';
+            if (diffWeeks < 4) return `${diffWeeks} weeks ago`;
+            if (diffMonths === 1) return '1 month ago';
+            if (diffMonths < 12) return `${diffMonths} months ago`;
+            if (diffYears === 1) return '1 year ago';
+            return `${diffYears} years ago`;
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating / 2);
+            const decimal = rating / 2 - fullStars;
+            let starsHTML = '';
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<span style="color: #ffd700;">★</span>';
+            }
+            if (decimal >= 0.5) {
+                starsHTML += '<span style="color: #ffd700;">½</span>';
+            }
+            const emptyStars = 5 - Math.ceil(rating / 2);
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<span style="color: var(--text-muted);">☆</span>';
+            }
+            return starsHTML;
+        }
+        
+        function loadReviewData() {
+            const container = document.getElementById('reviewContent');
+            let reviews = [];
+            const stored = localStorage.getItem('musicReviews');
+            if (stored) {
+                reviews = JSON.parse(stored);
+            }
+            
+            const review = reviews.find(r => Number(r.id) === Number(reviewId));
+            
+            if (!review) {
+                container.innerHTML = `<div class="error-message"><h2>Review not found</h2><a href="index.html" class="back-button">← Back to Home</a></div>`;
+                return;
+            }
+            
+            let albumArtHtml = review.albumArt ? `<img src="${review.albumArt}" onerror="this.parentElement.innerHTML='<div class=\'no-image\'>🎵</div>'">` : `<div class="no-image">🎵</div>`;
+            
+            let embedHtml = '';
+            if (review.embedUrl && review.embedType === 'youtube') {
+                embedHtml = `<div class="embed-container"><iframe src="${review.embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+            } else if (review.embedUrl && review.embedType === 'spotify') {
+                embedHtml = `<div class="spotify-embed"><iframe src="${review.embedUrl}" width="100%" height="152" frameborder="0" allow="encrypted-media"></iframe></div>`;
+            }
+            
+            let tracksHtml = '';
+            if (review.tracks?.length) {
+                tracksHtml = '<div class="track-list"><h3>🎵 Track-by-Track Review</h3>';
+                review.tracks.forEach(track => {
+                    tracksHtml += `
+                        <div class="track-item-page">
+                            <div class="track-header-page">
+                                <span class="track-name-page">${track.number}. ${escapeHtml(track.name)}</span>
+                                ${track.rating ? `<span class="track-rating-page">${track.rating}/10</span>` : ''}
+                            </div>
+                            <p>${escapeHtml(track.review)}</p>
+                        </div>
+                    `;
+                });
+                tracksHtml += '</div>';
+            }
+            
+            container.innerHTML = `
+                <a href="index.html" class="back-button">← Back to Reviews</a>
+                <div class="review-header">
+                    <div class="review-album-art">${albumArtHtml}</div>
+                    <div class="review-info">
+                        <span class="review-genre">${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre}</span>
+                        <h1 class="review-title">${escapeHtml(review.title)}</h1>
+                        <p class="review-artist">${escapeHtml(review.artist)}</p>
+                        <p class="review-year">${review.year || 'Release year N/A'}</p>
+                        <div class="review-rating">
+                            <span class="review-rating-number">${review.rating}</span><span>/10</span>
+                            <div>${renderStars(review.rating)}</div>
+                        </div>
+                    </div>
+                </div>
+                ${embedHtml}
+                <div class="review-section"><h3>📝 Overall Review</h3><p>${escapeHtml(review.review)}</p></div>
+                ${tracksHtml}
+                <div class="comments-section" id="commentsSection"></div>
+            `;
+            loadCommentsUI();
+        }
+        
+        function loadCommentsUI() {
+            const commentsSection = document.getElementById('commentsSection');
+            if (!commentsSection) return;
+            
+            if (currentUser) {
+                const userAvatar = getUserAvatar(currentUser.uid);
+                const displayName = currentUser.displayName || currentUser.email.split('@')[0];
+                commentsSection.innerHTML = `
+                    <h3>💬 Comments</h3>
+                    <div class="comment-form">
+                        <div style="display: flex; gap: 1rem;">
+                            <div class="comment-avatar"><div class="comment-avatar-img">${userAvatar ? `<img src="${userAvatar}">` : displayName.charAt(0).toUpperCase()}</div></div>
+                            <div style="flex:1"><textarea id="commentInput" class="comment-input" rows="3" placeholder="Share your thoughts..."></textarea><button onclick="postComment()" class="post-comment-btn">Post Comment</button></div>
+                        </div>
+                    </div>
+                    <div id="commentsList"></div>
+                `;
+            } else {
+                commentsSection.innerHTML = `
+                    <h3>💬 Comments</h3>
+                    <div class="auth-prompt"><p>Join the discussion! Sign in to leave a comment.</p><div class="auth-prompt-buttons"><a href="index.html" class="auth-prompt-btn signin">Sign In</a><a href="index.html" class="auth-prompt-btn signup">Create Account</a></div></div>
+                    <div id="commentsList"></div>
+                `;
+            }
+            loadComments();
+        }
+        
+        function loadComments() {
+            if (!reviewId) return;
+            const commentsRef = collection(db, 'reviews', reviewId, 'comments');
+            const q = query(commentsRef, orderBy('timestamp', 'desc'));
+            onSnapshot(q, (snapshot) => {
+                const commentsList = document.getElementById('commentsList');
+                if (!commentsList) return;
+                if (snapshot.empty) { commentsList.innerHTML = '<div class="no-comments">No comments yet.</div>'; return; }
+                commentsList.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const comment = doc.data();
+                    const relativeTime = getRelativeTime(comment.timestamp);
+                    const fullDate = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : '';
+                    const userAvatar = localStorage.getItem(`avatar_${comment.userId}`);
+                    const userInitial = comment.userName?.charAt(0).toUpperCase() || '👤';
+                    const isOwner = currentUser && comment.userId === currentUser.uid;
+                    commentsList.innerHTML += `
+                        <div class="comment-item">
+                            <div class="comment-avatar"><div class="comment-avatar-img">${userAvatar ? `<img src="${userAvatar}">` : userInitial}</div></div>
+                            <div class="comment-content">
+                                <div class="comment-header">
+                                    <div class="comment-user-info"><span class="comment-username">${escapeHtml(comment.userName)}</span><span class="comment-date" title="${fullDate}">${relativeTime}</span>${comment.editedAt ? `<span class="edited-badge">(edited)</span>` : ''}</div>
+                                    ${isOwner ? `<div class="comment-actions"><button class="comment-action-btn" onclick="startEditComment('${doc.id}', '${escapeHtml(comment.text).replace(/'/g, "\\'")}')">Edit</button><button class="comment-action-btn" onclick="deleteComment('${doc.id}')">Delete</button></div>` : ''}
+                                </div>
+                                <div class="comment-text" id="comment-text-${doc.id}">${escapeHtml(comment.text)}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+        
+        window.postComment = async function() {
+            if (!currentUser) { alert('Please sign in'); return; }
+            const commentText = document.getElementById('commentInput')?.value;
+            if (!commentText?.trim()) { alert('Please enter a comment'); return; }
+            const displayName = currentUser.displayName || currentUser.email.split('@')[0];
+            try {
+                await addDoc(collection(db, 'reviews', reviewId, 'comments'), {
+                    text: commentText.trim(),
+                    userName: displayName,
+                    userId: currentUser.uid,
+                    timestamp: new Date()
+                });
+                document.getElementById('commentInput').value = '';
+            } catch (error) { alert('Error: ' + error.message); }
+        };
+        
+        window.startEditComment = function(commentId, currentText) {
+            const textDiv = document.getElementById(`comment-text-${commentId}`);
+            textDiv.innerHTML = `<textarea id="edit-textarea-${commentId}" class="edit-textarea" rows="3">${escapeHtml(currentText)}</textarea><div class="edit-actions"><button class="save-edit-btn" onclick="saveEditComment('${commentId}')">Save</button><button class="cancel-edit-btn" onclick="cancelEditComment('${commentId}', '${escapeHtml(currentText).replace(/'/g, "\\'")}')">Cancel</button></div>`;
+        };
+        
+        window.saveEditComment = async function(commentId) {
+            const newText = document.getElementById(`edit-textarea-${commentId}`)?.value;
+            if (!newText?.trim()) { alert('Comment cannot be empty'); return; }
+            try {
+                await updateDoc(doc(db, 'reviews', reviewId, 'comments', commentId), { text: newText.trim(), editedAt: new Date() });
+            } catch (error) { alert('Error: ' + error.message); }
+        };
+        
+        window.cancelEditComment = function(commentId, originalText) {
+            document.getElementById(`comment-text-${commentId}`).innerHTML = escapeHtml(originalText);
+        };
+        
+        window.deleteComment = async function(commentId) {
+            if (confirm('Delete this comment?')) {
+                await deleteDoc(doc(db, 'reviews', reviewId, 'comments', commentId));
+            }
+        };
+        
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (document.getElementById('commentsSection')) loadCommentsUI();
+            else loadReviewData();
+        });
+        
+        if (auth.currentUser !== undefined) loadReviewData();
+        else onAuthStateChanged(auth, () => loadReviewData());
+
+        // Auth button handlers
+        document.getElementById('signOutBtn')?.addEventListener('click', () => auth.signOut());
+        document.getElementById('signInBtn')?.addEventListener('click', () => window.location.href = 'index.html');
+        document.getElementById('signUpBtn')?.addEventListener('click', () => window.location.href = 'index.html');
+        
+        // Dropdown toggle
+        window.toggleUserDropdown = function() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        };
+        document.getElementById('userAvatarBtn')?.addEventListener('click', toggleUserDropdown);
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('userDropdown');
+            const avatarBtn = document.getElementById('userAvatarBtn');
+            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
