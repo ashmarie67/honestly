@@ -41,11 +41,6 @@
             justify-content: center;
             font-size: 3rem;
             color: white;
-            transition: opacity 0.2s;
-        }
-        
-        .profile-avatar:hover .profile-avatar-img {
-            opacity: 0.8;
         }
         
         .avatar-overlay {
@@ -62,7 +57,6 @@
             opacity: 0;
             transition: opacity 0.2s;
             color: white;
-            font-size: 1.5rem;
         }
         
         .profile-avatar:hover .avatar-overlay {
@@ -102,11 +96,6 @@
             gap: 0.5rem;
         }
         
-        .section-title svg {
-            width: 20px;
-            height: 20px;
-        }
-        
         .info-row {
             display: flex;
             margin-bottom: 1rem;
@@ -134,12 +123,6 @@
             padding: 0.5rem 1rem;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        
-        .edit-btn:hover, .save-btn:hover, .cancel-btn:hover {
-            transform: translateY(-2px);
         }
         
         .save-btn {
@@ -186,22 +169,6 @@
             padding: 0.5rem;
             background: var(--bg-primary);
             border-radius: 8px;
-            transition: all 0.2s;
-        }
-        
-        .genre-checkbox:hover {
-            background: rgba(255, 20, 147, 0.1);
-        }
-        
-        .genre-checkbox input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #ff1493;
-        }
-        
-        .genre-checkbox span {
-            font-size: 0.85rem;
         }
         
         .selected-genres {
@@ -216,7 +183,6 @@
             color: white;
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
-            font-size: 0.8rem;
         }
         
         .save-genres-btn {
@@ -252,11 +218,10 @@
         .stat-label {
             font-size: 0.8rem;
             color: var(--text-muted);
-            margin-top: 0.25rem;
         }
         
         .danger-zone {
-            background: rgba(255, 20, 147, 0.1);
+            background: rgba(255,20,147,0.1);
             border: 1px solid #ff1493;
             border-radius: 16px;
             padding: 1.5rem;
@@ -277,31 +242,15 @@
             cursor: pointer;
         }
         
-        .hidden {
-            display: none;
-        }
-        
-        .message {
-            padding: 0.75rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-        
-        .message.success {
-            background: rgba(40, 167, 69, 0.2);
-            border: 1px solid #28a745;
-            color: #28a745;
-        }
-        
-        .message.error {
-            background: rgba(255, 20, 147, 0.2);
-            border: 1px solid #ff1493;
-            color: #ff1493;
-        }
-        
         #avatarFileInput {
             display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-container { padding: 1rem; }
+            .info-row { flex-direction: column; }
+            .info-label { width: 100%; }
+            .stats-grid { grid-template-columns: 1fr; gap: 0.5rem; }
         }
     </style>
 </head>
@@ -314,11 +263,49 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="reviews.html">Reviews</a></li>
-                <li><a href="profile.html" class="active">Profile</a></li>
-                <li><a href="settings.html">Settings</a></li>
+                <li><a href="community.html">Community</a></li>
             </ul>
+            <div class="user-menu">
+                <div id="authButtons">
+                    <button id="signInBtn" class="auth-nav-btn">Sign In</button>
+                    <button id="signUpBtn" class="auth-nav-btn-primary">Sign Up</button>
+                </div>
+                <div id="userAvatarContainer" style="display: none;">
+                    <button id="userAvatarBtn" class="user-avatar-btn" onclick="toggleUserDropdown()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="white"/>
+                        </svg>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown" style="display: none;">
+                        <div class="user-dropdown-email" id="userEmailDisplay"></div>
+                        <a href="profile.html" class="user-dropdown-item">My Profile</a>
+                        <a href="settings.html" class="user-dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <button id="signOutBtn" class="user-dropdown-item" style="color: #ff1493;">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
         </div>
     </nav>
+
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+        <div class="mobile-nav-header">
+            <span class="logo-text">Menu</span>
+            <button class="mobile-nav-close" id="mobileNavClose">×</button>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+            <li><a href="community.html">Community</a></li>
+        </ul>
+        <div id="mobileAuthContainer"></div>
+    </div>
 
     <div class="container">
         <div id="profileContent" class="profile-container">
@@ -336,12 +323,21 @@
 
     <input type="file" id="avatarFileInput" accept="image/*">
 
+    <div id="authModal" class="auth-modal-overlay">
+        <div class="auth-modal">
+            <div class="auth-modal-header">
+                <h2 id="authModalTitle">Welcome Back</h2>
+                <span class="auth-close" id="closeAuthModalBtn">&times;</span>
+            </div>
+            <div class="auth-modal-body" id="authModalBody"></div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // REPLACE WITH YOUR FIREBASE CONFIG
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
@@ -357,26 +353,149 @@ const firebaseConfig = {
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const allGenres = [
-            "Rock", "Pop", "Hip Hop", "Electronic", "R&B", "Jazz", 
-            "Alternative", "Indie", "Ballad", "Classical", "Country", 
-            "Blues", "Folk", "Metal", "Punk", "Soul", "Funk", "Reggae", 
-            "Latin", "K-Pop", "Disco", "House", "Techno", "Lo-Fi"
-        ];
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
+        // Mobile Navigation
+        function initMobileNav() {
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            const navOverlay = document.getElementById('mobileNavOverlay');
+            const navMenu = document.getElementById('mobileNavMenu');
+            const navClose = document.getElementById('mobileNavClose');
+            if (!menuBtn) return;
+            function openMenu() { navMenu.classList.add('open'); navOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; }
+            function closeMenu() { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; }
+            menuBtn.addEventListener('click', openMenu);
+            navClose.addEventListener('click', closeMenu);
+            navOverlay.addEventListener('click', closeMenu);
+            document.querySelectorAll('.mobile-nav-links a').forEach(link => link.addEventListener('click', closeMenu));
+        }
+
+        function updateMobileAuth(user) {
+            const mobileAuthContainer = document.getElementById('mobileAuthContainer');
+            if (!mobileAuthContainer) return;
+            if (user) {
+                const displayName = user.displayName || user.email.split('@')[0];
+                const avatarLetter = displayName.charAt(0).toUpperCase();
+                mobileAuthContainer.innerHTML = `
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">${avatarLetter}</div>
+                        <div class="mobile-user-details">
+                            <div class="mobile-user-name">${escapeHtml(displayName)}</div>
+                            <div class="mobile-user-email">${escapeHtml(user.email)}</div>
+                        </div>
+                        <button class="mobile-logout-btn" id="mobileSignOutBtn">Sign Out</button>
+                    </div>
+                `;
+                document.getElementById('mobileSignOutBtn')?.addEventListener('click', () => { signOut(auth); closeMobileMenu(); });
+            } else {
+                mobileAuthContainer.innerHTML = `
+                    <div class="mobile-auth-buttons">
+                        <button class="mobile-signin-btn" id="mobileSignInBtn">Sign In</button>
+                        <button class="mobile-signup-btn" id="mobileSignUpBtn">Create Account</button>
+                    </div>
+                `;
+                document.getElementById('mobileSignInBtn')?.addEventListener('click', () => showAuthModal('login'));
+                document.getElementById('mobileSignUpBtn')?.addEventListener('click', () => showAuthModal('signup'));
+            }
+        }
+
+        function closeMobileMenu() {
+            const navMenu = document.getElementById('mobileNavMenu');
+            const navOverlay = document.getElementById('mobileNavOverlay');
+            if (navMenu) navMenu.classList.remove('open');
+            if (navOverlay) navOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // Auth Modal
+        function showAuthModal(type) {
+            const modal = document.getElementById('authModal');
+            const title = document.getElementById('authModalTitle');
+            const body = document.getElementById('authModalBody');
+            if (type === 'login') {
+                title.innerHTML = 'Welcome Back';
+                body.innerHTML = `
+                    <div id="loginError" class="auth-error" style="display: none;"></div>
+                    <div class="auth-input-group"><input type="email" id="loginEmail" class="auth-input" placeholder="Email address"></div>
+                    <div class="auth-input-group"><input type="password" id="loginPassword" class="auth-input" placeholder="Password"></div>
+                    <button id="doLoginBtn" class="auth-btn-primary">Sign In</button>
+                    <div class="auth-divider"><span>or</span></div>
+                    <div class="auth-switch">New here? <a id="switchToSignup">Create an account</a></div>
+                    <div class="auth-switch"><a id="forgotPasswordLink">Forgot password?</a></div>
+                `;
+                document.getElementById('doLoginBtn')?.addEventListener('click', handleLogin);
+                document.getElementById('switchToSignup')?.addEventListener('click', () => showAuthModal('signup'));
+                document.getElementById('forgotPasswordLink')?.addEventListener('click', showForgotPassword);
+            } else {
+                title.innerHTML = 'Create Account';
+                body.innerHTML = `
+                    <div id="signupError" class="auth-error" style="display: none;"></div>
+                    <div class="auth-input-group"><input type="text" id="signupName" class="auth-input" placeholder="Display name"></div>
+                    <div class="auth-input-group"><input type="email" id="signupEmail" class="auth-input" placeholder="Email address"></div>
+                    <div class="auth-input-group"><input type="password" id="signupPassword" class="auth-input" placeholder="Password (min 6 characters)"></div>
+                    <button id="doSignupBtn" class="auth-btn-primary">Create Account</button>
+                    <div class="auth-divider"><span>or</span></div>
+                    <div class="auth-switch">Already have an account? <a id="switchToLogin">Sign In</a></div>
+                `;
+                document.getElementById('doSignupBtn')?.addEventListener('click', handleSignup);
+                document.getElementById('switchToLogin')?.addEventListener('click', () => showAuthModal('login'));
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail')?.value;
+            const password = document.getElementById('loginPassword')?.value;
+            const errorDiv = document.getElementById('loginError');
+            if (!email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter both email and password'; return; }
+            errorDiv.style.display = 'none';
+            try { await signInWithEmailAndPassword(auth, email, password); closeAuthModal(); } 
+            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
+        }
+
+        async function handleSignup() {
+            const name = document.getElementById('signupName')?.value;
+            const email = document.getElementById('signupEmail')?.value;
+            const password = document.getElementById('signupPassword')?.value;
+            const errorDiv = document.getElementById('signupError');
+            if (!name || !email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please fill in all fields'; return; }
+            if (password.length < 6) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Password must be at least 6 characters'; return; }
+            errorDiv.style.display = 'none';
+            try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await updateProfile(userCredential.user, { displayName: name }); closeAuthModal(); } 
+            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
+        }
+
+        async function showForgotPassword() {
+            const title = document.getElementById('authModalTitle');
+            const body = document.getElementById('authModalBody');
+            title.innerHTML = 'Reset Password';
+            body.innerHTML = `
+                <div id="resetError" class="auth-error" style="display: none;"></div>
+                <p>Enter your email to receive a reset link.</p>
+                <div class="auth-input-group"><input type="email" id="resetEmail" class="auth-input" placeholder="Email address"></div>
+                <button id="sendResetBtn" class="auth-btn-primary">Send Reset Link</button>
+                <div class="auth-switch"><a id="backToLogin">Back to Sign In</a></div>
+            `;
+            document.getElementById('sendResetBtn')?.addEventListener('click', async () => {
+                const email = document.getElementById('resetEmail')?.value;
+                const errorDiv = document.getElementById('resetError');
+                if (!email) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter your email'; return; }
+                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
+                catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
+            });
+            document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
+        }
+
+        // Profile Functions
         let currentUser = null;
         let userData = {};
-
-        function showMessage(message, type) {
-            const container = document.getElementById('profileContent');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${type}`;
-            msgDiv.textContent = message;
-            msgDiv.style.display = 'block';
-            const firstChild = container.firstChild;
-            container.insertBefore(msgDiv, firstChild);
-            setTimeout(() => msgDiv.remove(), 3000);
-        }
 
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
@@ -390,39 +509,18 @@ const firebaseConfig = {
         async function uploadAvatarFromDevice(user) {
             const fileInput = document.getElementById('avatarFileInput');
             fileInput.click();
-            
             fileInput.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-                
-                if (file.size > 2 * 1024 * 1024) {
-                    showMessage('Image size must be less than 2MB', 'error');
-                    return;
-                }
-                
-                if (!file.type.startsWith('image/')) {
-                    showMessage('Please select an image file', 'error');
-                    return;
-                }
-                
+                if (file.size > 2 * 1024 * 1024) { alert('Image must be less than 2MB'); return; }
+                if (!file.type.startsWith('image/')) { alert('Please select an image file'); return; }
                 try {
                     const base64Image = await fileToBase64(file);
                     localStorage.setItem(`avatar_${user.uid}`, base64Image);
-                    
-                    try {
-                        await updateProfile(user, { photoURL: base64Image });
-                    } catch (error) {
-                        console.log('Could not save to Firebase, using localStorage only');
-                    }
-                    
-                    showMessage('Profile picture updated successfully!', 'success');
-                    const updatedUser = auth.currentUser;
-                    await loadUserData(updatedUser.uid);
-                    renderProfile(updatedUser, userData);
-                } catch (error) {
-                    showMessage('Error uploading image: ' + error.message, 'error');
-                }
-                
+                    try { await updateProfile(user, { photoURL: base64Image }); } catch(e) {}
+                    showMessage('Profile picture updated!', 'success');
+                    renderProfile(user, userData);
+                } catch (error) { showMessage('Error uploading image', 'error'); }
                 fileInput.value = '';
             };
         }
@@ -430,12 +528,8 @@ const firebaseConfig = {
         async function loadUserData(userId) {
             const userDocRef = doc(db, 'users', userId);
             const userDoc = await getDoc(userDocRef);
-            if (userDoc.exists()) {
-                userData = userDoc.data();
-            } else {
-                userData = { favoriteGenres: [] };
-                await setDoc(userDocRef, userData);
-            }
+            if (userDoc.exists()) userData = userDoc.data();
+            else { userData = { favoriteGenres: [] }; await setDoc(userDocRef, userData); }
             return userData;
         }
 
@@ -446,24 +540,17 @@ const firebaseConfig = {
 
         function getAvatarImage(user) {
             const localAvatar = localStorage.getItem(`avatar_${user.uid}`);
-            if (localAvatar) {
-                return localAvatar;
-            }
-            if (user.photoURL && user.photoURL.startsWith('http')) {
-                return user.photoURL;
-            }
+            if (localAvatar) return localAvatar;
+            if (user.photoURL && user.photoURL.startsWith('http')) return user.photoURL;
             return null;
         }
 
-        // Get user's comment count from Firebase
         async function getUserCommentCount(userId) {
             let commentCount = 0;
             try {
-                // Get all reviews from localStorage
                 const stored = localStorage.getItem('musicReviews');
                 if (stored) {
                     const reviews = JSON.parse(stored);
-                    // For each review, query its comments subcollection
                     for (const review of reviews) {
                         const commentsRef = collection(db, 'reviews', String(review.id), 'comments');
                         const q = query(commentsRef, where('userId', '==', userId));
@@ -471,9 +558,7 @@ const firebaseConfig = {
                         commentCount += commentSnapshot.size;
                     }
                 }
-            } catch (error) {
-                console.error('Error counting comments:', error);
-            }
+            } catch (error) { console.error('Error counting comments:', error); }
             return commentCount;
         }
 
@@ -483,116 +568,70 @@ const firebaseConfig = {
             const avatarImage = getAvatarImage(user);
             const memberSince = new Date(user.metadata.creationTime).toLocaleDateString();
             const favoriteGenres = userData.favoriteGenres || [];
-            
-            // Get real comment count
             const commentCount = await getUserCommentCount(user.uid);
             
             container.innerHTML = `
                 <div class="profile-header">
                     <div class="profile-avatar" id="avatarContainer">
-                        <div class="profile-avatar-img" id="avatarPreview">
-                            ${avatarImage ? `<img src="${avatarImage}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : displayName.charAt(0).toUpperCase()}
-                        </div>
-                        <div class="avatar-overlay">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25ZM20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04Z" fill="white"/>
-                            </svg>
-                        </div>
+                        <div class="profile-avatar-img" id="avatarPreview">${avatarImage ? `<img src="${avatarImage}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : displayName.charAt(0).toUpperCase()}</div>
+                        <div class="avatar-overlay">📷</div>
                     </div>
-                    <h2 class="profile-name" id="displayName">${escapeHtml(displayName)}</h2>
+                    <h2 class="profile-name">${escapeHtml(displayName)}</h2>
                     <p class="profile-email">${escapeHtml(user.email)}</p>
                     <p class="profile-member-since">Member since ${memberSince}</p>
                 </div>
                 
                 <div class="profile-section">
-                    <div class="section-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="#ff1493"/>
-                        </svg>
-                        Profile Information
-                    </div>
+                    <div class="section-title">📝 Profile Information</div>
                     <div id="nameField">
-                        <div class="info-row">
-                            <div class="info-label">Display Name</div>
-                            <div class="info-value" id="nameValue">${escapeHtml(displayName)}</div>
-                            <button class="edit-btn" id="editNameBtn">Edit</button>
-                        </div>
+                        <div class="info-row"><div class="info-label">Display Name</div><div class="info-value" id="nameValue">${escapeHtml(displayName)}</div><button class="edit-btn" id="editNameBtn">Edit</button></div>
                     </div>
                     <div id="emailField">
-                        <div class="info-row">
-                            <div class="info-label">Email Address</div>
-                            <div class="info-value" id="emailValue">${escapeHtml(user.email)}</div>
-                            <button class="edit-btn" id="editEmailBtn">Edit</button>
-                        </div>
+                        <div class="info-row"><div class="info-label">Email Address</div><div class="info-value" id="emailValue">${escapeHtml(user.email)}</div><button class="edit-btn" id="editEmailBtn">Edit</button></div>
                     </div>
                     <div id="passwordField">
-                        <div class="info-row">
-                            <div class="info-label">Password</div>
-                            <div class="info-value">••••••••</div>
-                            <button class="edit-btn" id="editPasswordBtn">Change</button>
-                        </div>
+                        <div class="info-row"><div class="info-label">Password</div><div class="info-value">••••••••</div><button class="edit-btn" id="editPasswordBtn">Change</button></div>
                     </div>
                 </div>
                 
                 <div class="profile-section">
-                    <div class="section-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20Z" fill="#ff1493"/>
-                            <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" fill="#ffd700"/>
-                        </svg>
-                        Favorite Genres
-                    </div>
-                    <p style="margin-bottom: 1rem; color: var(--text-muted);">Select the genres you love to get personalized recommendations</p>
+                    <div class="section-title">🎵 Favorite Genres</div>
                     <div id="genresContainer" class="genre-grid"></div>
                     <div id="selectedGenresDisplay" class="selected-genres"></div>
                     <button id="saveGenresBtn" class="save-genres-btn">Save Genre Preferences</button>
                 </div>
                 
                 <div class="profile-section">
-                    <div class="section-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 13H8L12 17L16 13H21" stroke="#ff1493" stroke-width="2" fill="none"/>
-                            <path d="M12 17V3" stroke="#ff1493" stroke-width="2"/>
-                            <circle cx="12" cy="12" r="10" stroke="#ff1493" stroke-width="2" fill="none"/>
-                        </svg>
-                        Your Activity
-                    </div>
+                    <div class="section-title">📊 Your Activity</div>
                     <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number" id="commentCount">${commentCount}</div>
-                            <div class="stat-label">Comments Posted</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="reviewCount">0</div>
-                            <div class="stat-label">Reviews Written</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="favCount">0</div>
-                            <div class="stat-label">Favorite Albums</div>
-                        </div>
+                        <div class="stat-card"><div class="stat-number" id="commentCount">${commentCount}</div><div class="stat-label">Comments Posted</div></div>
+                        <div class="stat-card"><div class="stat-number">0</div><div class="stat-label">Reviews Written</div></div>
+                        <div class="stat-card"><div class="stat-number">0</div><div class="stat-label">Favorite Albums</div></div>
                     </div>
                 </div>
                 
                 <div class="danger-zone">
                     <h3>⚠️ Danger Zone</h3>
-                    <p style="margin-bottom: 1rem;">Once you delete your account, there is no going back. All your data will be permanently removed.</p>
+                    <p>Once you delete your account, there is no going back. All your data will be permanently removed.</p>
                     <button id="deleteAccountBtn" class="delete-account-btn">Delete Account</button>
                 </div>
             `;
             
             // Render genre checkboxes
-            const genresContainer = document.getElementById('genresContainer');
-            allGenres.forEach(genre => {
-                const isChecked = favoriteGenres.includes(genre);
-                genresContainer.innerHTML += `
-                    <label class="genre-checkbox">
-                        <input type="checkbox" value="${genre}" ${isChecked ? 'checked' : ''}>
-                        <span>${genre}</span>
-                    </label>
-                `;
-            });
+            const genresGrid = document.getElementById('genresContainer');
+            const allGenres = ["Rock", "Pop", "Hip Hop", "Electronic", "R&B", "Jazz", "Country", "Metal", "Classical", "K-Pop", "Latin", "Indie", "Alternative", "Folk", "Blues", "Reggae", "Soul", "Funk", "Punk", "House", "Techno", "Ambient", "Lo-Fi", "Disco"];
+            genresGrid.innerHTML = allGenres.map(genre => `
+                <label class="genre-checkbox">
+                    <input type="checkbox" value="${genre}" ${favoriteGenres.includes(genre) ? 'checked' : ''} onchange="updateGenreSelection()">
+                    <span>${genre}</span>
+                </label>
+            `).join('');
             
-            updateSelectedGenresDisplay();
+            window.updateGenreSelection = function() {
+                const selected = Array.from(document.querySelectorAll('#genresContainer input:checked')).map(cb => cb.value);
+                document.getElementById('selectedGenresDisplay').innerHTML = selected.map(g => `<span class="genre-tag">${g}</span>`).join('');
+            };
+            window.updateGenreSelection();
             
             document.getElementById('avatarContainer')?.addEventListener('click', () => uploadAvatarFromDevice(user));
             document.getElementById('editNameBtn')?.addEventListener('click', () => showEditName(user));
@@ -600,78 +639,37 @@ const firebaseConfig = {
             document.getElementById('editPasswordBtn')?.addEventListener('click', () => showEditPassword());
             document.getElementById('saveGenresBtn')?.addEventListener('click', () => saveGenres(user.uid));
             document.getElementById('deleteAccountBtn')?.addEventListener('click', () => confirmDeleteAccount(user));
-            
-            document.querySelectorAll('#genresContainer input').forEach(cb => {
-                cb.addEventListener('change', () => updateSelectedGenresDisplay());
-            });
-        }
-        
-        function updateSelectedGenresDisplay() {
-            const selected = [];
-            document.querySelectorAll('#genresContainer input:checked').forEach(cb => {
-                selected.push(cb.value);
-            });
-            const display = document.getElementById('selectedGenresDisplay');
-            if (display) {
-                display.innerHTML = selected.map(g => `<span class="genre-tag">${g}</span>`).join('');
-            }
         }
         
         async function saveGenres(userId) {
-            const selected = [];
-            document.querySelectorAll('#genresContainer input:checked').forEach(cb => {
-                selected.push(cb.value);
-            });
-            try {
-                await saveUserData(userId, { favoriteGenres: selected });
-                showMessage('Genre preferences saved!', 'success');
-            } catch (error) {
-                showMessage('Error saving genres: ' + error.message, 'error');
-            }
+            const selected = Array.from(document.querySelectorAll('#genresContainer input:checked')).map(cb => cb.value);
+            try { await saveUserData(userId, { favoriteGenres: selected }); showMessage('Genre preferences saved!', 'success'); }
+            catch (error) { showMessage('Error saving genres', 'error'); }
+        }
+        
+        function showMessage(message, type) {
+            const container = document.getElementById('profileContent');
+            const msgDiv = document.createElement('div');
+            msgDiv.textContent = message;
+            msgDiv.style.cssText = `padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; background: ${type === 'success' ? 'rgba(40,167,69,0.2)' : 'rgba(255,20,147,0.2)'}; color: ${type === 'success' ? '#28a745' : '#ff1493'};`;
+            container.insertBefore(msgDiv, container.firstChild);
+            setTimeout(() => msgDiv.remove(), 3000);
         }
         
         function showEditName(user) {
             const nameField = document.getElementById('nameField');
-            nameField.innerHTML = `
-                <div class="info-row">
-                    <div class="info-label">Display Name</div>
-                    <div class="info-value">
-                        <input type="text" id="newName" class="edit-input" value="${user.displayName || ''}">
-                    </div>
-                    <div>
-                        <button class="save-btn" id="saveNameBtn">Save</button>
-                        <button class="cancel-btn" id="cancelNameBtn">Cancel</button>
-                    </div>
-                </div>
-            `;
+            nameField.innerHTML = `<div class="info-row"><div class="info-label">Display Name</div><div class="info-value"><input type="text" id="newName" class="edit-input" value="${user.displayName || ''}"></div><div><button class="save-btn" id="saveNameBtn">Save</button><button class="cancel-btn" id="cancelNameBtn">Cancel</button></div></div>`;
             document.getElementById('saveNameBtn')?.addEventListener('click', async () => {
                 const newName = document.getElementById('newName').value;
-                try {
-                    await updateProfile(user, { displayName: newName });
-                    showMessage('Display name updated!', 'success');
-                    renderProfile(user, userData);
-                } catch (error) {
-                    showMessage('Error: ' + error.message, 'error');
-                }
+                try { await updateProfile(user, { displayName: newName }); showMessage('Display name updated!', 'success'); renderProfile(user, userData); }
+                catch (error) { showMessage('Error: ' + error.message, 'error'); }
             });
             document.getElementById('cancelNameBtn')?.addEventListener('click', () => renderProfile(user, userData));
         }
         
         function showEditEmail(user) {
             const emailField = document.getElementById('emailField');
-            emailField.innerHTML = `
-                <div class="info-row">
-                    <div class="info-label">Email Address</div>
-                    <div class="info-value">
-                        <input type="email" id="newEmail" class="edit-input" value="${user.email}">
-                        <input type="password" id="emailPassword" class="edit-input" placeholder="Current password" style="margin-top: 0.5rem;">
-                    </div>
-                    <div>
-                        <button class="save-btn" id="saveEmailBtn">Save</button>
-                        <button class="cancel-btn" id="cancelEmailBtn">Cancel</button>
-                    </div>
-                </div>
-            `;
+            emailField.innerHTML = `<div class="info-row"><div class="info-label">Email Address</div><div class="info-value"><input type="email" id="newEmail" class="edit-input" value="${user.email}"><input type="password" id="emailPassword" class="edit-input" placeholder="Current password" style="margin-top: 0.5rem;"></div><div><button class="save-btn" id="saveEmailBtn">Save</button><button class="cancel-btn" id="cancelEmailBtn">Cancel</button></div></div>`;
             document.getElementById('saveEmailBtn')?.addEventListener('click', async () => {
                 const newEmail = document.getElementById('newEmail').value;
                 const password = document.getElementById('emailPassword').value;
@@ -681,43 +679,20 @@ const firebaseConfig = {
                     await updateEmail(user, newEmail);
                     showMessage('Email updated! Please sign in again.', 'success');
                     setTimeout(() => window.location.href = 'index.html', 2000);
-                } catch (error) {
-                    showMessage('Error: ' + error.message, 'error');
-                }
+                } catch (error) { showMessage('Error: ' + error.message, 'error'); }
             });
             document.getElementById('cancelEmailBtn')?.addEventListener('click', () => renderProfile(user, userData));
         }
         
         function showEditPassword() {
             const passwordField = document.getElementById('passwordField');
-            passwordField.innerHTML = `
-                <div class="info-row">
-                    <div class="info-label">Change Password</div>
-                    <div class="info-value">
-                        <input type="password" id="currentPwd" class="edit-input" placeholder="Current password">
-                        <input type="password" id="newPwd" class="edit-input" placeholder="New password (min 6 chars)" style="margin-top: 0.5rem;">
-                        <input type="password" id="confirmPwd" class="edit-input" placeholder="Confirm new password" style="margin-top: 0.5rem;">
-                    </div>
-                    <div>
-                        <button class="save-btn" id="savePasswordBtn">Save</button>
-                        <button class="cancel-btn" id="cancelPasswordBtn">Cancel</button>
-                    </div>
-                </div>
-            `;
+            passwordField.innerHTML = `<div class="info-row"><div class="info-label">Change Password</div><div class="info-value"><input type="password" id="currentPwd" class="edit-input" placeholder="Current password"><input type="password" id="newPwd" class="edit-input" placeholder="New password (min 6 chars)" style="margin-top: 0.5rem;"><input type="password" id="confirmPwd" class="edit-input" placeholder="Confirm new password" style="margin-top: 0.5rem;"></div><div><button class="save-btn" id="savePasswordBtn">Save</button><button class="cancel-btn" id="cancelPasswordBtn">Cancel</button></div></div>`;
             document.getElementById('savePasswordBtn')?.addEventListener('click', async () => {
                 const currentPwd = document.getElementById('currentPwd').value;
                 const newPwd = document.getElementById('newPwd').value;
                 const confirmPwd = document.getElementById('confirmPwd').value;
-                
-                if (newPwd !== confirmPwd) {
-                    showMessage('New passwords do not match', 'error');
-                    return;
-                }
-                if (newPwd.length < 6) {
-                    showMessage('Password must be at least 6 characters', 'error');
-                    return;
-                }
-                
+                if (newPwd !== confirmPwd) { showMessage('New passwords do not match', 'error'); return; }
+                if (newPwd.length < 6) { showMessage('Password must be at least 6 characters', 'error'); return; }
                 try {
                     const user = auth.currentUser;
                     const credential = EmailAuthProvider.credential(user.email, currentPwd);
@@ -725,9 +700,7 @@ const firebaseConfig = {
                     await updatePassword(user, newPwd);
                     showMessage('Password updated successfully!', 'success');
                     renderProfile(user, userData);
-                } catch (error) {
-                    showMessage('Error: ' + error.message, 'error');
-                }
+                } catch (error) { showMessage('Error: ' + error.message, 'error'); }
             });
             document.getElementById('cancelPasswordBtn')?.addEventListener('click', () => renderProfile(auth.currentUser, userData));
         }
@@ -742,35 +715,38 @@ const firebaseConfig = {
                     await deleteUser(user);
                     alert('Account deleted successfully.');
                     window.location.href = 'index.html';
-                } catch (error) {
-                    showMessage('Error: ' + error.message, 'error');
-                }
+                } catch (error) { showMessage('Error: ' + error.message, 'error'); }
             }
         }
         
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        window.toggleUserDropdown = function() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        };
         
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                document.getElementById('profileContent').innerHTML = `
-                    <div style="text-align: center; padding: 3rem;">
-                        <h2>Please Sign In</h2>
-                        <p>You need to be signed in to view your profile.</p>
-                        <a href="index.html" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: #ff1493; color: white; text-decoration: none; border-radius: 8px;">← Back to Home</a>
-                    </div>
-                `;
+                document.getElementById('profileContent').innerHTML = `<div style="text-align: center; padding: 3rem;"><h2>Please Sign In</h2><p>You need to be signed in to view your profile.</p><a href="index.html" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: #ff1493; color: white; text-decoration: none; border-radius: 8px;">← Back to Home</a></div>`;
                 return;
             }
-            
             currentUser = user;
             await loadUserData(user.uid);
             await renderProfile(user, userData);
+            updateMobileAuth(user);
         });
+        
+        document.getElementById('signOutBtn')?.addEventListener('click', async () => { await signOut(auth); window.location.href = 'index.html'; });
+        document.getElementById('signInBtn')?.addEventListener('click', () => showAuthModal('login'));
+        document.getElementById('signUpBtn')?.addEventListener('click', () => showAuthModal('signup'));
+        document.getElementById('closeAuthModalBtn')?.addEventListener('click', closeAuthModal);
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('userDropdown');
+            const avatarBtn = document.getElementById('userAvatarBtn');
+            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
+            if (e.target === document.getElementById('authModal')) closeAuthModal();
+        });
+        
+        initMobileNav();
     </script>
 </body>
 </html>

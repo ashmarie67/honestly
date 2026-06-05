@@ -23,10 +23,6 @@
         .community-hero h1 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
         }
         
         .create-room-btn {
@@ -45,11 +41,6 @@
             gap: 0.5rem;
             z-index: 100;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-        }
-        
-        .create-room-btn:hover {
-            transform: translateY(-3px);
         }
         
         .modal-overlay {
@@ -72,14 +63,8 @@
             width: 90%;
             max-width: 600px;
             padding: 2rem;
-            animation: modalSlideIn 0.3s ease;
             max-height: 85vh;
             overflow-y: auto;
-        }
-        
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .modal-header {
@@ -91,24 +76,9 @@
             border-bottom: 2px solid var(--border-color);
         }
         
-        .modal-header h2 {
-            margin: 0;
-            background: linear-gradient(135deg, #ff1493, #ffd700);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
         .close-modal {
             font-size: 2rem;
             cursor: pointer;
-            color: var(--text-muted);
-            transition: color 0.2s;
-            line-height: 1;
-        }
-        
-        .close-modal:hover {
-            color: #ff1493;
         }
         
         .form-group {
@@ -119,7 +89,6 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: var(--text-primary);
         }
         
         .form-group input, .form-group textarea {
@@ -129,13 +98,6 @@
             border-radius: 12px;
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-        
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #ff1493;
         }
         
         .image-upload-area {
@@ -144,12 +106,6 @@
             padding: 1rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .image-upload-area:hover {
-            border-color: #ff1493;
-            background: rgba(255,20,147,0.05);
         }
         
         .image-preview {
@@ -178,23 +134,6 @@
             background: var(--bg-primary);
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .genre-option:hover {
-            background: rgba(255,20,147,0.1);
-        }
-        
-        .genre-option input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #ff1493;
-            margin: 0;
-        }
-        
-        .genre-option span {
-            font-size: 0.85rem;
         }
         
         .selected-genres-display {
@@ -210,14 +149,6 @@
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
             font-size: 0.75rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .remove-genre {
-            cursor: pointer;
-            font-weight: bold;
         }
         
         .submit-btn {
@@ -229,12 +160,6 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-        
-        .submit-btn:hover {
-            transform: translateY(-2px);
         }
         
         .category-tabs {
@@ -250,19 +175,9 @@
             padding: 0.75rem 1.5rem;
             background: none;
             border: none;
-            color: var(--text-secondary);
             cursor: pointer;
             font-weight: 600;
             border-radius: 50px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .category-tab:hover {
-            background: var(--bg-secondary);
-            color: #ff1493;
         }
         
         .category-tab.active {
@@ -274,7 +189,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 3rem;
         }
         
         .room-card {
@@ -282,14 +196,12 @@
             border-radius: 20px;
             padding: 1.5rem;
             border: 1px solid var(--border-color);
-            transition: all 0.3s;
             cursor: pointer;
             position: relative;
         }
         
         .room-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
             border-color: #ff1493;
         }
         
@@ -302,7 +214,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
         }
         
         .room-header {
@@ -318,14 +229,6 @@
             align-items: center;
         }
         
-        .member-count {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-        
         .room-name {
             font-size: 1.2rem;
             font-weight: 700;
@@ -336,7 +239,6 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.3rem;
-            margin-bottom: 0.5rem;
         }
         
         .room-genre-tag {
@@ -351,7 +253,6 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
             margin-bottom: 1rem;
-            line-height: 1.4;
         }
         
         .created-by {
@@ -381,7 +282,6 @@
             border: 1px solid var(--border-color);
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
             font-weight: 600;
         }
         
@@ -398,7 +298,6 @@
         
         @media (max-width: 768px) {
             .rooms-grid { grid-template-columns: 1fr; }
-            .community-hero h1 { font-size: 1.8rem; }
             .genres-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
@@ -434,8 +333,27 @@
                     </div>
                 </div>
             </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
         </div>
     </nav>
+
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+        <div class="mobile-nav-header">
+            <span class="logo-text">Menu</span>
+            <button class="mobile-nav-close" id="mobileNavClose">×</button>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+            <li><a href="community.html">Community</a></li>
+        </ul>
+        <div id="mobileAuthContainer"></div>
+    </div>
 
     <div class="community-container">
         <div class="community-hero">
@@ -470,7 +388,6 @@
                     <label>Room Name</label>
                     <input type="text" id="roomName" required placeholder="e.g., 90s Hip Hop Fans">
                 </div>
-                
                 <div class="form-group">
                     <label>Room Image</label>
                     <div class="image-upload-area" onclick="document.getElementById('roomImage').click()">
@@ -482,18 +399,15 @@
                         <img id="imagePreview" class="image-preview" style="display: none;">
                     </div>
                 </div>
-                
                 <div class="form-group">
                     <label>Description</label>
                     <textarea id="roomDescription" rows="3" placeholder="What's this room about?"></textarea>
                 </div>
-                
                 <div class="form-group">
                     <label>Select Genres (choose multiple)</label>
                     <div class="genres-grid" id="genresGrid"></div>
                     <div class="selected-genres-display" id="selectedGenresDisplay"></div>
                 </div>
-                
                 <button type="submit" class="submit-btn">Create Room</button>
             </form>
         </div>
@@ -507,10 +421,20 @@
         </div>
     </footer>
 
+    <div id="authModal" class="auth-modal-overlay">
+        <div class="auth-modal">
+            <div class="auth-modal-header">
+                <h2 id="authModalTitle">Welcome Back</h2>
+                <span class="auth-close" id="closeAuthModalBtn">&times;</span>
+            </div>
+            <div class="auth-modal-body" id="authModalBody"></div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, getDocs, deleteDoc, doc, where, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, orderBy, getDocs, deleteDoc, doc, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -527,20 +451,157 @@ const firebaseConfig = {
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Mobile Navigation
+        function initMobileNav() {
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            const navOverlay = document.getElementById('mobileNavOverlay');
+            const navMenu = document.getElementById('mobileNavMenu');
+            const navClose = document.getElementById('mobileNavClose');
+            if (!menuBtn) return;
+            function openMenu() { navMenu.classList.add('open'); navOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; }
+            function closeMenu() { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; }
+            menuBtn.addEventListener('click', openMenu);
+            navClose.addEventListener('click', closeMenu);
+            navOverlay.addEventListener('click', closeMenu);
+            document.querySelectorAll('.mobile-nav-links a').forEach(link => link.addEventListener('click', closeMenu));
+        }
+
+        function updateMobileAuth(user) {
+            const mobileAuthContainer = document.getElementById('mobileAuthContainer');
+            if (!mobileAuthContainer) return;
+            if (user) {
+                const displayName = user.displayName || user.email.split('@')[0];
+                const avatarLetter = displayName.charAt(0).toUpperCase();
+                mobileAuthContainer.innerHTML = `
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">${avatarLetter}</div>
+                        <div class="mobile-user-details">
+                            <div class="mobile-user-name">${escapeHtml(displayName)}</div>
+                            <div class="mobile-user-email">${escapeHtml(user.email)}</div>
+                        </div>
+                        <button class="mobile-logout-btn" id="mobileSignOutBtn">Sign Out</button>
+                    </div>
+                `;
+                document.getElementById('mobileSignOutBtn')?.addEventListener('click', () => { signOut(auth); closeMobileMenu(); });
+            } else {
+                mobileAuthContainer.innerHTML = `
+                    <div class="mobile-auth-buttons">
+                        <button class="mobile-signin-btn" id="mobileSignInBtn">Sign In</button>
+                        <button class="mobile-signup-btn" id="mobileSignUpBtn">Create Account</button>
+                    </div>
+                `;
+                document.getElementById('mobileSignInBtn')?.addEventListener('click', () => showAuthModal('login'));
+                document.getElementById('mobileSignUpBtn')?.addEventListener('click', () => showAuthModal('signup'));
+            }
+        }
+
+        function closeMobileMenu() {
+            const navMenu = document.getElementById('mobileNavMenu');
+            const navOverlay = document.getElementById('mobileNavOverlay');
+            if (navMenu) navMenu.classList.remove('open');
+            if (navOverlay) navOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // Auth Modal
+        function showAuthModal(type) {
+            const modal = document.getElementById('authModal');
+            const title = document.getElementById('authModalTitle');
+            const body = document.getElementById('authModalBody');
+            if (type === 'login') {
+                title.innerHTML = 'Welcome Back';
+                body.innerHTML = `
+                    <div id="loginError" class="auth-error" style="display: none;"></div>
+                    <div class="auth-input-group"><input type="email" id="loginEmail" class="auth-input" placeholder="Email address"></div>
+                    <div class="auth-input-group"><input type="password" id="loginPassword" class="auth-input" placeholder="Password"></div>
+                    <button id="doLoginBtn" class="auth-btn-primary">Sign In</button>
+                    <div class="auth-divider"><span>or</span></div>
+                    <div class="auth-switch">New here? <a id="switchToSignup">Create an account</a></div>
+                    <div class="auth-switch"><a id="forgotPasswordLink">Forgot password?</a></div>
+                `;
+                document.getElementById('doLoginBtn')?.addEventListener('click', handleLogin);
+                document.getElementById('switchToSignup')?.addEventListener('click', () => showAuthModal('signup'));
+                document.getElementById('forgotPasswordLink')?.addEventListener('click', showForgotPassword);
+            } else {
+                title.innerHTML = 'Create Account';
+                body.innerHTML = `
+                    <div id="signupError" class="auth-error" style="display: none;"></div>
+                    <div class="auth-input-group"><input type="text" id="signupName" class="auth-input" placeholder="Display name"></div>
+                    <div class="auth-input-group"><input type="email" id="signupEmail" class="auth-input" placeholder="Email address"></div>
+                    <div class="auth-input-group"><input type="password" id="signupPassword" class="auth-input" placeholder="Password (min 6 characters)"></div>
+                    <button id="doSignupBtn" class="auth-btn-primary">Create Account</button>
+                    <div class="auth-divider"><span>or</span></div>
+                    <div class="auth-switch">Already have an account? <a id="switchToLogin">Sign In</a></div>
+                `;
+                document.getElementById('doSignupBtn')?.addEventListener('click', handleSignup);
+                document.getElementById('switchToLogin')?.addEventListener('click', () => showAuthModal('login'));
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail')?.value;
+            const password = document.getElementById('loginPassword')?.value;
+            const errorDiv = document.getElementById('loginError');
+            if (!email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter both email and password'; return; }
+            errorDiv.style.display = 'none';
+            try { await signInWithEmailAndPassword(auth, email, password); closeAuthModal(); } 
+            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
+        }
+
+        async function handleSignup() {
+            const name = document.getElementById('signupName')?.value;
+            const email = document.getElementById('signupEmail')?.value;
+            const password = document.getElementById('signupPassword')?.value;
+            const errorDiv = document.getElementById('signupError');
+            if (!name || !email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please fill in all fields'; return; }
+            if (password.length < 6) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Password must be at least 6 characters'; return; }
+            errorDiv.style.display = 'none';
+            try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await updateProfile(userCredential.user, { displayName: name }); closeAuthModal(); } 
+            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
+        }
+
+        async function showForgotPassword() {
+            const title = document.getElementById('authModalTitle');
+            const body = document.getElementById('authModalBody');
+            title.innerHTML = 'Reset Password';
+            body.innerHTML = `
+                <div id="resetError" class="auth-error" style="display: none;"></div>
+                <p>Enter your email to receive a reset link.</p>
+                <div class="auth-input-group"><input type="email" id="resetEmail" class="auth-input" placeholder="Email address"></div>
+                <button id="sendResetBtn" class="auth-btn-primary">Send Reset Link</button>
+                <div class="auth-switch"><a id="backToLogin">Back to Sign In</a></div>
+            `;
+            document.getElementById('sendResetBtn')?.addEventListener('click', async () => {
+                const email = document.getElementById('resetEmail')?.value;
+                const errorDiv = document.getElementById('resetError');
+                if (!email) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter your email'; return; }
+                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.style.background = 'rgba(255,215,0,0.1)'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
+                catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
+            });
+            document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
+        }
+
+        // Community Functions
         let currentUser = null;
         let currentCategory = "all";
-        let selectedImageBase64 = null;
         let selectedGenres = [];
+        let selectedImageBase64 = null;
 
-        const allGenres = [
-            "Rock", "Pop", "Hip Hop", "Electronic", "R&B", "Jazz",
-            "Country", "Metal", "Classical", "K-Pop", "Latin", "Indie",
-            "Alternative", "Folk", "Blues", "Reggae", "Soul", "Funk",
-            "Punk", "House", "Techno", "Ambient", "Lo-Fi", "Disco"
-        ];
+        const allGenres = ["Rock", "Pop", "Hip Hop", "Electronic", "R&B", "Jazz", "Country", "Metal", "Classical", "K-Pop", "Latin", "Indie", "Alternative", "Folk", "Blues", "Reggae", "Soul", "Funk", "Punk", "House", "Techno", "Ambient", "Lo-Fi", "Disco"];
 
         function initGenreGrid() {
             const grid = document.getElementById('genresGrid');
+            if (!grid) return;
             grid.innerHTML = allGenres.map(genre => `
                 <label class="genre-option">
                     <input type="checkbox" value="${genre}" onchange="toggleGenre('${genre}', this.checked)">
@@ -550,28 +611,16 @@ const firebaseConfig = {
         }
 
         window.toggleGenre = function(genre, isChecked) {
-            if (isChecked) {
-                if (!selectedGenres.includes(genre)) {
-                    selectedGenres.push(genre);
-                }
-            } else {
-                selectedGenres = selectedGenres.filter(g => g !== genre);
-            }
+            if (isChecked) { if (!selectedGenres.includes(genre)) selectedGenres.push(genre); }
+            else { selectedGenres = selectedGenres.filter(g => g !== genre); }
             updateSelectedGenresDisplay();
         };
 
         function updateSelectedGenresDisplay() {
             const display = document.getElementById('selectedGenresDisplay');
-            if (selectedGenres.length === 0) {
-                display.innerHTML = '<small style="color: var(--text-muted);">No genres selected</small>';
-            } else {
-                display.innerHTML = selectedGenres.map(genre => `
-                    <span class="genre-badge">
-                        ${genre}
-                        <span class="remove-genre" onclick="toggleGenre('${genre}', false); document.querySelector('.genre-option input[value=\\'${genre}\\']').checked = false;">×</span>
-                    </span>
-                `).join('');
-            }
+            if (!display) return;
+            if (selectedGenres.length === 0) display.innerHTML = '<small>No genres selected</small>';
+            else display.innerHTML = selectedGenres.map(genre => `<span class="genre-badge">${genre}</span>`).join('');
         }
 
         function fileToBase64(file) {
@@ -586,14 +635,10 @@ const firebaseConfig = {
         document.getElementById('roomImage')?.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 2 * 1024 * 1024) {
-                    alert('Image must be less than 2MB');
-                    return;
-                }
-                const base64 = await fileToBase64(file);
-                selectedImageBase64 = base64;
+                if (file.size > 2 * 1024 * 1024) { alert('Image must be less than 2MB'); return; }
+                selectedImageBase64 = await fileToBase64(file);
                 const preview = document.getElementById('imagePreview');
-                preview.src = base64;
+                preview.src = selectedImageBase64;
                 preview.style.display = 'block';
             }
         });
@@ -601,46 +646,28 @@ const firebaseConfig = {
         async function loadRooms() {
             const roomsRef = collection(db, 'chatrooms');
             let q = query(roomsRef, orderBy('createdAt', 'desc'));
-            
-            if (currentCategory === 'my-rooms' && currentUser) {
-                q = query(roomsRef, where('createdBy', '==', currentUser.uid));
-            }
-            
+            if (currentCategory === 'my-rooms' && currentUser) q = query(roomsRef, where('createdBy', '==', currentUser.uid));
             const snapshot = await getDocs(q);
             const rooms = [];
-            snapshot.forEach(doc => {
-                rooms.push({ id: doc.id, ...doc.data() });
-            });
-            
+            snapshot.forEach(doc => rooms.push({ id: doc.id, ...doc.data() }));
             renderRooms(rooms);
         }
 
         function renderRooms(rooms) {
             const grid = document.getElementById('roomsGrid');
-            
-            if (rooms.length === 0) {
-                grid.innerHTML = `<div class="empty-state">No rooms yet. Create the first one!</div>`;
-                return;
-            }
-            
+            if (!grid) return;
+            if (rooms.length === 0) { grid.innerHTML = '<div class="empty-state">No rooms yet. Create the first one!</div>'; return; }
             grid.innerHTML = rooms.map(room => `
                 <div class="room-card" onclick="joinRoom('${room.id}', '${escapeHtml(room.name)}', '${escapeHtml(room.description)}')">
                     <div class="room-header">
                         <div class="room-info-header">
-                            ${room.image ? `<img class="room-image" src="${room.image}">` : `<div class="room-image">🎵</div>`}
+                            ${room.image ? `<img class="room-image" src="${room.image}">` : '<div class="room-image">🎵</div>'}
                             <div>
                                 <h3 class="room-name">${escapeHtml(room.name)}</h3>
-                                <div class="room-genres">
-                                    ${room.genres ? room.genres.map(g => `<span class="room-genre-tag">${escapeHtml(g)}</span>`).join('') : '<span class="room-genre-tag">Music</span>'}
-                                </div>
+                                <div class="room-genres">${room.genres ? room.genres.map(g => `<span class="room-genre-tag">${escapeHtml(g)}</span>`).join('') : '<span class="room-genre-tag">Music</span>'}</div>
                             </div>
                         </div>
-                        <div class="member-count">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
-                            </svg>
-                            ${room.memberCount || 1}
-                        </div>
+                        <div class="member-count">👥 ${room.memberCount || 1}</div>
                     </div>
                     <p class="room-description">${escapeHtml(room.description || 'No description')}</p>
                     <div class="created-by">Created by ${escapeHtml(room.createdByName || 'Anonymous')}</div>
@@ -651,50 +678,26 @@ const firebaseConfig = {
         }
 
         window.joinRoom = function(roomId, roomName, roomDesc) {
-            if (!currentUser) {
-                alert('Please sign in to join rooms');
-                window.location.href = 'index.html';
-                return;
-            }
-            // Redirect to the dedicated chat room page
+            if (!currentUser) { alert('Please sign in to join rooms'); window.location.href = 'index.html'; return; }
             window.location.href = `room.html?id=${roomId}`;
         };
 
         window.deleteRoom = async function(roomId) {
-            if (confirm('Delete this room? Cannot be undone.')) {
-                await deleteDoc(doc(db, 'chatrooms', roomId));
-                loadRooms();
-            }
+            if (confirm('Delete this room? Cannot be undone.')) { await deleteDoc(doc(db, 'chatrooms', roomId)); loadRooms(); }
         };
 
         window.createRoom = async function(event) {
             event.preventDefault();
-            if (!currentUser) {
-                alert('Please sign in to create a room');
-                return;
-            }
-            
+            if (!currentUser) { alert('Please sign in to create a room'); return; }
             const name = document.getElementById('roomName').value;
             const description = document.getElementById('roomDescription').value;
-            
-            if (selectedGenres.length === 0) {
-                alert('Please select at least one genre');
-                return;
-            }
-            
+            if (selectedGenres.length === 0) { alert('Please select at least one genre'); return; }
             try {
                 await addDoc(collection(db, 'chatrooms'), {
-                    name: name,
-                    description: description,
-                    genres: selectedGenres,
-                    image: selectedImageBase64 || null,
-                    createdBy: currentUser.uid,
-                    createdByName: currentUser.displayName || currentUser.email.split('@')[0],
-                    createdAt: new Date(),
-                    memberCount: 1,
-                    activeUsers: [currentUser.uid]
+                    name: name, description: description, genres: selectedGenres, image: selectedImageBase64 || null,
+                    createdBy: currentUser.uid, createdByName: currentUser.displayName || currentUser.email.split('@')[0],
+                    createdAt: new Date(), memberCount: 1, activeUsers: [currentUser.uid]
                 });
-                
                 closeCreateRoomModal();
                 document.getElementById('createRoomForm').reset();
                 document.getElementById('imagePreview').style.display = 'none';
@@ -704,9 +707,7 @@ const firebaseConfig = {
                 document.querySelectorAll('#genresGrid input').forEach(cb => cb.checked = false);
                 loadRooms();
                 alert('Room created successfully!');
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+            } catch (error) { alert('Error: ' + error.message); }
         };
 
         function setupTabs() {
@@ -721,66 +722,44 @@ const firebaseConfig = {
         }
 
         function openCreateRoomModal() {
-            if (!currentUser) {
-                alert('Please sign in to create a room');
-                return;
-            }
+            if (!currentUser) { alert('Please sign in to create a room'); return; }
             document.getElementById('createRoomModal').style.display = 'flex';
         }
 
-        window.closeCreateRoomModal = function() {
-            document.getElementById('createRoomModal').style.display = 'none';
-        };
+        window.closeCreateRoomModal = function() { document.getElementById('createRoomModal').style.display = 'none'; };
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        window.toggleUserDropdown = function() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        };
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const authDiv = document.getElementById('authButtons');
             const avatarDiv = document.getElementById('userAvatarContainer');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
-            
-            if (user) {
-                authDiv.style.display = 'none';
-                avatarDiv.style.display = 'block';
-                if (userEmailDisplay) userEmailDisplay.textContent = user.email;
-            } else {
-                authDiv.style.display = 'flex';
-                avatarDiv.style.display = 'none';
-            }
+            if (user) { authDiv.style.display = 'none'; avatarDiv.style.display = 'block'; if (userEmailDisplay) userEmailDisplay.textContent = user.email; }
+            else { authDiv.style.display = 'flex'; avatarDiv.style.display = 'none'; }
+            updateMobileAuth(user);
             loadRooms();
         });
 
+        document.getElementById('signOutBtn')?.addEventListener('click', async () => { await signOut(auth); window.location.href = 'index.html'; });
+        document.getElementById('signInBtn')?.addEventListener('click', () => showAuthModal('login'));
+        document.getElementById('signUpBtn')?.addEventListener('click', () => showAuthModal('signup'));
+        document.getElementById('closeAuthModalBtn')?.addEventListener('click', closeAuthModal);
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('userDropdown');
+            const avatarBtn = document.getElementById('userAvatarBtn');
+            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
+            if (e.target === document.getElementById('authModal')) closeAuthModal();
+        });
+
+        initMobileNav();
         initGenreGrid();
         setupTabs();
         document.getElementById('createRoomBtn').addEventListener('click', openCreateRoomModal);
         document.getElementById('createRoomForm').addEventListener('submit', createRoom);
-        document.getElementById('signOutBtn')?.addEventListener('click', async () => {
-            await signOut(auth);
-            window.location.href = 'index.html';
-        });
-        document.getElementById('signInBtn')?.addEventListener('click', () => window.location.href = 'index.html');
-        document.getElementById('signUpBtn')?.addEventListener('click', () => window.location.href = 'index.html');
-        
-        window.toggleUserDropdown = function() {
-            const dropdown = document.getElementById('userDropdown');
-            if (dropdown) {
-                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            }
-        };
-        document.getElementById('userAvatarBtn')?.addEventListener('click', toggleUserDropdown);
-        document.addEventListener('click', (e) => {
-            const dropdown = document.getElementById('userDropdown');
-            const avatarBtn = document.getElementById('userAvatarBtn');
-            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>

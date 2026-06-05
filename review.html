@@ -171,7 +171,6 @@
             color: white;
         }
         
-        /* Comments Section */
         .comments-section {
             margin-top: 3rem;
             padding-top: 2rem;
@@ -202,11 +201,6 @@
             margin-bottom: 1rem;
         }
         
-        .comment-input:focus {
-            outline: none;
-            border-color: #ff1493;
-        }
-        
         .post-comment-btn {
             background: linear-gradient(135deg, #ff1493, #ffd700);
             color: white;
@@ -215,11 +209,6 @@
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s;
-        }
-        
-        .post-comment-btn:hover {
-            transform: translateY(-2px);
         }
         
         .auth-prompt {
@@ -228,10 +217,6 @@
             background: var(--bg-secondary);
             border-radius: 16px;
             margin-bottom: 2rem;
-        }
-        
-        .auth-prompt p {
-            margin-bottom: 1rem;
         }
         
         .auth-prompt-buttons {
@@ -243,7 +228,6 @@
         .auth-prompt-btn {
             padding: 0.5rem 1.5rem;
             border-radius: 50px;
-            cursor: pointer;
             font-weight: 600;
             text-decoration: none;
             display: inline-block;
@@ -270,20 +254,15 @@
             margin-bottom: 1rem;
         }
         
-        .comment-avatar {
-            flex-shrink: 0;
-        }
-        
         .comment-avatar-img {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            object-fit: cover;
             background: linear-gradient(135deg, #ff1493, #ffd700);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-weight: bold;
             color: white;
         }
         
@@ -306,13 +285,6 @@
             margin-bottom: 0.5rem;
         }
         
-        .comment-user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
         .comment-username {
             font-weight: 600;
             color: #ff1493;
@@ -323,70 +295,8 @@
             color: var(--text-muted);
         }
         
-        .edited-badge {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-        
-        .comment-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .comment-action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            transition: color 0.2s;
-        }
-        
-        .comment-action-btn:hover {
-            color: #ff1493;
-        }
-        
-        .edit-textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            resize: vertical;
-            margin-bottom: 0.5rem;
-        }
-        
-        .edit-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .save-edit-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 0.3rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        
-        .cancel-edit-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 0.3rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        
         .comment-text {
             line-height: 1.5;
-            color: var(--text-primary);
             word-break: break-word;
         }
         
@@ -396,46 +306,22 @@
             color: var(--text-muted);
         }
         
-        .loading-spinner {
-            text-align: center;
-            padding: 3rem;
-        }
-        
-        .error-message {
-            text-align: center;
-            padding: 3rem;
-            color: #ff1493;
-        }
-        
         @media (max-width: 768px) {
             .review-header {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
             }
-            
             .review-title {
                 font-size: 1.75rem;
             }
-            
-            .review-rating {
-                justify-content: center;
-            }
-            
             .review-album-art {
                 flex: 0 0 auto;
             }
-            
             .review-album-art img,
             .review-album-art .no-image {
                 width: 250px;
                 height: 250px;
-            }
-            
-            .comment-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.25rem;
             }
         }
     </style>
@@ -448,90 +334,78 @@
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="index.html#reviews">Reviews</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
                 <li><a href="community.html">Community</a></li>
             </ul>
             <div class="user-menu">
-                <div id="authButtons" style="display: flex; gap: 0.75rem;">
+                <div id="authButtons">
                     <button id="signInBtn" class="auth-nav-btn">Sign In</button>
                     <button id="signUpBtn" class="auth-nav-btn-primary">Sign Up</button>
                 </div>
                 <div id="userAvatarContainer" style="display: none;">
-                    <button id="userAvatarBtn" class="user-avatar-btn">
+                    <button id="userAvatarBtn" class="user-avatar-btn" onclick="toggleUserDropdown()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="white"/>
                         </svg>
                     </button>
                     <div id="userDropdown" class="user-dropdown" style="display: none;">
                         <div class="user-dropdown-email" id="userEmailDisplay"></div>
-                        <a href="profile.html" class="user-dropdown-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
-                            </svg>
-                            My Profile
-                        </a>
-                        <a href="settings.html" class="user-dropdown-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.33-.02-.64-.06-.94l2.02-1.58c.18-.14.23-.38.12-.56l-1.89-3.28c-.12-.19-.36-.26-.56-.18l-2.38.96c-.5-.38-1.06-.68-1.66-.88L14.45 3.5c-.04-.2-.2-.34-.4-.34h-3.78c-.2 0-.36.14-.4.34l-.3 2.52c-.6.2-1.16.5-1.66.88l-2.38-.96c-.2-.08-.44-.01-.56.18l-1.89 3.28c-.12.19-.07.42.12.56l2.02 1.58c-.04.3-.06.61-.06.94 0 .33.02.64.06.94l-2.02 1.58c-.18.14-.23.38-.12.56l1.89 3.28c.12.19.36.26.56.18l2.38-.96c.5.38 1.06.68 1.66.88l.3 2.52c.04.2.2.34.4.34h3.78c.2 0 .36-.14.4-.34l.3-2.52c.6-.2 1.16-.5 1.66-.88l2.38.96c.2.08.44.01.56-.18l1.89-3.28c.12-.19.07-.42-.12-.56l-2.02-1.58zM12 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill="currentColor"/>
-                            </svg>
-                            Settings
-                        </a>
+                        <a href="profile.html" class="user-dropdown-item">My Profile</a>
+                        <a href="settings.html" class="user-dropdown-item">Settings</a>
                         <div class="dropdown-divider"></div>
-                        <button id="signOutBtn" class="user-dropdown-item" style="color: #ff1493;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
-                            </svg>
-                            Sign Out
-                        </button>
+                        <button id="signOutBtn" class="user-dropdown-item" style="color: #ff1493;">Sign Out</button>
                     </div>
                 </div>
             </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
         </div>
     </nav>
 
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+        <div class="mobile-nav-header">
+            <span class="logo-text">Menu</span>
+            <button class="mobile-nav-close" id="mobileNavClose">×</button>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+            <li><a href="community.html">Community</a></li>
+        </ul>
+        <div id="mobileAuthContainer"></div>
+    </div>
+
     <div class="container">
         <div id="reviewContent" class="review-page">
-            <div class="loading-spinner">
-                <p>Loading review...</p>
-            </div>
+            <div style="text-align: center; padding: 3rem;">Loading review...</div>
         </div>
     </div>
 
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-bottom">
-                <p>&copy; 2026 Honestly, it..... All rights reserved.</p>
+                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <div id="authModal" class="auth-modal-overlay">
+        <div class="auth-modal">
+            <div class="auth-modal-header">
+                <h2 id="authModalTitle">Welcome Back</h2>
+                <span class="auth-close" id="closeAuthModalBtn">&times;</span>
+            </div>
+            <div class="auth-modal-body" id="authModalBody"></div>
+        </div>
+    </div>
+
     <script type="module">
-        // Dark mode initialization
-        function initDarkMode() {
-            const darkMode = localStorage.getItem('darkMode') === 'true';
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-            }
-            const toggleIcon = document.querySelector('.toggle-icon');
-            if (toggleIcon) {
-                toggleIcon.textContent = darkMode ? '☀️' : '🌙';
-            }
-        }
-        initDarkMode();
-
-        // Listen for dark mode changes from localStorage
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'darkMode') {
-                if (e.newValue === 'true') {
-                    document.body.classList.add('dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                }
-            }
-        });
-
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -553,78 +427,191 @@ const firebaseConfig = {
         const reviewId = urlParams.get('id');
         
         let currentUser = null;
-        
-        function getUserAvatar(userId) {
-            return localStorage.getItem(`avatar_${userId}`);
-        }
-        
-        function getRelativeTime(timestamp) {
-            if (!timestamp) return 'Just now';
-            const now = new Date();
-            const commentDate = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            const diffMs = now - commentDate;
-            const diffSecs = Math.floor(diffMs / 1000);
-            const diffMins = Math.floor(diffSecs / 60);
-            const diffHours = Math.floor(diffMins / 60);
-            const diffDays = Math.floor(diffHours / 24);
-            const diffWeeks = Math.floor(diffDays / 7);
-            const diffMonths = Math.floor(diffDays / 30);
-            const diffYears = Math.floor(diffDays / 365);
-            
-            if (diffSecs < 60) return 'Just now';
-            if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
-            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-            if (diffDays === 1) return 'Yesterday';
-            if (diffDays < 7) return `${diffDays} days ago`;
-            if (diffWeeks === 1) return '1 week ago';
-            if (diffWeeks < 4) return `${diffWeeks} weeks ago`;
-            if (diffMonths === 1) return '1 month ago';
-            if (diffMonths < 12) return `${diffMonths} months ago`;
-            if (diffYears === 1) return '1 year ago';
-            return `${diffYears} years ago`;
-        }
-        
+        let currentEditingComment = null;
+
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        
+
+        // Mobile Navigation
+        function initMobileNav() {
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            const navOverlay = document.getElementById('mobileNavOverlay');
+            const navMenu = document.getElementById('mobileNavMenu');
+            const navClose = document.getElementById('mobileNavClose');
+            if (!menuBtn) return;
+            function openMenu() { navMenu.classList.add('open'); navOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; }
+            function closeMenu() { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; }
+            menuBtn.addEventListener('click', openMenu);
+            navClose.addEventListener('click', closeMenu);
+            navOverlay.addEventListener('click', closeMenu);
+            document.querySelectorAll('.mobile-nav-links a').forEach(link => link.addEventListener('click', closeMenu));
+        }
+
+        function updateMobileAuth(user) {
+            const mobileAuthContainer = document.getElementById('mobileAuthContainer');
+            if (!mobileAuthContainer) return;
+            if (user) {
+                const displayName = user.displayName || user.email.split('@')[0];
+                const avatarLetter = displayName.charAt(0).toUpperCase();
+                mobileAuthContainer.innerHTML = `
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">${avatarLetter}</div>
+                        <div class="mobile-user-details">
+                            <div class="mobile-user-name">${escapeHtml(displayName)}</div>
+                            <div class="mobile-user-email">${escapeHtml(user.email)}</div>
+                        </div>
+                        <button class="mobile-logout-btn" id="mobileSignOutBtn">Sign Out</button>
+                    </div>
+                `;
+                document.getElementById('mobileSignOutBtn')?.addEventListener('click', () => { signOut(auth); closeMobileMenu(); });
+            } else {
+                mobileAuthContainer.innerHTML = `
+                    <div class="mobile-auth-buttons">
+                        <button class="mobile-signin-btn" id="mobileSignInBtn">Sign In</button>
+                        <button class="mobile-signup-btn" id="mobileSignUpBtn">Create Account</button>
+                    </div>
+                `;
+                document.getElementById('mobileSignInBtn')?.addEventListener('click', () => showAuthModal('login'));
+                document.getElementById('mobileSignUpBtn')?.addEventListener('click', () => showAuthModal('signup'));
+            }
+        }
+
+        function closeMobileMenu() {
+            const navMenu = document.getElementById('mobileNavMenu');
+            const navOverlay = document.getElementById('mobileNavOverlay');
+            if (navMenu) navMenu.classList.remove('open');
+            if (navOverlay) navOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // Auth Modal
+        function showAuthModal(type) {
+            const modal = document.getElementById('authModal');
+            const title = document.getElementById('authModalTitle');
+            const body = document.getElementById('authModalBody');
+            if (type === 'login') {
+                title.innerHTML = 'Welcome Back';
+                body.innerHTML = `
+                    <div id="loginError" class="auth-error" style="display: none;"></div>
+                    <div class="auth-input-group"><input type="email" id="loginEmail" class="auth-input" placeholder="Email address"></div>
+                    <div class="auth-input-group"><input type="password" id="loginPassword" class="auth-input" placeholder="Password"></div>
+                    <button id="doLoginBtn" class="auth-btn-primary">Sign In</button>
+                    <div class="auth-divider"><span>or</span></div>
+                    <div class="auth-switch">New here? <a id="switchToSignup">Create an account</a></div>
+                    <div class="auth-switch"><a id="forgotPasswordLink">Forgot password?</a></div>
+                `;
+                document.getElementById('doLoginBtn')?.addEventListener('click', handleLogin);
+                document.getElementById('switchToSignup')?.addEventListener('click', () => showAuthModal('signup'));
+                document.getElementById('forgotPasswordLink')?.addEventListener('click', showForgotPassword);
+            } else {
+                title.innerHTML = 'Create Account';
+                body.innerHTML = `
+                    <div id="signupError" class="auth-error" style="display: none;"></div>
+                    <div class="auth-input-group"><input type="text" id="signupName" class="auth-input" placeholder="Display name"></div>
+                    <div class="auth-input-group"><input type="email" id="signupEmail" class="auth-input" placeholder="Email address"></div>
+                    <div class="auth-input-group"><input type="password" id="signupPassword" class="auth-input" placeholder="Password (min 6 characters)"></div>
+                    <button id="doSignupBtn" class="auth-btn-primary">Create Account</button>
+                    <div class="auth-divider"><span>or</span></div>
+                    <div class="auth-switch">Already have an account? <a id="switchToLogin">Sign In</a></div>
+                `;
+                document.getElementById('doSignupBtn')?.addEventListener('click', handleSignup);
+                document.getElementById('switchToLogin')?.addEventListener('click', () => showAuthModal('login'));
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail')?.value;
+            const password = document.getElementById('loginPassword')?.value;
+            const errorDiv = document.getElementById('loginError');
+            if (!email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter both email and password'; return; }
+            errorDiv.style.display = 'none';
+            try { await signInWithEmailAndPassword(auth, email, password); closeAuthModal(); } 
+            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
+        }
+
+        async function handleSignup() {
+            const name = document.getElementById('signupName')?.value;
+            const email = document.getElementById('signupEmail')?.value;
+            const password = document.getElementById('signupPassword')?.value;
+            const errorDiv = document.getElementById('signupError');
+            if (!name || !email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please fill in all fields'; return; }
+            if (password.length < 6) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Password must be at least 6 characters'; return; }
+            errorDiv.style.display = 'none';
+            try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await updateProfile(userCredential.user, { displayName: name }); closeAuthModal(); } 
+            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
+        }
+
+        async function showForgotPassword() {
+            const title = document.getElementById('authModalTitle');
+            const body = document.getElementById('authModalBody');
+            title.innerHTML = 'Reset Password';
+            body.innerHTML = `
+                <div id="resetError" class="auth-error" style="display: none;"></div>
+                <p>Enter your email to receive a reset link.</p>
+                <div class="auth-input-group"><input type="email" id="resetEmail" class="auth-input" placeholder="Email address"></div>
+                <button id="sendResetBtn" class="auth-btn-primary">Send Reset Link</button>
+                <div class="auth-switch"><a id="backToLogin">Back to Sign In</a></div>
+            `;
+            document.getElementById('sendResetBtn')?.addEventListener('click', async () => {
+                const email = document.getElementById('resetEmail')?.value;
+                const errorDiv = document.getElementById('resetError');
+                if (!email) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter your email'; return; }
+                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
+                catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
+            });
+            document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
+        }
+
         function renderStars(rating) {
             const fullStars = Math.floor(rating / 2);
             const decimal = rating / 2 - fullStars;
             let starsHTML = '';
-            for (let i = 0; i < fullStars; i++) {
-                starsHTML += '<span style="color: #ffd700;">★</span>';
-            }
-            if (decimal >= 0.5) {
-                starsHTML += '<span style="color: #ffd700;">½</span>';
-            }
+            for (let i = 0; i < fullStars; i++) starsHTML += '<span style="color: #ffd700;">★</span>';
+            if (decimal >= 0.5) starsHTML += '<span style="color: #ffd700;">½</span>';
             const emptyStars = 5 - Math.ceil(rating / 2);
-            for (let i = 0; i < emptyStars; i++) {
-                starsHTML += '<span style="color: var(--text-muted);">☆</span>';
-            }
+            for (let i = 0; i < emptyStars; i++) starsHTML += '<span style="color: var(--text-muted);">☆</span>';
             return starsHTML;
         }
-        
+
+        function getRelativeTime(timestamp) {
+            if (!timestamp) return 'Just now';
+            const commentDate = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const diffMs = Date.now() - commentDate;
+            const diffMins = Math.floor(diffMs / 60000);
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min ago`;
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            const diffDays = Math.floor(diffHours / 24);
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            const diffWeeks = Math.floor(diffDays / 7);
+            if (diffWeeks < 4) return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ago`;
+            const diffMonths = Math.floor(diffDays / 30);
+            if (diffMonths < 12) return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+            const diffYears = Math.floor(diffDays / 365);
+            return `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
+        }
+
         function loadReviewData() {
             const container = document.getElementById('reviewContent');
             let reviews = [];
             const stored = localStorage.getItem('musicReviews');
-            if (stored) {
-                reviews = JSON.parse(stored);
-            }
-            
+            if (stored) reviews = JSON.parse(stored);
             const review = reviews.find(r => Number(r.id) === Number(reviewId));
-            
             if (!review) {
-                container.innerHTML = `<div class="error-message"><h2>Review not found</h2><a href="index.html" class="back-button">← Back to Home</a></div>`;
+                container.innerHTML = `<div style="text-align: center; padding: 3rem;"><h2>Review not found</h2><a href="index.html" class="back-button">← Back to Home</a></div>`;
                 return;
             }
             
-            let albumArtHtml = review.albumArt ? `<img src="${review.albumArt}" onerror="this.parentElement.innerHTML='<div class=\'no-image\'>🎵</div>'">` : `<div class="no-image">🎵</div>`;
-            
+            let albumArtHtml = review.albumArt ? `<img src="${review.albumArt}" onerror="this.parentElement.innerHTML='<div class=\'no-image\'>🎵</div>'">` : '<div class="no-image">🎵</div>';
             let embedHtml = '';
             if (review.embedUrl && review.embedType === 'youtube') {
                 embedHtml = `<div class="embed-container"><iframe src="${review.embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
@@ -633,18 +620,10 @@ const firebaseConfig = {
             }
             
             let tracksHtml = '';
-            if (review.tracks?.length) {
+            if (review.tracks && review.tracks.length) {
                 tracksHtml = '<div class="track-list"><h3>🎵 Track-by-Track Review</h3>';
                 review.tracks.forEach(track => {
-                    tracksHtml += `
-                        <div class="track-item-page">
-                            <div class="track-header-page">
-                                <span class="track-name-page">${track.number}. ${escapeHtml(track.name)}</span>
-                                ${track.rating ? `<span class="track-rating-page">${track.rating}/10</span>` : ''}
-                            </div>
-                            <p>${escapeHtml(track.review)}</p>
-                        </div>
-                    `;
+                    tracksHtml += `<div class="track-item-page"><div class="track-header-page"><span class="track-name-page">${track.number}. ${escapeHtml(track.name)}</span>${track.rating ? `<span class="track-rating-page">${track.rating}/10</span>` : ''}</div><p>${escapeHtml(track.review)}</p></div>`;
                 });
                 tracksHtml += '</div>';
             }
@@ -658,10 +637,7 @@ const firebaseConfig = {
                         <h1 class="review-title">${escapeHtml(review.title)}</h1>
                         <p class="review-artist">${escapeHtml(review.artist)}</p>
                         <p class="review-year">${review.year || 'Release year N/A'}</p>
-                        <div class="review-rating">
-                            <span class="review-rating-number">${review.rating}</span><span>/10</span>
-                            <div>${renderStars(review.rating)}</div>
-                        </div>
+                        <div class="review-rating"><span class="review-rating-number">${review.rating}</span><span>/10</span><div>${renderStars(review.rating)}</div></div>
                     </div>
                 </div>
                 ${embedHtml}
@@ -671,34 +647,30 @@ const firebaseConfig = {
             `;
             loadCommentsUI();
         }
-        
+
         function loadCommentsUI() {
             const commentsSection = document.getElementById('commentsSection');
             if (!commentsSection) return;
-            
             if (currentUser) {
-                const userAvatar = getUserAvatar(currentUser.uid);
                 const displayName = currentUser.displayName || currentUser.email.split('@')[0];
                 commentsSection.innerHTML = `
                     <h3>💬 Comments</h3>
                     <div class="comment-form">
-                        <div style="display: flex; gap: 1rem;">
-                            <div class="comment-avatar"><div class="comment-avatar-img">${userAvatar ? `<img src="${userAvatar}">` : displayName.charAt(0).toUpperCase()}</div></div>
-                            <div style="flex:1"><textarea id="commentInput" class="comment-input" rows="3" placeholder="Share your thoughts..."></textarea><button onclick="postComment()" class="post-comment-btn">Post Comment</button></div>
-                        </div>
+                        <textarea id="commentInput" class="comment-input" rows="3" placeholder="Share your thoughts..."></textarea>
+                        <button onclick="postComment()" class="post-comment-btn">Post Comment</button>
                     </div>
                     <div id="commentsList"></div>
                 `;
             } else {
                 commentsSection.innerHTML = `
                     <h3>💬 Comments</h3>
-                    <div class="auth-prompt"><p>Join the discussion! Sign in to leave a comment.</p><div class="auth-prompt-buttons"><a href="index.html" class="auth-prompt-btn signin">Sign In</a><a href="index.html" class="auth-prompt-btn signup">Create Account</a></div></div>
+                    <div class="auth-prompt"><p>Join the discussion! Sign in to leave a comment.</p><div class="auth-prompt-buttons"><a href="javascript:void(0)" onclick="showAuthModal('login')" class="auth-prompt-btn signin">Sign In</a><a href="javascript:void(0)" onclick="showAuthModal('signup')" class="auth-prompt-btn signup">Create Account</a></div></div>
                     <div id="commentsList"></div>
                 `;
             }
             loadComments();
         }
-        
+
         function loadComments() {
             if (!reviewId) return;
             const commentsRef = collection(db, 'reviews', reviewId, 'comments');
@@ -706,31 +678,32 @@ const firebaseConfig = {
             onSnapshot(q, (snapshot) => {
                 const commentsList = document.getElementById('commentsList');
                 if (!commentsList) return;
-                if (snapshot.empty) { commentsList.innerHTML = '<div class="no-comments">No comments yet.</div>'; return; }
+                if (snapshot.empty) { commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first!</div>'; return; }
                 commentsList.innerHTML = '';
                 snapshot.forEach((doc) => {
                     const comment = doc.data();
+                    const commentId = doc.id;
                     const relativeTime = getRelativeTime(comment.timestamp);
-                    const fullDate = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : '';
-                    const userAvatar = localStorage.getItem(`avatar_${comment.userId}`);
-                    const userInitial = comment.userName?.charAt(0).toUpperCase() || '👤';
-                    const isOwner = currentUser && comment.userId === currentUser.uid;
+                    const isOwn = currentUser && comment.userId === currentUser.uid;
+                    const userInitial = comment.userName?.charAt(0).toUpperCase() || 'U';
+                    const editedBadge = comment.edited ? '<span style="font-size: 0.7rem; color: var(--text-muted); margin-left: 0.5rem;">(edited)</span>' : '';
                     commentsList.innerHTML += `
-                        <div class="comment-item">
-                            <div class="comment-avatar"><div class="comment-avatar-img">${userAvatar ? `<img src="${userAvatar}">` : userInitial}</div></div>
+                        <div class="comment-item" data-comment-id="${commentId}">
+                            <div><div class="comment-avatar-img">${userInitial}</div></div>
                             <div class="comment-content">
                                 <div class="comment-header">
-                                    <div class="comment-user-info"><span class="comment-username">${escapeHtml(comment.userName)}</span><span class="comment-date" title="${fullDate}">${relativeTime}</span>${comment.editedAt ? `<span class="edited-badge">(edited)</span>` : ''}</div>
-                                    ${isOwner ? `<div class="comment-actions"><button class="comment-action-btn" onclick="startEditComment('${doc.id}', '${escapeHtml(comment.text).replace(/'/g, "\\'")}')">Edit</button><button class="comment-action-btn" onclick="deleteComment('${doc.id}')">Delete</button></div>` : ''}
+                                    <span class="comment-username">${escapeHtml(comment.userName)}</span>
+                                    <span class="comment-date">${relativeTime}</span>${editedBadge}
                                 </div>
-                                <div class="comment-text" id="comment-text-${doc.id}">${escapeHtml(comment.text)}</div>
+                                <div class="comment-text" id="comment-text-${commentId}">${escapeHtml(comment.text)}</div>
+                                ${isOwn ? `<div style="margin-top: 0.5rem;"><button class="edit-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem; margin-right: 0.5rem;" onclick="editComment('${commentId}', '${escapeHtml(comment.text).replace(/'/g, "\\'")}')">Edit</button><button class="delete-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="deleteComment('${commentId}')">Delete</button></div>` : ''}
                             </div>
                         </div>
                     `;
                 });
             });
         }
-        
+
         window.postComment = async function() {
             if (!currentUser) { alert('Please sign in'); return; }
             const commentText = document.getElementById('commentInput')?.value;
@@ -746,57 +719,69 @@ const firebaseConfig = {
                 document.getElementById('commentInput').value = '';
             } catch (error) { alert('Error: ' + error.message); }
         };
-        
-        window.startEditComment = function(commentId, currentText) {
+
+        window.editComment = function(commentId, currentText) {
             const textDiv = document.getElementById(`comment-text-${commentId}`);
-            textDiv.innerHTML = `<textarea id="edit-textarea-${commentId}" class="edit-textarea" rows="3">${escapeHtml(currentText)}</textarea><div class="edit-actions"><button class="save-edit-btn" onclick="saveEditComment('${commentId}')">Save</button><button class="cancel-edit-btn" onclick="cancelEditComment('${commentId}', '${escapeHtml(currentText).replace(/'/g, "\\'")}')">Cancel</button></div>`;
+            textDiv.innerHTML = `
+                <textarea id="edit-${commentId}" class="edit-textarea" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 0.5rem;" rows="2">${escapeHtml(currentText)}</textarea>
+                <div><button class="save-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem; margin-right: 0.5rem;" onclick="saveEdit('${commentId}')">Save</button><button class="cancel-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="cancelEdit('${commentId}', '${escapeHtml(currentText).replace(/'/g, "\\'")}')">Cancel</button></div>
+            `;
         };
-        
-        window.saveEditComment = async function(commentId) {
-            const newText = document.getElementById(`edit-textarea-${commentId}`)?.value;
-            if (!newText?.trim()) { alert('Comment cannot be empty'); return; }
+
+        window.saveEdit = async function(commentId) {
+            const newText = document.getElementById(`edit-${commentId}`).value;
+            if (!newText.trim()) { alert('Comment cannot be empty'); return; }
             try {
-                await updateDoc(doc(db, 'reviews', reviewId, 'comments', commentId), { text: newText.trim(), editedAt: new Date() });
+                await updateDoc(doc(db, 'reviews', reviewId, 'comments', commentId), {
+                    text: newText.trim(),
+                    edited: true,
+                    editedAt: new Date()
+                });
             } catch (error) { alert('Error: ' + error.message); }
         };
-        
-        window.cancelEditComment = function(commentId, originalText) {
+
+        window.cancelEdit = function(commentId, originalText) {
             document.getElementById(`comment-text-${commentId}`).innerHTML = escapeHtml(originalText);
         };
-        
+
         window.deleteComment = async function(commentId) {
             if (confirm('Delete this comment?')) {
-                await deleteDoc(doc(db, 'reviews', reviewId, 'comments', commentId));
+                try { await deleteDoc(doc(db, 'reviews', reviewId, 'comments', commentId)); }
+                catch (error) { alert('Error: ' + error.message); }
             }
         };
-        
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (document.getElementById('commentsSection')) loadCommentsUI();
-            else loadReviewData();
-        });
-        
-        if (auth.currentUser !== undefined) loadReviewData();
-        else onAuthStateChanged(auth, () => loadReviewData());
 
-        // Auth button handlers
-        document.getElementById('signOutBtn')?.addEventListener('click', () => auth.signOut());
-        document.getElementById('signInBtn')?.addEventListener('click', () => window.location.href = 'index.html');
-        document.getElementById('signUpBtn')?.addEventListener('click', () => window.location.href = 'index.html');
-        
-        // Dropdown toggle
         window.toggleUserDropdown = function() {
             const dropdown = document.getElementById('userDropdown');
             if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         };
-        document.getElementById('userAvatarBtn')?.addEventListener('click', toggleUserDropdown);
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const authDiv = document.getElementById('authButtons');
+            const avatarDiv = document.getElementById('userAvatarContainer');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            if (user) { authDiv.style.display = 'none'; avatarDiv.style.display = 'block'; if (userEmailDisplay) userEmailDisplay.textContent = user.email; }
+            else { authDiv.style.display = 'flex'; avatarDiv.style.display = 'none'; }
+            updateMobileAuth(user);
+            if (document.getElementById('commentsSection')) loadCommentsUI();
+            else loadReviewData();
+        });
+
+        document.getElementById('signOutBtn')?.addEventListener('click', async () => { await signOut(auth); window.location.href = 'index.html'; });
+        document.getElementById('signInBtn')?.addEventListener('click', () => showAuthModal('login'));
+        document.getElementById('signUpBtn')?.addEventListener('click', () => showAuthModal('signup'));
+        document.getElementById('closeAuthModalBtn')?.addEventListener('click', closeAuthModal);
         document.addEventListener('click', (e) => {
             const dropdown = document.getElementById('userDropdown');
             const avatarBtn = document.getElementById('userAvatarBtn');
-            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.style.display = 'none';
-            }
+            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
+            if (e.target === document.getElementById('authModal')) closeAuthModal();
         });
+
+        initMobileNav();
+        if (auth.currentUser !== undefined) loadReviewData();
+        else onAuthStateChanged(auth, () => loadReviewData());
     </script>
 </body>
 </html>
