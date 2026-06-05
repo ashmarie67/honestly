@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Community - Honestly, it.....</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         .community-container {
             max-width: 1400px;
@@ -41,6 +42,7 @@
             gap: 0.5rem;
             z-index: 100;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-family: inherit;
         }
         
         .modal-overlay {
@@ -98,6 +100,7 @@
             border-radius: 12px;
             background: var(--bg-primary);
             color: var(--text-primary);
+            font-family: inherit;
         }
         
         .image-upload-area {
@@ -160,6 +163,7 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
+            font-family: inherit;
         }
         
         .category-tabs {
@@ -178,6 +182,7 @@
             cursor: pointer;
             font-weight: 600;
             border-radius: 50px;
+            font-family: inherit;
         }
         
         .category-tab.active {
@@ -283,6 +288,7 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
+            font-family: inherit;
         }
         
         .join-btn:hover {
@@ -299,6 +305,7 @@
         @media (max-width: 768px) {
             .rooms-grid { grid-template-columns: 1fr; }
             .genres-grid { grid-template-columns: repeat(2, 1fr); }
+            .community-hero h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -585,13 +592,12 @@ const firebaseConfig = {
                 const email = document.getElementById('resetEmail')?.value;
                 const errorDiv = document.getElementById('resetError');
                 if (!email) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter your email'; return; }
-                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.style.background = 'rgba(255,215,0,0.1)'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
+                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
                 catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
             });
             document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
         }
 
-        // Community Functions
         let currentUser = null;
         let currentCategory = "all";
         let selectedGenres = [];

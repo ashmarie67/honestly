@@ -14,7 +14,6 @@
                 <span class="logo-text">Honestly, it.....</span>
             </div>
             
-            <!-- Desktop Navigation -->
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="reviews.html">Reviews</a></li>
@@ -42,7 +41,6 @@
                 </div>
             </div>
             
-            <!-- Mobile Menu Button -->
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -51,20 +49,17 @@
         </div>
     </nav>
 
-    <!-- Mobile Navigation Menu -->
     <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
     <div class="mobile-nav-menu" id="mobileNavMenu">
         <div class="mobile-nav-header">
             <span class="logo-text">Menu</span>
             <button class="mobile-nav-close" id="mobileNavClose">×</button>
         </div>
-        
         <ul class="mobile-nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="reviews.html">Reviews</a></li>
             <li><a href="community.html">Community</a></li>
         </ul>
-        
         <div id="mobileAuthContainer"></div>
     </div>
 
@@ -106,7 +101,6 @@
         </div>
     </footer>
 
-    <!-- Auth Modal -->
     <div id="authModal" class="auth-modal-overlay">
         <div class="auth-modal">
             <div class="auth-modal-header">
@@ -117,14 +111,12 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
-    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { loadReviewsFromFirebase, initFirebaseReviews } from './firebase-reviews.js';
 
-        const firebaseConfig = {
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
@@ -139,6 +131,12 @@ const firebaseConfig = {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
+        initFirebaseReviews(db);
+
+        let allReviews = [];
+        let currentSort = "newest";
+        let currentUser = null;
 
         function escapeHtml(text) {
             if (!text) return '';
@@ -147,40 +145,35 @@ const firebaseConfig = {
             return div.innerHTML;
         }
 
-        // Mobile Navigation Functions
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating / 2);
+            const decimal = rating / 2 - fullStars;
+            let starsHTML = '';
+            for (let i = 0; i < fullStars; i++) starsHTML += '<span style="color: #ffd700;">★</span>';
+            if (decimal >= 0.5) starsHTML += '<span style="color: #ffd700;">½</span>';
+            const emptyStars = 5 - Math.ceil(rating / 2);
+            for (let i = 0; i < emptyStars; i++) starsHTML += '<span style="color: var(--text-muted);">☆</span>';
+            return starsHTML;
+        }
+
+        // Mobile Navigation
         function initMobileNav() {
             const menuBtn = document.getElementById('mobileMenuBtn');
             const navOverlay = document.getElementById('mobileNavOverlay');
             const navMenu = document.getElementById('mobileNavMenu');
             const navClose = document.getElementById('mobileNavClose');
-            
             if (!menuBtn) return;
-            
-            function openMenu() {
-                navMenu.classList.add('open');
-                navOverlay.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-            }
-            
-            function closeMenu() {
-                navMenu.classList.remove('open');
-                navOverlay.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-            
+            function openMenu() { navMenu.classList.add('open'); navOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; }
+            function closeMenu() { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; }
             menuBtn.addEventListener('click', openMenu);
             navClose.addEventListener('click', closeMenu);
             navOverlay.addEventListener('click', closeMenu);
-            
-            document.querySelectorAll('.mobile-nav-links a').forEach(link => {
-                link.addEventListener('click', closeMenu);
-            });
+            document.querySelectorAll('.mobile-nav-links a').forEach(link => link.addEventListener('click', closeMenu));
         }
 
         function updateMobileAuth(user) {
             const mobileAuthContainer = document.getElementById('mobileAuthContainer');
             if (!mobileAuthContainer) return;
-            
             if (user) {
                 const displayName = user.displayName || user.email.split('@')[0];
                 const avatarLetter = displayName.charAt(0).toUpperCase();
@@ -194,10 +187,7 @@ const firebaseConfig = {
                         <button class="mobile-logout-btn" id="mobileSignOutBtn">Sign Out</button>
                     </div>
                 `;
-                document.getElementById('mobileSignOutBtn')?.addEventListener('click', () => {
-                    signOut(auth);
-                    closeMobileMenu();
-                });
+                document.getElementById('mobileSignOutBtn')?.addEventListener('click', () => { signOut(auth); closeMobileMenu(); });
             } else {
                 mobileAuthContainer.innerHTML = `
                     <div class="mobile-auth-buttons">
@@ -218,26 +208,21 @@ const firebaseConfig = {
             document.body.style.overflow = '';
         }
 
-        // Auth Modal Functions
+        // Auth Modal
         function showAuthModal(type) {
             const modal = document.getElementById('authModal');
             const title = document.getElementById('authModalTitle');
             const body = document.getElementById('authModalBody');
-            
             if (type === 'login') {
                 title.innerHTML = 'Welcome Back';
                 body.innerHTML = `
                     <div id="loginError" class="auth-error" style="display: none;"></div>
-                    <div class="auth-input-group">
-                        <input type="email" id="loginEmail" class="auth-input" placeholder="Email address">
-                    </div>
-                    <div class="auth-input-group">
-                        <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
-                    </div>
+                    <div class="auth-input-group"><input type="email" id="loginEmail" class="auth-input" placeholder="Email address"></div>
+                    <div class="auth-input-group"><input type="password" id="loginPassword" class="auth-input" placeholder="Password"></div>
                     <button id="doLoginBtn" class="auth-btn-primary">Sign In</button>
                     <div class="auth-divider"><span>or</span></div>
                     <div class="auth-switch">New here? <a id="switchToSignup">Create an account</a></div>
-                    <div class="auth-switch" style="margin-top: 0.5rem;"><a id="forgotPasswordLink">Forgot password?</a></div>
+                    <div class="auth-switch"><a id="forgotPasswordLink">Forgot password?</a></div>
                 `;
                 document.getElementById('doLoginBtn')?.addEventListener('click', handleLogin);
                 document.getElementById('switchToSignup')?.addEventListener('click', () => showAuthModal('signup'));
@@ -246,15 +231,9 @@ const firebaseConfig = {
                 title.innerHTML = 'Create Account';
                 body.innerHTML = `
                     <div id="signupError" class="auth-error" style="display: none;"></div>
-                    <div class="auth-input-group">
-                        <input type="text" id="signupName" class="auth-input" placeholder="Display name">
-                    </div>
-                    <div class="auth-input-group">
-                        <input type="email" id="signupEmail" class="auth-input" placeholder="Email address">
-                    </div>
-                    <div class="auth-input-group">
-                        <input type="password" id="signupPassword" class="auth-input" placeholder="Password (min 6 characters)">
-                    </div>
+                    <div class="auth-input-group"><input type="text" id="signupName" class="auth-input" placeholder="Display name"></div>
+                    <div class="auth-input-group"><input type="email" id="signupEmail" class="auth-input" placeholder="Email address"></div>
+                    <div class="auth-input-group"><input type="password" id="signupPassword" class="auth-input" placeholder="Password (min 6 characters)"></div>
                     <button id="doSignupBtn" class="auth-btn-primary">Create Account</button>
                     <div class="auth-divider"><span>or</span></div>
                     <div class="auth-switch">Already have an account? <a id="switchToLogin">Sign In</a></div>
@@ -265,30 +244,16 @@ const firebaseConfig = {
             modal.style.display = 'flex';
         }
 
-        function closeAuthModal() {
-            document.getElementById('authModal').style.display = 'none';
-        }
+        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
 
         async function handleLogin() {
             const email = document.getElementById('loginEmail')?.value;
             const password = document.getElementById('loginPassword')?.value;
             const errorDiv = document.getElementById('loginError');
-            
-            if (!email || !password) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Please enter both email and password';
-                return;
-            }
-            
+            if (!email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter both email and password'; return; }
             errorDiv.style.display = 'none';
-            
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                closeAuthModal();
-            } catch (error) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = error.code === 'auth/invalid-credential' ? 'Invalid email or password' : error.message;
-            }
+            try { await signInWithEmailAndPassword(auth, email, password); closeAuthModal(); } 
+            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
         }
 
         async function handleSignup() {
@@ -296,119 +261,139 @@ const firebaseConfig = {
             const email = document.getElementById('signupEmail')?.value;
             const password = document.getElementById('signupPassword')?.value;
             const errorDiv = document.getElementById('signupError');
-            
-            if (!name || !email || !password) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Please fill in all fields';
-                return;
-            }
-            
-            if (password.length < 6) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Password must be at least 6 characters';
-                return;
-            }
-            
+            if (!name || !email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please fill in all fields'; return; }
+            if (password.length < 6) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Password must be at least 6 characters'; return; }
             errorDiv.style.display = 'none';
-            
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await updateProfile(userCredential.user, { displayName: name });
-                closeAuthModal();
-            } catch (error) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = error.code === 'auth/email-already-in-use' ? 'Email already in use' : error.message;
-            }
+            try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await updateProfile(userCredential.user, { displayName: name }); closeAuthModal(); } 
+            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
         }
 
         async function showForgotPassword() {
             const title = document.getElementById('authModalTitle');
             const body = document.getElementById('authModalBody');
-            
             title.innerHTML = 'Reset Password';
             body.innerHTML = `
                 <div id="resetError" class="auth-error" style="display: none;"></div>
-                <p style="margin-bottom: 1rem;">Enter your email to receive a reset link.</p>
-                <div class="auth-input-group">
-                    <input type="email" id="resetEmail" class="auth-input" placeholder="Email address">
-                </div>
+                <p>Enter your email to receive a reset link.</p>
+                <div class="auth-input-group"><input type="email" id="resetEmail" class="auth-input" placeholder="Email address"></div>
                 <button id="sendResetBtn" class="auth-btn-primary">Send Reset Link</button>
-                <div class="auth-switch" style="margin-top: 1rem;"><a id="backToLogin">Back to Sign In</a></div>
+                <div class="auth-switch"><a id="backToLogin">Back to Sign In</a></div>
             `;
             document.getElementById('sendResetBtn')?.addEventListener('click', async () => {
                 const email = document.getElementById('resetEmail')?.value;
                 const errorDiv = document.getElementById('resetError');
-                if (!email) {
-                    errorDiv.style.display = 'block';
-                    errorDiv.textContent = 'Please enter your email';
-                    return;
-                }
-                try {
-                    await sendPasswordResetEmail(auth, email);
-                    errorDiv.style.display = 'block';
-                    errorDiv.style.background = 'rgba(255,215,0,0.1)';
-                    errorDiv.style.borderColor = '#ffd700';
-                    errorDiv.style.color = '#ffd700';
-                    errorDiv.textContent = `Reset email sent to ${email}!`;
-                    setTimeout(() => closeAuthModal(), 3000);
-                } catch (error) {
-                    errorDiv.style.display = 'block';
-                    errorDiv.textContent = error.message;
-                }
+                if (!email) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter your email'; return; }
+                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
+                catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
             });
             document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
         }
 
-        // Dropdown functions
+        // Load reviews from Firebase
+        async function loadReviews() {
+            const reviews = await loadReviewsFromFirebase();
+            if (reviews.length > 0) {
+                allReviews = reviews;
+                localStorage.setItem('musicReviews', JSON.stringify(reviews));
+            } else {
+                const stored = localStorage.getItem('musicReviews');
+                allReviews = stored ? JSON.parse(stored) : [];
+            }
+            applyFiltersAndSort();
+        }
+
+        function sortReviews(reviews) {
+            const sorted = [...reviews];
+            switch(currentSort) {
+                case "newest": return sorted.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+                case "rating": return sorted.sort((a, b) => b.rating - a.rating);
+                case "artist": return sorted.sort((a, b) => a.artist.localeCompare(b.artist));
+                default: return sorted;
+            }
+        }
+
+        function applyFiltersAndSort() {
+            const grid = document.getElementById('reviewsGrid');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            let sorted = sortReviews(allReviews);
+            resultsCount.textContent = sorted.length;
+            
+            if (sorted.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--text-muted);">No reviews yet. Check back soon!</div>';
+                return;
+            }
+            
+            grid.innerHTML = sorted.map(review => `
+                <div class="review-card-horizontal" style="display: flex; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 1rem;">
+                    <div style="flex: 0 0 130px; display: flex; align-items: center; justify-content: center; padding: 12px; background: var(--bg-secondary);">
+                        ${review.albumArt ? 
+                            `<img src="${review.albumArt}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px;">` : 
+                            `<div style="width: 100px; height: 100px; background: linear-gradient(135deg, #ff1493, #ffd700); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">🎵</div>`
+                        }
+                    </div>
+                    <div style="flex: 1; padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+                            <div>
+                                <span style="background: var(--bg-secondary); color: #ff1493; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem;">${Array.isArray(review.genre) ? review.genre.slice(0, 2).join(', ') : review.genre}</span>
+                                <h3 style="margin: 0.4rem 0 0.1rem 0; font-size: 1rem;">${escapeHtml(review.title)}</h3>
+                                <p style="color: #ff1493; font-weight: 500; margin: 0; font-size: 0.85rem;">${escapeHtml(review.artist)}</p>
+                                <p style="color: var(--text-muted); font-size: 0.7rem; margin: 0.2rem 0;">${review.year || 'N/A'}</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div><span style="font-size: 1.3rem; font-weight: bold; color: #ffd700;">${review.rating.toFixed(1)}</span><span style="font-size: 0.7rem;">/10</span></div>
+                                <div style="font-size: 0.7rem;">${renderStars(review.rating)}</div>
+                            </div>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.8rem; line-height: 1.4; margin: 0.5rem 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${escapeHtml(review.shortPreview || review.review.substring(0, 100))}...</p>
+                        <a href="review.html?id=${review.firebaseId || review.id}" style="color: #ff1493; text-decoration: none; font-weight: 600; font-size: 0.8rem;">Read full review →</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupSortButtons() {
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSort = btn.getAttribute('data-sort');
+                    applyFiltersAndSort();
+                });
+            });
+        }
+
         window.toggleUserDropdown = function() {
             const dropdown = document.getElementById('userDropdown');
-            if (dropdown) {
-                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            }
+            if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         };
 
-        // Auth state listener - THIS IS WHERE THE UPDATE HAPPENS
         onAuthStateChanged(auth, (user) => {
+            currentUser = user;
             const authDiv = document.getElementById('authButtons');
             const avatarDiv = document.getElementById('userAvatarContainer');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
-            
-            if (user) {
-                authDiv.style.display = 'none';
-                avatarDiv.style.display = 'block';
-                if (userEmailDisplay) userEmailDisplay.textContent = user.email;
-            } else {
-                authDiv.style.display = 'flex';
-                avatarDiv.style.display = 'none';
-            }
-            
-            // THIS UPDATES THE MOBILE MENU
+            if (user) { authDiv.style.display = 'none'; avatarDiv.style.display = 'block'; if (userEmailDisplay) userEmailDisplay.textContent = user.email; }
+            else { authDiv.style.display = 'flex'; avatarDiv.style.display = 'none'; }
             updateMobileAuth(user);
         });
 
-        // Event Listeners
-        document.getElementById('signOutBtn')?.addEventListener('click', async () => {
-            await signOut(auth);
-            window.location.href = 'index.html';
-        });
+        document.getElementById('signOutBtn')?.addEventListener('click', async () => { await signOut(auth); window.location.href = 'index.html'; });
         document.getElementById('signInBtn')?.addEventListener('click', () => showAuthModal('login'));
         document.getElementById('signUpBtn')?.addEventListener('click', () => showAuthModal('signup'));
         document.getElementById('closeAuthModalBtn')?.addEventListener('click', closeAuthModal);
-        
         document.addEventListener('click', (e) => {
             const dropdown = document.getElementById('userDropdown');
             const avatarBtn = document.getElementById('userAvatarBtn');
-            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.style.display = 'none';
-            }
-            const modal = document.getElementById('authModal');
-            if (e.target === modal) closeAuthModal();
+            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
+            if (e.target === document.getElementById('authModal')) closeAuthModal();
         });
 
-        // Initialize mobile nav
         initMobileNav();
+        loadReviews();
+        setupSortButtons();
         
-        console.log('Firebase auth ready');
+        console.log('Firebase reviews ready - cross-device sync enabled!');
     </script>
 </body>
 </html>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>All Reviews - Honestly, it.....</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         .reviews-page {
             max-width: 1200px;
@@ -47,6 +48,7 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             font-size: 1rem;
+            font-family: inherit;
         }
         
         .search-input:focus {
@@ -62,6 +64,7 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
+            font-family: inherit;
         }
         
         .clear-search {
@@ -72,6 +75,7 @@
             cursor: pointer;
             font-weight: 600;
             color: var(--text-primary);
+            font-family: inherit;
         }
         
         .filter-row {
@@ -97,6 +101,7 @@
             font-size: 0.85rem;
             transition: all 0.2s;
             color: var(--text-primary);
+            font-family: inherit;
         }
         
         .sort-option:hover {
@@ -256,6 +261,7 @@
             transition: all 0.2s;
             font-weight: 500;
             color: var(--text-primary);
+            font-family: inherit;
         }
         
         .page-btn:hover:not(:disabled) {
@@ -291,16 +297,13 @@
             .review-card-horizontal {
                 flex-direction: column;
             }
-            
             .review-card-image {
                 flex: 0 0 auto;
                 padding: 15px;
             }
-            
             .search-input-wrapper {
                 flex-direction: column;
             }
-            
             .filter-row {
                 flex-direction: column;
                 align-items: stretch;
@@ -314,13 +317,11 @@
             <div class="logo">
                 <span class="logo-text">Honestly, it.....</span>
             </div>
-            
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="reviews.html" class="active">Reviews</a></li>
                 <li><a href="community.html">Community</a></li>
             </ul>
-            
             <div class="user-menu">
                 <div id="authButtons">
                     <button id="signInBtn" class="auth-nav-btn">Sign In</button>
@@ -341,7 +342,6 @@
                     </div>
                 </div>
             </div>
-            
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -415,9 +415,10 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { loadReviewsFromFirebase, initFirebaseReviews } from './firebase-reviews.js';
 
-       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
   authDomain: "honestly-it.firebaseapp.com",
@@ -431,12 +432,31 @@ const firebaseConfig = {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
+        initFirebaseReviews(db);
+
+        let allReviews = [];
+        let currentPage = 1;
+        let currentSort = "newest";
+        let currentSearch = "";
+        const itemsPerPage = 10;
 
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating / 2);
+            const decimal = rating / 2 - fullStars;
+            let starsHTML = '';
+            for (let i = 0; i < fullStars; i++) starsHTML += '<span style="color: #ffd700;">★</span>';
+            if (decimal >= 0.5) starsHTML += '<span style="color: #ffd700;">½</span>';
+            const emptyStars = 5 - Math.ceil(rating / 2);
+            for (let i = 0; i < emptyStars; i++) starsHTML += '<span style="color: var(--text-muted);">☆</span>';
+            return starsHTML;
         }
 
         // Mobile Navigation
@@ -505,7 +525,7 @@ const firebaseConfig = {
                     <button id="doLoginBtn" class="auth-btn-primary">Sign In</button>
                     <div class="auth-divider"><span>or</span></div>
                     <div class="auth-switch">New here? <a id="switchToSignup">Create an account</a></div>
-                    <div class="auth-switch" style="margin-top: 0.5rem;"><a id="forgotPasswordLink">Forgot password?</a></div>
+                    <div class="auth-switch"><a id="forgotPasswordLink">Forgot password?</a></div>
                 `;
                 document.getElementById('doLoginBtn')?.addEventListener('click', handleLogin);
                 document.getElementById('switchToSignup')?.addEventListener('click', () => showAuthModal('signup'));
@@ -566,22 +586,21 @@ const firebaseConfig = {
                 const email = document.getElementById('resetEmail')?.value;
                 const errorDiv = document.getElementById('resetError');
                 if (!email) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter your email'; return; }
-                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.style.background = 'rgba(255,215,0,0.1)'; errorDiv.style.borderColor = '#ffd700'; errorDiv.style.color = '#ffd700'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
+                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
                 catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
             });
             document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
         }
 
-        // Reviews data and pagination
-        let allReviews = [];
-        let currentPage = 1;
-        let currentSort = "newest";
-        let currentSearch = "";
-        const itemsPerPage = 10;
-
-        function loadReviews() {
-            const stored = localStorage.getItem('musicReviews');
-            allReviews = stored ? JSON.parse(stored) : [];
+        async function loadReviews() {
+            const firebaseReviews = await loadReviewsFromFirebase();
+            if (firebaseReviews.length > 0) {
+                allReviews = firebaseReviews;
+                localStorage.setItem('musicReviews', JSON.stringify(firebaseReviews));
+            } else {
+                const stored = localStorage.getItem('musicReviews');
+                allReviews = stored ? JSON.parse(stored) : [];
+            }
             applyFiltersAndSort();
         }
 
@@ -590,7 +609,8 @@ const firebaseConfig = {
             const searchLower = currentSearch.toLowerCase();
             return allReviews.filter(review => 
                 review.title.toLowerCase().includes(searchLower) ||
-                review.artist.toLowerCase().includes(searchLower)
+                review.artist.toLowerCase().includes(searchLower) ||
+                (Array.isArray(review.genre) && review.genre.some(g => g.toLowerCase().includes(searchLower)))
             );
         }
 
@@ -605,38 +625,38 @@ const firebaseConfig = {
             }
         }
 
-        function renderStars(rating) {
-            const fullStars = Math.floor(rating / 2);
-            const decimal = rating / 2 - fullStars;
-            let starsHTML = '';
-            for (let i = 0; i < fullStars; i++) starsHTML += '<span style="color: #ffd700;">★</span>';
-            if (decimal >= 0.5) starsHTML += '<span style="color: #ffd700;">½</span>';
-            const emptyStars = 5 - Math.ceil(rating / 2);
-            for (let i = 0; i < emptyStars; i++) starsHTML += '<span style="color: var(--text-muted);">☆</span>';
-            return starsHTML;
-        }
-
         function applyFiltersAndSort() {
             const container = document.getElementById('reviewsContainer');
             const resultsInfo = document.getElementById('resultsInfo');
+            
             let filtered = applySearch();
             let sorted = sortReviews(filtered);
+            
             const totalItems = sorted.length;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
             const startIndex = (currentPage - 1) * itemsPerPage;
             const paginatedReviews = sorted.slice(startIndex, startIndex + itemsPerPage);
+            
             resultsInfo.textContent = `Showing ${startIndex + 1}-${Math.min(startIndex + itemsPerPage, totalItems)} of ${totalItems} reviews`;
-            if (paginatedReviews.length === 0) { container.innerHTML = '<div class="no-results">No reviews found.</div>'; document.getElementById('pagination').innerHTML = ''; return; }
+            
+            if (paginatedReviews.length === 0) {
+                container.innerHTML = '<div class="no-results">No reviews found. Try a different search!</div>';
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+            
             container.innerHTML = paginatedReviews.map(review => `
                 <div class="review-card-horizontal">
-                    <div class="review-card-image">${review.albumArt ? `<img src="${review.albumArt}">` : '<div class="no-image">🎵</div>'}</div>
+                    <div class="review-card-image">
+                        ${review.albumArt ? `<img src="${review.albumArt}" alt="${review.title}" onerror="this.parentElement.innerHTML='<div class=\'no-image\'>🎵</div>'">` : '<div class="no-image">🎵</div>'}
+                    </div>
                     <div class="review-card-content">
                         <div class="review-card-header">
                             <div>
                                 <h3 class="review-card-title">${escapeHtml(review.title)}</h3>
                                 <p class="review-card-artist">${escapeHtml(review.artist)}</p>
                                 <p class="review-card-year">${review.year || 'N/A'}</p>
-                                <span class="review-card-genre">${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre}</span>
+                                <span class="review-card-genre">${Array.isArray(review.genre) ? review.genre.slice(0, 2).join(', ') : review.genre}</span>
                             </div>
                             <div class="review-card-rating">
                                 <div><span class="rating-number">${review.rating.toFixed(1)}</span><span>/10</span></div>
@@ -644,10 +664,11 @@ const firebaseConfig = {
                             </div>
                         </div>
                         <p class="review-card-preview">${escapeHtml(review.shortPreview || review.review.substring(0, 100))}...</p>
-                        <a href="review.html?id=${review.id}" class="read-more-btn">Read full review →</a>
+                        <a href="review.html?id=${review.firebaseId}" class="read-more-btn">Read full review →</a>
                     </div>
                 </div>
             `).join('');
+            
             renderPagination(totalPages);
         }
 
@@ -678,7 +699,6 @@ const firebaseConfig = {
             });
         }
 
-        // Auth and UI
         window.toggleUserDropdown = function() {
             const dropdown = document.getElementById('userDropdown');
             if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';

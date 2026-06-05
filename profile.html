@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>My Profile - Honestly, it.....</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         .profile-container {
             max-width: 900px;
@@ -123,6 +124,7 @@
             padding: 0.5rem 1rem;
             border-radius: 8px;
             cursor: pointer;
+            font-family: inherit;
         }
         
         .save-btn {
@@ -133,6 +135,7 @@
             border-radius: 8px;
             cursor: pointer;
             margin-right: 0.5rem;
+            font-family: inherit;
         }
         
         .cancel-btn {
@@ -142,6 +145,7 @@
             padding: 0.5rem 1rem;
             border-radius: 8px;
             cursor: pointer;
+            font-family: inherit;
         }
         
         .edit-input {
@@ -152,6 +156,7 @@
             color: var(--text-primary);
             width: 100%;
             max-width: 300px;
+            font-family: inherit;
         }
         
         .genre-grid {
@@ -193,6 +198,7 @@
             padding: 0.5rem 1rem;
             border-radius: 8px;
             cursor: pointer;
+            font-family: inherit;
         }
         
         .stats-grid {
@@ -240,6 +246,7 @@
             padding: 0.5rem 1rem;
             border-radius: 8px;
             cursor: pointer;
+            font-family: inherit;
         }
         
         #avatarFileInput {
@@ -247,7 +254,7 @@
         }
         
         @media (max-width: 768px) {
-            .profile-container { padding: 1rem; }
+            .profile-container { padding: 1rem; margin: 1rem; }
             .info-row { flex-direction: column; }
             .info-label { width: 100%; }
             .stats-grid { grid-template-columns: 1fr; gap: 0.5rem; }
@@ -493,7 +500,6 @@ const firebaseConfig = {
             document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
         }
 
-        // Profile Functions
         let currentUser = null;
         let userData = {};
 
@@ -552,7 +558,7 @@ const firebaseConfig = {
                 if (stored) {
                     const reviews = JSON.parse(stored);
                     for (const review of reviews) {
-                        const commentsRef = collection(db, 'reviews', String(review.id), 'comments');
+                        const commentsRef = collection(db, 'reviews', review.firebaseId || String(review.id), 'comments');
                         const q = query(commentsRef, where('userId', '==', userId));
                         const commentSnapshot = await getDocs(q);
                         commentCount += commentSnapshot.size;
@@ -617,7 +623,6 @@ const firebaseConfig = {
                 </div>
             `;
             
-            // Render genre checkboxes
             const genresGrid = document.getElementById('genresContainer');
             const allGenres = ["Rock", "Pop", "Hip Hop", "Electronic", "R&B", "Jazz", "Country", "Metal", "Classical", "K-Pop", "Latin", "Indie", "Alternative", "Folk", "Blues", "Reggae", "Soul", "Funk", "Punk", "House", "Techno", "Ambient", "Lo-Fi", "Disco"];
             genresGrid.innerHTML = allGenres.map(genre => `

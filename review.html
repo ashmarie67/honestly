@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Review - Honestly, it.....</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         .review-page {
             max-width: 1000px;
@@ -166,20 +167,10 @@
             transition: all 0.3s;
         }
         
-        .back-button:hover {
-            background: #ff1493;
-            color: white;
-        }
-        
         .comments-section {
             margin-top: 3rem;
             padding-top: 2rem;
             border-top: 2px solid var(--border-color);
-        }
-        
-        .comments-section h3 {
-            color: #ff1493;
-            margin-bottom: 1.5rem;
         }
         
         .comment-form {
@@ -199,6 +190,7 @@
             font-size: 0.95rem;
             resize: vertical;
             margin-bottom: 1rem;
+            font-family: inherit;
         }
         
         .post-comment-btn {
@@ -209,6 +201,7 @@
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
+            font-family: inherit;
         }
         
         .auth-prompt {
@@ -231,6 +224,7 @@
             font-weight: 600;
             text-decoration: none;
             display: inline-block;
+            font-family: inherit;
         }
         
         .auth-prompt-btn.signin {
@@ -264,13 +258,6 @@
             justify-content: center;
             font-weight: bold;
             color: white;
-        }
-        
-        .comment-avatar-img img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
         }
         
         .comment-content {
@@ -388,7 +375,7 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-bottom">
-                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
+                <p>&copy; 2026 Honestly, it..... All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -427,13 +414,43 @@ const firebaseConfig = {
         const reviewId = urlParams.get('id');
         
         let currentUser = null;
-        let currentEditingComment = null;
 
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating / 2);
+            const decimal = rating / 2 - fullStars;
+            let starsHTML = '';
+            for (let i = 0; i < fullStars; i++) starsHTML += '<span style="color: #ffd700;">★</span>';
+            if (decimal >= 0.5) starsHTML += '<span style="color: #ffd700;">½</span>';
+            const emptyStars = 5 - Math.ceil(rating / 2);
+            for (let i = 0; i < emptyStars; i++) starsHTML += '<span style="color: var(--text-muted);">☆</span>';
+            return starsHTML;
+        }
+
+        function getRelativeTime(timestamp) {
+            if (!timestamp) return 'Just now';
+            const commentDate = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const diffMs = Date.now() - commentDate;
+            const diffMins = Math.floor(diffMs / 60000);
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min ago`;
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            const diffDays = Math.floor(diffHours / 24);
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            const diffWeeks = Math.floor(diffDays / 7);
+            if (diffWeeks < 4) return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ago`;
+            const diffMonths = Math.floor(diffDays / 30);
+            if (diffMonths < 12) return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+            const diffYears = Math.floor(diffDays / 365);
+            return `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
         }
 
         // Mobile Navigation
@@ -569,43 +586,22 @@ const firebaseConfig = {
             document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
         }
 
-        function renderStars(rating) {
-            const fullStars = Math.floor(rating / 2);
-            const decimal = rating / 2 - fullStars;
-            let starsHTML = '';
-            for (let i = 0; i < fullStars; i++) starsHTML += '<span style="color: #ffd700;">★</span>';
-            if (decimal >= 0.5) starsHTML += '<span style="color: #ffd700;">½</span>';
-            const emptyStars = 5 - Math.ceil(rating / 2);
-            for (let i = 0; i < emptyStars; i++) starsHTML += '<span style="color: var(--text-muted);">☆</span>';
-            return starsHTML;
-        }
-
-        function getRelativeTime(timestamp) {
-            if (!timestamp) return 'Just now';
-            const commentDate = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            const diffMs = Date.now() - commentDate;
-            const diffMins = Math.floor(diffMs / 60000);
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins} min ago`;
-            const diffHours = Math.floor(diffMins / 60);
-            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-            const diffDays = Math.floor(diffHours / 24);
-            if (diffDays === 1) return 'Yesterday';
-            if (diffDays < 7) return `${diffDays} days ago`;
-            const diffWeeks = Math.floor(diffDays / 7);
-            if (diffWeeks < 4) return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ago`;
-            const diffMonths = Math.floor(diffDays / 30);
-            if (diffMonths < 12) return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
-            const diffYears = Math.floor(diffDays / 365);
-            return `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
-        }
-
-        function loadReviewData() {
+        async function loadReviewData() {
             const container = document.getElementById('reviewContent');
+            
+            // Load from Firebase
             let reviews = [];
-            const stored = localStorage.getItem('musicReviews');
-            if (stored) reviews = JSON.parse(stored);
-            const review = reviews.find(r => Number(r.id) === Number(reviewId));
+            try {
+                const { loadReviewsFromFirebase } = await import('./firebase-reviews.js');
+                reviews = await loadReviewsFromFirebase();
+            } catch (error) {
+                console.error('Error loading from Firebase:', error);
+                const stored = localStorage.getItem('musicReviews');
+                reviews = stored ? JSON.parse(stored) : [];
+            }
+            
+            const review = reviews.find(r => r.firebaseId === reviewId);
+            
             if (!review) {
                 container.innerHTML = `<div style="text-align: center; padding: 3rem;"><h2>Review not found</h2><a href="index.html" class="back-button">← Back to Home</a></div>`;
                 return;
@@ -652,7 +648,6 @@ const firebaseConfig = {
             const commentsSection = document.getElementById('commentsSection');
             if (!commentsSection) return;
             if (currentUser) {
-                const displayName = currentUser.displayName || currentUser.email.split('@')[0];
                 commentsSection.innerHTML = `
                     <h3>💬 Comments</h3>
                     <div class="comment-form">
@@ -723,7 +718,7 @@ const firebaseConfig = {
         window.editComment = function(commentId, currentText) {
             const textDiv = document.getElementById(`comment-text-${commentId}`);
             textDiv.innerHTML = `
-                <textarea id="edit-${commentId}" class="edit-textarea" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 0.5rem;" rows="2">${escapeHtml(currentText)}</textarea>
+                <textarea id="edit-${commentId}" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 0.5rem;" rows="2">${escapeHtml(currentText)}</textarea>
                 <div><button class="save-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem; margin-right: 0.5rem;" onclick="saveEdit('${commentId}')">Save</button><button class="cancel-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="cancelEdit('${commentId}', '${escapeHtml(currentText).replace(/'/g, "\\'")}')">Cancel</button></div>
             `;
         };
@@ -780,8 +775,7 @@ const firebaseConfig = {
         });
 
         initMobileNav();
-        if (auth.currentUser !== undefined) loadReviewData();
-        else onAuthStateChanged(auth, () => loadReviewData());
+        loadReviewData();
     </script>
 </body>
 </html>
