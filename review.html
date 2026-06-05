@@ -600,7 +600,7 @@ const firebaseConfig = {
                 reviews = stored ? JSON.parse(stored) : [];
             }
             
-            const review = reviews.find(r => r.firebaseId === reviewId);
+            const review = reviews.find(r => r.firebaseId === reviewId || r.id == reviewId);
             
             if (!review) {
                 container.innerHTML = `<div style="text-align: center; padding: 3rem;"><h2>Review not found</h2><a href="index.html" class="back-button">← Back to Home</a></div>`;
