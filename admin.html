@@ -464,7 +464,7 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-bottom">
-                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
+                <p>&copy; 2026 Honestly, it..... All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -499,7 +499,7 @@ const firebaseConfig = {
         let editingFirebaseId = null;
         let currentUser = null;
 
-        const allGenres = ["Rock", "Pop", "Hip Hop", "Electronic", "R&B", "Jazz", "Alternative", "Indie", "Country", "Metal", "Classical", "K-Pop", "Latin", "Blues", "Folk", "Soul", "Funk", "Reggae"];
+        const allGenres = ["Rock", "Pop", "Hip Hop", "Electronic", "R&B", "Jazz", "Alternative", "Indie", "Country", "Metal", "Classical", "K-Pop", "Latin", "Blues", "Folk", "Soul", "Funk", "Reggae", "Rap", "Dance", "Retro"];
 
         // Genre functions
         function buildGenreGrid(selectedGenres = []) {
@@ -523,7 +523,7 @@ const firebaseConfig = {
             const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
             const display = document.getElementById('selectedGenresDisplay');
             if (display) {
-                display.innerHTML = selected.length ? selected.map(g => `<span class="genre-tag">${g}</span>`).join('') : '<small style="color: var(--text-muted);">No genres selected</small>';
+                display.innerHTML = selected.length ? selected.map(g => `<span class="genre-tag">${g}</span>`).join('') : '<small style="color: var(--text-muted);">Select at least one genre</small>';
             }
         }
 
