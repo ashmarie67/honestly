@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Honestly, it.....</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=10">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -63,7 +63,7 @@
     <header class="hero" id="home">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <div class="hero-badge">EST. 2024</div>
+            <div class="hero-badge">EST. 2026</div>
             <h1 class="hero-title">Discover the <span class="hero-highlight">Music</span><br>That Moves You</h1>
             <p class="hero-subtitle">Expert reviews, critical analysis, and the latest in music culture.</p>
             <a href="#reviews" class="hero-cta">Explore Reviews →</a>
@@ -89,7 +89,7 @@
             </div>
             
             <div id="reviewsGrid" class="reviews-grid">
-                <div style="text-align: center; padding: 3rem;">Loading reviews from cloud...</div>
+                <div style="text-align: center; padding: 3rem;">Loading reviews...</div>
             </div>
         </div>
     </section>
@@ -97,7 +97,7 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-bottom">
-                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
+                <p>&copy; 2026 Honestly, it..... All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -114,10 +114,17 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        // Show alert to confirm script is running
+        alert("DEBUG: JavaScript is running on this device!");
+        
+        console.log("=== DEBUG: Page loaded ===");
+        console.log("Screen width:", window.innerWidth);
+        console.log("User agent:", navigator.userAgent);
+
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
   authDomain: "honestly-it.firebaseapp.com",
@@ -129,13 +136,17 @@ const firebaseConfig = {
 };
 
 
+        console.log("DEBUG: Firebase config loaded");
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
+        console.log("DEBUG: Firebase initialized");
 
-        let currentReviews = [];
-        let currentSort = 'rating';
         let currentUser = null;
+        let currentSort = 'rating';
+        let allReviews = [];
 
         function escapeHtml(text) {
             if (!text) return '';
@@ -158,7 +169,7 @@ const firebaseConfig = {
         // Load reviews from Firebase
         async function loadReviewsFromFirebase() {
             try {
-                console.log("Attempting to load reviews from Firebase...");
+                console.log("DEBUG: Attempting to load reviews from Firebase...");
                 const reviewsRef = collection(db, 'reviews');
                 const q = query(reviewsRef, orderBy('dateAdded', 'desc'));
                 const querySnapshot = await getDocs(q);
@@ -168,69 +179,63 @@ const firebaseConfig = {
                     reviews.push({ firebaseId: doc.id, ...doc.data() });
                 });
                 
-                console.log(`✅ Successfully loaded ${reviews.length} reviews from Firebase`);
-                
-                // Save to localStorage as backup
-                localStorage.setItem('musicReviews', JSON.stringify(reviews));
-                
+                console.log(`DEBUG: Firebase returned ${reviews.length} reviews`);
+                alert(`DEBUG: Firebase returned ${reviews.length} reviews`);
                 return reviews;
             } catch (error) {
-                console.error('❌ Error loading from Firebase:', error);
-                // Fallback to localStorage
-                const stored = localStorage.getItem('musicReviews');
-                if (stored) {
-                    console.log("Using localStorage backup");
-                    return JSON.parse(stored);
-                }
+                console.error('DEBUG: Firebase error:', error);
+                alert(`DEBUG: Firebase error: ${error.message}`);
                 return [];
             }
         }
 
-        // Sort functions
+        // Sort reviews
         function getSortedReviews(reviews) {
             const sorted = [...reviews];
             switch(currentSort) {
-                case 'rating':
-                    return sorted.sort((a, b) => b.rating - a.rating);
-                case 'newest':
-                    return sorted.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
-                case 'artist':
-                    return sorted.sort((a, b) => a.artist.localeCompare(b.artist));
-                case 'title':
-                    return sorted.sort((a, b) => a.title.localeCompare(b.title));
-                default:
-                    return sorted.sort((a, b) => b.rating - a.rating);
+                case 'rating': return sorted.sort((a, b) => b.rating - a.rating);
+                case 'newest': return sorted.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+                case 'artist': return sorted.sort((a, b) => a.artist.localeCompare(b.artist));
+                case 'title': return sorted.sort((a, b) => a.title.localeCompare(b.title));
+                default: return sorted.sort((a, b) => b.rating - a.rating);
             }
         }
 
         // Display reviews
         async function displayReviews() {
             const grid = document.getElementById('reviewsGrid');
-            if (!grid) return;
-            
-            const reviews = await loadReviewsFromFirebase();
-            const sortedReviews = getSortedReviews(reviews);
-            
-            const resultsCount = document.getElementById('resultsCount');
-            if (resultsCount) resultsCount.textContent = sortedReviews.length;
-            
-            if (sortedReviews.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 3rem;">No reviews found. Check back soon!</p>';
+            if (!grid) {
+                console.error("DEBUG: reviewsGrid element not found!");
                 return;
             }
             
+            console.log("DEBUG: displayReviews called");
+            
+            const reviews = await loadReviewsFromFirebase();
+            allReviews = reviews;
+            
+            const resultsCount = document.getElementById('resultsCount');
+            if (resultsCount) resultsCount.textContent = reviews.length;
+            
+            if (reviews.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 3rem;">❌ No reviews found in Firebase. Please add reviews in admin panel.</p>';
+                return;
+            }
+            
+            const sortedReviews = getSortedReviews(reviews);
+            
             grid.innerHTML = sortedReviews.map(review => `
-                <div class="review-card-horizontal" style="display: flex; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <div class="review-card-horizontal" style="display: flex; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 1rem;">
                     <div style="flex: 0 0 130px; display: flex; align-items: center; justify-content: center; padding: 12px; background: var(--bg-secondary);">
                         ${review.albumArt ? 
-                            `<img src="${review.albumArt}" alt="${review.title}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">` : 
+                            `<img src="${review.albumArt}" alt="${review.title}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px;">` : 
                             `<div style="width: 100px; height: 100px; background: linear-gradient(135deg, #ff1493, #ffd700); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">🎵</div>`
                         }
                     </div>
                     <div style="flex: 1; padding: 1rem;">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
                             <div>
-                                <span class="card-genre" style="background: var(--bg-secondary); color: #ff1493; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem;">${Array.isArray(review.genre) ? review.genre.slice(0, 2).join(', ') : review.genre}</span>
+                                <span style="background: var(--bg-secondary); color: #ff1493; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem;">${Array.isArray(review.genre) ? review.genre.slice(0, 2).join(', ') : review.genre}</span>
                                 <h3 style="margin: 0.4rem 0 0.1rem 0; font-size: 1rem;">${escapeHtml(review.title)}</h3>
                                 <p style="color: #ff1493; font-weight: 500; margin: 0; font-size: 0.85rem;">${escapeHtml(review.artist)}</p>
                                 <p style="color: var(--text-muted); font-size: 0.7rem; margin: 0.2rem 0;">${review.year || 'N/A'}</p>
@@ -245,6 +250,8 @@ const firebaseConfig = {
                     </div>
                 </div>
             `).join('');
+            
+            console.log(`DEBUG: Displayed ${sortedReviews.length} reviews on page`);
         }
 
         // Setup sort buttons
@@ -267,12 +274,10 @@ const firebaseConfig = {
             const navMenu = document.getElementById('mobileNavMenu');
             const navClose = document.getElementById('mobileNavClose');
             if (!menuBtn) return;
-            function openMenu() { navMenu.classList.add('open'); navOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; }
-            function closeMenu() { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; }
-            menuBtn.addEventListener('click', openMenu);
-            navClose.addEventListener('click', closeMenu);
-            navOverlay.addEventListener('click', closeMenu);
-            document.querySelectorAll('.mobile-nav-links a').forEach(link => link.addEventListener('click', closeMenu));
+            menuBtn.addEventListener('click', () => { navMenu.classList.add('open'); navOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; });
+            navClose.addEventListener('click', () => { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; });
+            navOverlay.addEventListener('click', () => { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; });
+            document.querySelectorAll('.mobile-nav-links a').forEach(link => link.addEventListener('click', () => { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; }));
         }
 
         function updateMobileAuth(user) {
@@ -312,7 +317,6 @@ const firebaseConfig = {
             document.body.style.overflow = '';
         }
 
-        // Auth Modal
         function showAuthModal(type) {
             const modal = document.getElementById('authModal');
             const title = document.getElementById('authModalTitle');
@@ -328,9 +332,17 @@ const firebaseConfig = {
                     <div class="auth-switch">New here? <a id="switchToSignup">Create an account</a></div>
                     <div class="auth-switch"><a id="forgotPasswordLink">Forgot password?</a></div>
                 `;
-                document.getElementById('doLoginBtn')?.addEventListener('click', handleLogin);
+                document.getElementById('doLoginBtn')?.addEventListener('click', async () => {
+                    const email = document.getElementById('loginEmail')?.value;
+                    const password = document.getElementById('loginPassword')?.value;
+                    try { await signInWithEmailAndPassword(auth, email, password); closeAuthModal(); } 
+                    catch (error) { document.getElementById('loginError').style.display = 'block'; document.getElementById('loginError').textContent = error.message; }
+                });
                 document.getElementById('switchToSignup')?.addEventListener('click', () => showAuthModal('signup'));
-                document.getElementById('forgotPasswordLink')?.addEventListener('click', showForgotPassword);
+                document.getElementById('forgotPasswordLink')?.addEventListener('click', () => {
+                    // Forgot password logic
+                    alert("Password reset feature");
+                });
             } else {
                 title.innerHTML = 'Create Account';
                 body.innerHTML = `
@@ -342,56 +354,20 @@ const firebaseConfig = {
                     <div class="auth-divider"><span>or</span></div>
                     <div class="auth-switch">Already have an account? <a id="switchToLogin">Sign In</a></div>
                 `;
-                document.getElementById('doSignupBtn')?.addEventListener('click', handleSignup);
+                document.getElementById('doSignupBtn')?.addEventListener('click', async () => {
+                    const name = document.getElementById('signupName')?.value;
+                    const email = document.getElementById('signupEmail')?.value;
+                    const password = document.getElementById('signupPassword')?.value;
+                    if (password.length < 6) { alert('Password must be at least 6 characters'); return; }
+                    try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await updateProfile(userCredential.user, { displayName: name }); closeAuthModal(); } 
+                    catch (error) { document.getElementById('signupError').style.display = 'block'; document.getElementById('signupError').textContent = error.message; }
+                });
                 document.getElementById('switchToLogin')?.addEventListener('click', () => showAuthModal('login'));
             }
             modal.style.display = 'flex';
         }
 
         function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
-
-        async function handleLogin() {
-            const email = document.getElementById('loginEmail')?.value;
-            const password = document.getElementById('loginPassword')?.value;
-            const errorDiv = document.getElementById('loginError');
-            if (!email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter both email and password'; return; }
-            errorDiv.style.display = 'none';
-            try { await signInWithEmailAndPassword(auth, email, password); closeAuthModal(); } 
-            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
-        }
-
-        async function handleSignup() {
-            const name = document.getElementById('signupName')?.value;
-            const email = document.getElementById('signupEmail')?.value;
-            const password = document.getElementById('signupPassword')?.value;
-            const errorDiv = document.getElementById('signupError');
-            if (!name || !email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please fill in all fields'; return; }
-            if (password.length < 6) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Password must be at least 6 characters'; return; }
-            errorDiv.style.display = 'none';
-            try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await updateProfile(userCredential.user, { displayName: name }); closeAuthModal(); } 
-            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
-        }
-
-        async function showForgotPassword() {
-            const title = document.getElementById('authModalTitle');
-            const body = document.getElementById('authModalBody');
-            title.innerHTML = 'Reset Password';
-            body.innerHTML = `
-                <div id="resetError" class="auth-error" style="display: none;"></div>
-                <p>Enter your email to receive a reset link.</p>
-                <div class="auth-input-group"><input type="email" id="resetEmail" class="auth-input" placeholder="Email address"></div>
-                <button id="sendResetBtn" class="auth-btn-primary">Send Reset Link</button>
-                <div class="auth-switch"><a id="backToLogin">Back to Sign In</a></div>
-            `;
-            document.getElementById('sendResetBtn')?.addEventListener('click', async () => {
-                const email = document.getElementById('resetEmail')?.value;
-                const errorDiv = document.getElementById('resetError');
-                if (!email) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter your email'; return; }
-                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
-                catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
-            });
-            document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
-        }
 
         window.toggleUserDropdown = function() {
             const dropdown = document.getElementById('userDropdown');
@@ -420,10 +396,12 @@ const firebaseConfig = {
         });
 
         initMobileNav();
-        displayReviews();
-        setupSortButtons();
         
-        console.log('Index page loaded - Firebase config ready');
+        // Load reviews
+        displayReviews();
+        
+        console.log("DEBUG: Page fully loaded");
+        alert("DEBUG: Page fully loaded - check console for more info");
     </script>
 </body>
 </html>
