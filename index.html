@@ -210,7 +210,7 @@ const firebaseConfig = {
                             <div>
                                 <span style="background: var(--bg-secondary); color: #ff1493; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem;">${Array.isArray(review.genre) ? review.genre.slice(0, 2).join(', ') : review.genre}</span>
                                 <h3 style="margin: 0.4rem 0 0.1rem 0; font-size: 1rem;">${escapeHtml(review.title)}</h3>
-                                <p style="color: #ff1493; font-weight: 500; margin: 0; font-size: 0.85rem;">${escapeHtml(review.artist)}</p>
+                                <a href="artist.html?name=${encodeURIComponent(review.artist)}" style="color: #ff1493; font-weight: 500; margin: 0; font-size: 0.85rem; text-decoration: none; cursor: pointer;">${escapeHtml(review.artist)}</a>
                                 <p style="color: var(--text-muted); font-size: 0.7rem; margin: 0.2rem 0;">${review.year || 'N/A'}</p>
                             </div>
                             <div style="text-align: right;">
