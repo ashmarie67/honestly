@@ -6,6 +6,118 @@
     <title>Honestly, it.....</title>
     <link rel="stylesheet" href="style.css?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Additional mobile styles */
+        .reviews-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .review-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .review-card-inner {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        
+        .review-card-image {
+            flex: 0 0 100px;
+        }
+        
+        .review-card-image img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        
+        .review-card-image .no-image {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .review-card-content {
+            flex: 1;
+        }
+        
+        .review-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 0.2rem 0;
+        }
+        
+        .review-card-artist {
+            color: #ff1493;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .review-card-year {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+        }
+        
+        .review-card-rating {
+            margin: 0.5rem 0;
+        }
+        
+        .rating-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .review-card-preview {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            line-height: 1.4;
+            margin: 0.5rem 0;
+        }
+        
+        .read-more {
+            color: #ff1493;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        @media (max-width: 768px) {
+            .review-card-inner {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .review-card-image {
+                flex: 0 0 auto;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -13,13 +125,11 @@
             <div class="logo">
                 <span class="logo-text">Honestly, it.....</span>
             </div>
-            
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="reviews.html">Reviews</a></li>
                 <li><a href="community.html">Community</a></li>
             </ul>
-            
             <div class="user-menu">
                 <div id="authButtons">
                     <button id="signInBtn" class="auth-nav-btn">Sign In</button>
@@ -40,7 +150,6 @@
                     </div>
                 </div>
             </div>
-            
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -63,40 +172,21 @@
         <div id="mobileAuthContainer"></div>
     </div>
 
-    <header class="hero" id="home">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <div class="hero-badge">EST. 2026</div>
-            <h1 class="hero-title">Discover the <span class="hero-highlight">Music</span><br>That Moves You</h1>
-            <p class="hero-subtitle">Expert reviews, critical analysis, and the latest in music culture.</p>
-            <a href="#reviews" class="hero-cta">Explore Reviews →</a>
+    <main class="reviews-container">
+        <div class="hero" style="text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(255,20,147,0.1), rgba(255,215,0,0.1)); border-radius: 24px; margin-bottom: 2rem;">
+            <h1>Discover Great Music</h1>
+            <p>Honest reviews from real listeners</p>
         </div>
-    </header>
-
-    <section class="reviews-section" id="reviews">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Latest & Greatest</span>
-                <h2 class="section-title">All Reviews</h2>
-            </div>
-            
-            <div class="sort-controls">
-                <div class="sort-buttons">
-                    <button class="sort-btn active" data-sort="rating">Rating</button>
-                    <button class="sort-btn" data-sort="newest">Newest</button>
-                    <button class="sort-btn" data-sort="artist">Artist</button>
-                </div>
-                <div class="results-count"><span id="resultsCount">0</span> reviews</div>
-            </div>
-            
-            <div class="reviews-grid" id="reviewsGrid"></div>
+        
+        <div id="reviewsList" class="reviews-list">
+            <div style="text-align: center; padding: 2rem;">Loading reviews from cloud...</div>
         </div>
-    </section>
+    </main>
 
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-bottom">
-                <p>&copy; 2026 Honestly, it..... All rights reserved.</p>
+                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -114,8 +204,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { loadReviewsFromFirebase, initFirebaseReviews } from './firebase-reviews.js';
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -128,21 +217,29 @@ const firebaseConfig = {
   measurementId: "G-R8Q5308Y8K"
 };
 
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
-        initFirebaseReviews(db);
 
-        let allReviews = [];
-        let currentSort = "newest";
-        let currentUser = null;
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        // Load reviews from Firebase
+        async function loadReviewsFromFirebase() {
+            try {
+                const reviewsRef = collection(db, 'reviews');
+                const q = query(reviewsRef, orderBy('dateAdded', 'desc'));
+                const querySnapshot = await getDocs(q);
+                
+                const reviews = [];
+                querySnapshot.forEach((doc) => {
+                    reviews.push({ firebaseId: doc.id, ...doc.data() });
+                });
+                
+                console.log(`Loaded ${reviews.length} reviews from Firebase`);
+                return reviews;
+            } catch (error) {
+                console.error('Error loading from Firebase:', error);
+                return [];
+            }
         }
 
         function renderStars(rating) {
@@ -154,6 +251,49 @@ const firebaseConfig = {
             const emptyStars = 5 - Math.ceil(rating / 2);
             for (let i = 0; i < emptyStars; i++) starsHTML += '<span style="color: var(--text-muted);">☆</span>';
             return starsHTML;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function displayReviews() {
+            const container = document.getElementById('reviewsList');
+            if (!container) return;
+            
+            const reviews = await loadReviewsFromFirebase();
+            
+            if (reviews.length === 0) {
+                container.innerHTML = '<div class="empty-state">No reviews yet. Check back soon!</div>';
+                return;
+            }
+            
+            container.innerHTML = reviews.map(review => `
+                <div class="review-card">
+                    <div class="review-card-inner">
+                        <div class="review-card-image">
+                            ${review.albumArt ? 
+                                `<img src="${review.albumArt}" alt="${review.title}" onerror="this.parentElement.innerHTML='<div class=\'no-image\'>🎵</div>'">` : 
+                                '<div class="no-image">🎵</div>'
+                            }
+                        </div>
+                        <div class="review-card-content">
+                            <h3 class="review-card-title">${escapeHtml(review.title)}</h3>
+                            <p class="review-card-artist">${escapeHtml(review.artist)}</p>
+                            <p class="review-card-year">${review.year || 'N/A'}</p>
+                            <div class="review-card-rating">
+                                <span class="rating-number">${review.rating.toFixed(1)}</span>/10
+                                <div>${renderStars(review.rating)}</div>
+                            </div>
+                            <p class="review-card-preview">${escapeHtml(review.shortPreview || review.review.substring(0, 100))}...</p>
+                            <a href="review.html?id=${review.firebaseId}" class="read-more">Read full review →</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
         // Mobile Navigation
@@ -289,87 +429,12 @@ const firebaseConfig = {
             document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
         }
 
-        // Load reviews from Firebase
-        async function loadReviews() {
-            const reviews = await loadReviewsFromFirebase();
-            if (reviews.length > 0) {
-                allReviews = reviews;
-                localStorage.setItem('musicReviews', JSON.stringify(reviews));
-            } else {
-                const stored = localStorage.getItem('musicReviews');
-                allReviews = stored ? JSON.parse(stored) : [];
-            }
-            applyFiltersAndSort();
-        }
-
-        function sortReviews(reviews) {
-            const sorted = [...reviews];
-            switch(currentSort) {
-                case "newest": return sorted.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
-                case "rating": return sorted.sort((a, b) => b.rating - a.rating);
-                case "artist": return sorted.sort((a, b) => a.artist.localeCompare(b.artist));
-                default: return sorted;
-            }
-        }
-
-        function applyFiltersAndSort() {
-            const grid = document.getElementById('reviewsGrid');
-            const resultsCount = document.getElementById('resultsCount');
-            
-            let sorted = sortReviews(allReviews);
-            resultsCount.textContent = sorted.length;
-            
-            if (sorted.length === 0) {
-                grid.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--text-muted);">No reviews yet. Check back soon!</div>';
-                return;
-            }
-            
-            grid.innerHTML = sorted.map(review => `
-                <div class="review-card-horizontal" style="display: flex; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 1rem;">
-                    <div style="flex: 0 0 130px; display: flex; align-items: center; justify-content: center; padding: 12px; background: var(--bg-secondary);">
-                        ${review.albumArt ? 
-                            `<img src="${review.albumArt}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px;">` : 
-                            `<div style="width: 100px; height: 100px; background: linear-gradient(135deg, #ff1493, #ffd700); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">🎵</div>`
-                        }
-                    </div>
-                    <div style="flex: 1; padding: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
-                            <div>
-                                <span style="background: var(--bg-secondary); color: #ff1493; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem;">${Array.isArray(review.genre) ? review.genre.slice(0, 2).join(', ') : review.genre}</span>
-                                <h3 style="margin: 0.4rem 0 0.1rem 0; font-size: 1rem;">${escapeHtml(review.title)}</h3>
-                                <p style="color: #ff1493; font-weight: 500; margin: 0; font-size: 0.85rem;">${escapeHtml(review.artist)}</p>
-                                <p style="color: var(--text-muted); font-size: 0.7rem; margin: 0.2rem 0;">${review.year || 'N/A'}</p>
-                            </div>
-                            <div style="text-align: right;">
-                                <div><span style="font-size: 1.3rem; font-weight: bold; color: #ffd700;">${review.rating.toFixed(1)}</span><span style="font-size: 0.7rem;">/10</span></div>
-                                <div style="font-size: 0.7rem;">${renderStars(review.rating)}</div>
-                            </div>
-                        </div>
-                        <p style="color: var(--text-secondary); font-size: 0.8rem; line-height: 1.4; margin: 0.5rem 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${escapeHtml(review.shortPreview || review.review.substring(0, 100))}...</p>
-                        <a href="review.html?id=${review.firebaseId || review.id}" style="color: #ff1493; text-decoration: none; font-weight: 600; font-size: 0.8rem;">Read full review →</a>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function setupSortButtons() {
-            document.querySelectorAll('.sort-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentSort = btn.getAttribute('data-sort');
-                    applyFiltersAndSort();
-                });
-            });
-        }
-
         window.toggleUserDropdown = function() {
             const dropdown = document.getElementById('userDropdown');
             if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         };
 
         onAuthStateChanged(auth, (user) => {
-            currentUser = user;
             const authDiv = document.getElementById('authButtons');
             const avatarDiv = document.getElementById('userAvatarContainer');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
@@ -390,10 +455,11 @@ const firebaseConfig = {
         });
 
         initMobileNav();
-        loadReviews();
-        setupSortButtons();
         
-        console.log('Firebase reviews ready - cross-device sync enabled!');
+        // Load reviews when page loads
+        displayReviews();
+        
+        console.log('Firebase connected - loading reviews from cloud');
     </script>
 </body>
 </html>
