@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Honestly, it.....</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css">
     <style>
         .admin-container {
             max-width: 1000px;
@@ -48,8 +48,6 @@
             border-radius: 10px;
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-size: 1rem;
-            box-sizing: border-box;
         }
         
         .admin-form button {
@@ -61,7 +59,6 @@
             cursor: pointer;
             font-size: 1rem;
             font-weight: 600;
-            margin-top: 1rem;
         }
         
         .track-item {
@@ -72,29 +69,6 @@
             border: 1px solid var(--border-color);
         }
         
-        .track-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        
-        .track-number {
-            font-weight: bold;
-            color: #ff1493;
-        }
-        
-        .remove-track {
-            background: #ff1493;
-            color: white;
-            border: none;
-            padding: 0.25rem 0.75rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
         .add-track-btn {
             background: #ffd700;
             color: #333;
@@ -103,7 +77,6 @@
             border-radius: 8px;
             cursor: pointer;
             margin-top: 0.5rem;
-            font-weight: 600;
         }
         
         .review-item {
@@ -116,20 +89,10 @@
             align-items: center;
             border: 1px solid var(--border-color);
             flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .review-info {
-            flex: 1;
-        }
-        
-        .review-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
         }
         
         .review-actions button {
+            margin-left: 0.5rem;
             padding: 0.5rem 1rem;
             cursor: pointer;
             border: none;
@@ -152,7 +115,7 @@
         }
         
         .warning {
-            background: rgba(255, 20, 147, 0.2);
+            background: rgba(255,20,147,0.2);
             color: #ff1493;
             padding: 1rem;
             border-radius: 10px;
@@ -161,7 +124,7 @@
         }
         
         .success {
-            background: rgba(255, 215, 0, 0.2);
+            background: rgba(255,215,0,0.2);
             color: #ffd700;
             padding: 1rem;
             border-radius: 10px;
@@ -176,79 +139,14 @@
             flex-wrap: wrap;
         }
         
-        .data-buttons button {
-            flex: 1;
-            padding: 0.75rem;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        
         .export-btn {
             background: #ffd700;
             color: #333;
-        }
-        
-        .import-btn {
-            background: #ff1493;
-            color: white;
-        }
-        
-        h2, h3, h4 {
-            color: var(--text-primary);
-        }
-        
-        .login-btn {
-            background: linear-gradient(135deg, #ff1493, #ffd700);
-            color: white;
             border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 50px;
+            padding: 0.75rem;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 1rem;
             font-weight: 600;
-            margin-top: 1rem;
-        }
-        
-        .embed-type-group {
-            display: flex;
-            gap: 1rem;
-            margin: 0.5rem 0 1rem 0;
-            flex-wrap: wrap;
-        }
-        
-        .embed-type-group label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            padding: 0.25rem 0.5rem;
-        }
-        
-        .form-label {
-            font-weight: 600;
-            margin-top: 1rem;
-            margin-bottom: 0.25rem;
-            display: block;
-        }
-        
-        small {
-            display: block;
-            margin-top: -0.5rem;
-            margin-bottom: 0.75rem;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-        }
-        
-        .edit-mode-badge {
-            background: #ffd700;
-            color: #333;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            display: inline-block;
-            margin-bottom: 1rem;
         }
         
         .genre-multi-select {
@@ -262,10 +160,15 @@
             min-height: 120px;
         }
         
-        @media (max-width: 768px) {
-            .admin-container { padding: 1rem; margin: 1rem; }
-            .review-item { flex-direction: column; align-items: flex-start; }
-            .review-actions { width: 100%; justify-content: flex-end; }
+        .login-btn {
+            background: linear-gradient(135deg, #ff1493, #ffd700);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -276,59 +179,43 @@
                 <span class="logo-text">Honestly, it.....</span>
             </div>
             <ul class="nav-links">
-                <li><a href="index.html">View Site</a></li>
-                <li><a href="admin.html" class="active">Admin</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+                <li><a href="community.html">Community</a></li>
             </ul>
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </button>
         </div>
     </nav>
 
-    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
-    <div class="mobile-nav-menu" id="mobileNavMenu">
-        <div class="mobile-nav-header">
-            <span class="logo-text">Menu</span>
-            <button class="mobile-nav-close" id="mobileNavClose">×</button>
-        </div>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="reviews.html">Reviews</a></li>
-            <li><a href="community.html">Community</a></li>
-            <li><a href="profile.html">Profile</a></li>
-            <li><a href="settings.html">Settings</a></li>
-        </ul>
-        <div id="mobileAuthContainer"></div>
-    </div>
-
     <div class="container">
+        <!-- LOGIN SECTION -->
         <div id="loginSection" class="admin-container">
             <div class="login-form">
                 <h2>🔐 Admin Login</h2>
-                <p style="color: var(--text-secondary);">Enter your password to access the admin panel</p>
+                <p>Enter your password to access the admin panel</p>
                 <input type="password" id="adminPassword" placeholder="Enter admin password">
                 <button onclick="checkPassword()" class="login-btn">Login</button>
                 <div id="loginError" style="color: #ff1493; margin-top: 1rem;"></div>
             </div>
         </div>
 
+        <!-- ADMIN PANEL -->
         <div id="adminPanel" class="admin-container hidden">
             <h2>🎛️ Admin Control Panel</h2>
             <div class="warning">
-                ⚠️ Only you should have access to this page. Keep this password safe!
+                ⚠️ Only you should have access to this page.
             </div>
             
+            <!-- Migrate Button - IMPORTANT! -->
             <div class="admin-section">
-                <div id="editModeIndicator" style="display: none;">
-                    <span class="edit-mode-badge">✏️ EDIT MODE</span>
-                </div>
-                <h3 id="formTitle">➕ Add New Album Review</h3>
+                <h3>☁️ Sync to Cloud</h3>
+                <p>Click this button to upload all your local reviews to Firebase (syncs across all devices)</p>
+                <button onclick="migrateToFirebase()" class="export-btn" style="background: #28a745; color: white; width: 100%;">📤 Migrate Local Reviews to Firebase</button>
+            </div>
+            
+            <!-- Add Review -->
+            <div class="admin-section">
+                <h3>➕ Add New Review</h3>
                 <form id="reviewForm" class="admin-form">
-                    <input type="hidden" id="editId" value="">
-                    <input type="hidden" id="editFirebaseId" value="">
-                    
                     <input type="text" id="title" placeholder="Album Title" required>
                     <input type="text" id="artist" placeholder="Artist Name" required>
                     
@@ -341,70 +228,32 @@
                         <option value="Jazz">Jazz</option>
                         <option value="Alternative">Alternative</option>
                         <option value="Indie">Indie</option>
-                        <option value="Ballad">Ballad</option>
-                        <option value="Classical">Classical</option>
                         <option value="Country">Country</option>
-                        <option value="Blues">Blues</option>
-                        <option value="Folk">Folk</option>
                         <option value="Metal">Metal</option>
-                        <option value="Punk">Punk</option>
-                        <option value="Soul">Soul</option>
-                        <option value="Funk">Funk</option>
-                        <option value="Reggae">Reggae</option>
-                        <option value="Latin">Latin</option>
+                        <option value="Classical">Classical</option>
                         <option value="K-Pop">K-Pop</option>
+                        <option value="Latin">Latin</option>
                     </select>
                     <small>Hold Ctrl (Windows) or Cmd (Mac) to select multiple genres</small>
                     
-                    <label class="form-label">🎨 Album Art</label>
-                    <input type="url" id="albumArt" placeholder="Paste image URL">
-                    <small>Find album art on Google Images, right-click and select "Copy Image Address"</small>
+                    <input type="url" id="albumArt" placeholder="Album Art URL">
+                    <input type="number" id="rating" placeholder="Rating (0-10)" min="0" max="10" step="0.1" required>
+                    <textarea id="review" placeholder="Album review..." rows="4" required></textarea>
+                    <input type="text" id="shortPreview" placeholder="Short preview" required>
+                    <input type="number" id="year" placeholder="Year">
                     
-                    <label class="form-label">🔊 Music Streaming Embed (Optional)</label>
-                    <div class="embed-type-group">
-                        <label><input type="radio" name="embedType" value="youtube"> YouTube</label>
-                        <label><input type="radio" name="embedType" value="spotify"> Spotify</label>
-                        <label><input type="radio" name="embedType" value="apple"> Apple Music</label>
-                        <label><input type="radio" name="embedType" value="none" checked> None</label>
-                    </div>
-                    <input type="url" id="embedUrl" placeholder="YouTube URL, Spotify URL, or Apple Music URL">
-                    <small>YouTube: Paste video URL | Spotify: Paste track or album URL</small>
-                    
-                    <input type="number" id="rating" placeholder="Overall Rating (0-10)" min="0" max="10" step="0.1" required>
-                    <textarea id="review" placeholder="Overall album review..." rows="4" required></textarea>
-                    <input type="text" id="shortPreview" placeholder="Short preview (one sentence)" required>
-                    <input type="number" id="year" placeholder="Release year">
-                    
-                    <label class="form-label">🎵 Track-by-Track Reviews</label>
-                    <small>Add each song from the album with your analysis</small>
                     <div id="tracksContainer"></div>
                     <button type="button" class="add-track-btn" onclick="addTrackField()">+ Add Track</button>
                     
                     <input type="color" id="coverColor" value="#ff1493">
-                    
-                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                        <button type="submit" id="submitBtn">➕ Add Review</button>
-                        <button type="button" onclick="cancelEdit()" id="cancelBtn" style="background: #666; display: none;">❌ Cancel Edit</button>
-                    </div>
+                    <button type="submit">➕ Add Review</button>
                 </form>
             </div>
 
+            <!-- Manage Reviews -->
             <div class="admin-section">
-                <h3>📝 Manage Existing Reviews</h3>
-                <div id="reviewsList">
-                    <p>Loading reviews...</p>
-                </div>
-            </div>
-
-            <div class="admin-section">
-                <h3>💾 Data Management</h3>
-                <div class="data-buttons">
-                    <button onclick="exportData()" class="export-btn">📥 Export Reviews</button>
-                    <button onclick="importData()" class="import-btn">📤 Import Reviews</button>
-                    <button onclick="migrateToFirebase()" class="export-btn" style="background: #28a745;">☁️ Migrate to Firebase</button>
-                </div>
-                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImport(event)">
-                <button onclick="clearAllData()" class="delete-btn" style="margin-top: 1rem; width: 100%;">🗑️ Delete All Reviews</button>
+                <h3>📝 Manage Reviews</h3>
+                <div id="reviewsList">Loading...</div>
             </div>
         </div>
     </div>
@@ -412,452 +261,180 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-bottom">
-                <p>&copy; 2026 Honestly, it..... All rights reserved.</p>
+                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { initFirebaseReviews, loadReviewsFromFirebase, addReviewToFirebase, updateReviewInFirebase, deleteReviewFromFirebase, migrateLocalStorageToFirebase } from './firebase-reviews.js';
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
-  authDomain: "honestly-it.firebaseapp.com",
-  projectId: "honestly-it",
-  storageBucket: "honestly-it.firebasestorage.app",
-  messagingSenderId: "938783642355",
-  appId: "1:938783642355:web:330ad714c0f79b7eb25d86",
-  measurementId: "G-R8Q5308Y8K"
-};
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
-        initFirebaseReviews(db);
 
         const ADMIN_PASSWORD = "admin123";
         
         let reviews = [];
-        let isEditing = false;
-        let editingId = null;
-        let editingFirebaseId = null;
         let trackCounter = 0;
-        
-        let currentUser = null;
-
-        // Mobile Navigation
-        function initMobileNav() {
-            const menuBtn = document.getElementById('mobileMenuBtn');
-            const navOverlay = document.getElementById('mobileNavOverlay');
-            const navMenu = document.getElementById('mobileNavMenu');
-            const navClose = document.getElementById('mobileNavClose');
-            if (!menuBtn) return;
-            function openMenu() { navMenu.classList.add('open'); navOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; }
-            function closeMenu() { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; }
-            menuBtn.addEventListener('click', openMenu);
-            navClose.addEventListener('click', closeMenu);
-            navOverlay.addEventListener('click', closeMenu);
-            document.querySelectorAll('.mobile-nav-links a').forEach(link => link.addEventListener('click', closeMenu));
-        }
-
-        function updateMobileAuth(user) {
-            const mobileAuthContainer = document.getElementById('mobileAuthContainer');
-            if (!mobileAuthContainer) return;
-            if (user) {
-                const displayName = user.displayName || user.email.split('@')[0];
-                const avatarLetter = displayName.charAt(0).toUpperCase();
-                mobileAuthContainer.innerHTML = `
-                    <div class="mobile-user-info">
-                        <div class="mobile-user-avatar">${avatarLetter}</div>
-                        <div class="mobile-user-details">
-                            <div class="mobile-user-name">${escapeHtml(displayName)}</div>
-                            <div class="mobile-user-email">${escapeHtml(user.email)}</div>
-                        </div>
-                        <button class="mobile-logout-btn" id="mobileSignOutBtn">Sign Out</button>
-                    </div>
-                `;
-                document.getElementById('mobileSignOutBtn')?.addEventListener('click', () => { signOut(auth); closeMobileMenu(); });
-            } else {
-                mobileAuthContainer.innerHTML = `
-                    <div class="mobile-auth-buttons">
-                        <button class="mobile-signin-btn" id="mobileSignInBtn">Sign In</button>
-                        <button class="mobile-signup-btn" id="mobileSignUpBtn">Create Account</button>
-                    </div>
-                `;
-            }
-        }
-
-        function closeMobileMenu() {
-            const navMenu = document.getElementById('mobileNavMenu');
-            const navOverlay = document.getElementById('mobileNavOverlay');
-            if (navMenu) navMenu.classList.remove('open');
-            if (navOverlay) navOverlay.style.display = 'none';
-            document.body.style.overflow = '';
-        }
 
         function addTrackField(trackData = null) {
             const container = document.getElementById('tracksContainer');
-            const trackId = Date.now() + trackCounter++;
-            
-            const trackDiv = document.createElement('div');
-            trackDiv.className = 'track-item';
-            trackDiv.id = `track-${trackId}`;
-            trackDiv.innerHTML = `
-                <div class="track-header">
-                    <span class="track-number">Track ${container.children.length + 1}</span>
-                    <button type="button" class="remove-track" onclick="this.closest('.track-item').remove(); renumberTracks();">Remove</button>
+            const div = document.createElement('div');
+            div.className = 'track-item';
+            div.innerHTML = `
+                <div style="display: flex; justify-content: space-between;">
+                    <strong>Track ${container.children.length + 1}</strong>
+                    <button type="button" onclick="this.parentElement.parentElement.remove()" style="background:#ff1493; color:white; border:none; border-radius:5px; padding:2px 8px;">Remove</button>
                 </div>
-                <input type="text" placeholder="Track name" value="${trackData ? escapeHtml(trackData.name) : ''}" class="track-name">
-                <textarea placeholder="Your analysis/review of this track..." rows="3" class="track-review">${trackData ? escapeHtml(trackData.review) : ''}</textarea>
-                <input type="text" placeholder="Rating for this track (0-10) - optional" value="${trackData ? trackData.rating : ''}" class="track-rating">
+                <input type="text" placeholder="Track name" value="${trackData ? trackData.name : ''}" style="width:100%; margin:5px 0;">
+                <textarea placeholder="Track review" rows="2" style="width:100%;">${trackData ? trackData.review : ''}</textarea>
+                <input type="text" placeholder="Track rating (0-10) - optional" value="${trackData ? trackData.rating : ''}" style="width:100%;">
             `;
-            container.appendChild(trackDiv);
+            container.appendChild(div);
         }
-        
-        function renumberTracks() {
-            const tracks = document.querySelectorAll('.track-item');
-            tracks.forEach((track, index) => {
-                const numberSpan = track.querySelector('.track-number');
-                if (numberSpan) numberSpan.textContent = `Track ${index + 1}`;
-            });
-        }
-        
+
+        window.addTrackField = addTrackField;
+
         function collectTracks() {
             const tracks = [];
-            const trackItems = document.querySelectorAll('.track-item');
-            trackItems.forEach((item, index) => {
-                const name = item.querySelector('.track-name').value;
-                if (name && name.trim()) {
+            const items = document.querySelectorAll('.track-item');
+            items.forEach((item, i) => {
+                const name = item.querySelector('input[placeholder="Track name"]').value;
+                if (name) {
                     tracks.push({
-                        number: index + 1,
-                        name: name.trim(),
-                        review: item.querySelector('.track-review').value,
-                        rating: item.querySelector('.track-rating').value || null
+                        number: i + 1,
+                        name: name,
+                        review: item.querySelector('textarea').value,
+                        rating: item.querySelector('input[placeholder="Track rating (0-10) - optional"]').value || null
                     });
                 }
             });
             return tracks;
         }
-        
-        function loadTracksIntoForm(tracks) {
-            const container = document.getElementById('tracksContainer');
-            container.innerHTML = '';
-            trackCounter = 0;
-            if (tracks && tracks.length) {
-                tracks.forEach(track => addTrackField(track));
-            }
-        }
-        
-        function getSelectedGenres() {
-            const select = document.getElementById('genre');
-            const selected = [];
-            for (let i = 0; i < select.options.length; i++) {
-                if (select.options[i].selected) selected.push(select.options[i].value);
-            }
-            return selected;
-        }
-        
-        function setSelectedGenres(genres) {
-            const select = document.getElementById('genre');
-            if (!genres || !Array.isArray(genres)) return;
-            for (let i = 0; i < select.options.length; i++) {
-                select.options[i].selected = genres.includes(select.options[i].value);
+
+        function checkPassword() {
+            const entered = document.getElementById('adminPassword').value;
+            if (entered === ADMIN_PASSWORD) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadReviews();
+            } else {
+                document.getElementById('loginError').innerHTML = '❌ Wrong password!';
             }
         }
 
-        function checkPassword() {
-            const enteredPassword = document.getElementById('adminPassword').value;
-            const errorDiv = document.getElementById('loginError');
-            
-            if (enteredPassword === ADMIN_PASSWORD) {
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                errorDiv.textContent = '';
-                showAdminPanel();
-            } else {
-                errorDiv.textContent = '❌ Incorrect password!';
+        window.checkPassword = checkPassword;
+
+        async function loadReviews() {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'reviews'));
+                reviews = [];
+                querySnapshot.forEach((doc) => {
+                    reviews.push({ firebaseId: doc.id, ...doc.data() });
+                });
+                displayReviews();
+            } catch (error) {
+                console.error("Error loading:", error);
+                const stored = localStorage.getItem('musicReviews');
+                reviews = stored ? JSON.parse(stored) : [];
+                displayReviews();
             }
         }
-        
-        function isAdminLoggedIn() {
-            return sessionStorage.getItem('adminLoggedIn') === 'true';
-        }
-        
-        async function showAdminPanel() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('adminPanel').classList.remove('hidden');
-            await loadReviewsForAdmin();
-        }
-        
-        async function loadReviewsForAdmin() {
-            const firebaseReviews = await loadReviewsFromFirebase();
-            if (firebaseReviews.length > 0) {
-                reviews = firebaseReviews;
-                saveReviewsToStorage();
-            } else {
-                const storedReviews = localStorage.getItem('musicReviews');
-                if (storedReviews) {
-                    reviews = JSON.parse(storedReviews);
-                } else {
-                    reviews = [];
-                }
-            }
-            displayReviewsInAdmin();
-        }
-        
-        function saveReviewsToStorage() {
-            localStorage.setItem('musicReviews', JSON.stringify(reviews));
-            localStorage.setItem('reviewsUpdated', Date.now());
-        }
-        
-        function displayReviewsInAdmin() {
+
+        function displayReviews() {
             const container = document.getElementById('reviewsList');
-            if (!container) return;
-            
             if (reviews.length === 0) {
-                container.innerHTML = '<p>No reviews yet. Add your first review above!</p>';
+                container.innerHTML = '<p>No reviews yet. Add your first review!</p>';
                 return;
             }
-            
             container.innerHTML = reviews.map(review => `
                 <div class="review-item">
-                    <div class="review-info">
-                        <strong>${escapeHtml(review.title)}</strong> - ${escapeHtml(review.artist)}
-                        <br>
-                        <small>Rating: ${review.rating}/10 | Genres: ${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre} | Tracks: ${review.tracks ? review.tracks.length : 0}</small>
-                        ${review.embedUrl ? `<br><small>🔊 Has streaming embed</small>` : ''}
+                    <div>
+                        <strong>${review.title}</strong> - ${review.artist}<br>
+                        <small>Rating: ${review.rating}/10 | Genres: ${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre}</small>
                     </div>
                     <div class="review-actions">
-                        <button onclick="openEditForm('${review.firebaseId || review.id}')" class="edit-btn">✏️ Edit</button>
-                        <button onclick="deleteReview('${review.firebaseId || review.id}')" class="delete-btn">🗑️ Delete</button>
+                        <button class="delete-btn" onclick="deleteReview('${review.firebaseId}')">Delete</button>
                     </div>
                 </div>
             `).join('');
         }
-        
-        function openEditForm(id) {
-            const review = reviews.find(r => (r.firebaseId === id) || (r.id == id));
-            if (!review) return;
-            
-            isEditing = true;
-            editingId = review.id;
-            editingFirebaseId = review.firebaseId;
-            
-            document.getElementById('formTitle').innerHTML = '✏️ Edit Album Review';
-            document.getElementById('submitBtn').innerHTML = '💾 Save Changes';
-            document.getElementById('cancelBtn').style.display = 'inline-block';
-            document.getElementById('editModeIndicator').style.display = 'block';
-            
-            document.getElementById('editId').value = review.id;
-            document.getElementById('editFirebaseId').value = review.firebaseId || '';
-            document.getElementById('title').value = review.title || '';
-            document.getElementById('artist').value = review.artist || '';
-            
-            let genresToSet = review.genre;
-            if (typeof review.genre === 'string') genresToSet = [review.genre];
-            setSelectedGenres(genresToSet);
-            
-            document.getElementById('albumArt').value = review.albumArt || '';
-            document.getElementById('rating').value = review.rating || '';
-            document.getElementById('review').value = review.review || '';
-            document.getElementById('shortPreview').value = review.shortPreview || '';
-            document.getElementById('year').value = review.year || '';
-            document.getElementById('coverColor').value = review.coverColor || '#ff1493';
-            document.getElementById('embedUrl').value = review.embedUrl || '';
-            
-            const embedType = review.embedType || 'none';
-            const radios = document.querySelectorAll('input[name="embedType"]');
-            radios.forEach(radio => { if (radio.value === embedType) radio.checked = true; });
-            
-            loadTracksIntoForm(review.tracks || []);
-            
-            document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function cancelEdit() {
-            document.getElementById('reviewForm').reset();
-            document.getElementById('editId').value = '';
-            document.getElementById('editFirebaseId').value = '';
-            document.getElementById('tracksContainer').innerHTML = '';
-            document.getElementById('coverColor').value = '#ff1493';
-            trackCounter = 0;
-            
-            document.getElementById('formTitle').innerHTML = '➕ Add New Album Review';
-            document.getElementById('submitBtn').innerHTML = '➕ Add Review';
-            document.getElementById('cancelBtn').style.display = 'none';
-            document.getElementById('editModeIndicator').style.display = 'none';
-            
-            isEditing = false;
-            editingId = null;
-            editingFirebaseId = null;
-        }
-        
-        document.getElementById('reviewForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const embedTypeRadio = document.querySelector('input[name="embedType"]:checked');
-            const embedType = embedTypeRadio ? embedTypeRadio.value : 'none';
-            let embedUrl = document.getElementById('embedUrl').value;
-            
-            if (embedType === 'youtube' && embedUrl) {
-                const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
-                const match = embedUrl.match(youtubeRegex);
-                if (match) embedUrl = `https://www.youtube.com/embed/${match[1]}`;
+
+        window.deleteReview = async function(id) {
+            if (confirm('Delete this review?')) {
+                await deleteDoc(doc(db, 'reviews', id));
+                loadReviews();
+            }
+        };
+
+        window.migrateToFirebase = async function() {
+            const stored = localStorage.getItem('musicReviews');
+            if (!stored) {
+                alert('No reviews found in localStorage!');
+                return;
             }
             
-            if (embedType === 'spotify' && embedUrl) {
-                if (embedUrl.includes('track')) {
-                    const trackId = embedUrl.split('/track/')[1]?.split('?')[0];
-                    if (trackId) embedUrl = `https://open.spotify.com/embed/track/${trackId}`;
-                } else if (embedUrl.includes('album')) {
-                    const albumId = embedUrl.split('/album/')[1]?.split('?')[0];
-                    if (albumId) embedUrl = `https://open.spotify.com/embed/album/${albumId}`;
+            const localReviews = JSON.parse(stored);
+            let count = 0;
+            
+            for (const review of localReviews) {
+                const { id, firebaseId, ...reviewData } = review;
+                try {
+                    await addDoc(collection(db, 'reviews'), reviewData);
+                    count++;
+                } catch (error) {
+                    console.error('Error migrating:', error);
                 }
             }
             
-            const selectedGenres = getSelectedGenres();
+            alert(`Migrated ${count} reviews to Firebase! Refresh the page.`);
+            loadReviews();
+        };
+
+        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            const reviewData = {
+            const selectedGenres = Array.from(document.getElementById('genre').selectedOptions).map(opt => opt.value);
+            
+            const newReview = {
                 title: document.getElementById('title').value,
                 artist: document.getElementById('artist').value,
-                genre: selectedGenres.length > 0 ? selectedGenres : ['Uncategorized'],
+                genre: selectedGenres,
                 rating: parseFloat(document.getElementById('rating').value),
                 review: document.getElementById('review').value,
                 shortPreview: document.getElementById('shortPreview').value,
                 year: parseInt(document.getElementById('year').value) || new Date().getFullYear(),
-                dateAdded: isEditing ? reviews.find(r => r.firebaseId === editingFirebaseId)?.dateAdded : new Date().toISOString().split('T')[0],
+                dateAdded: new Date().toISOString().split('T')[0],
                 coverColor: document.getElementById('coverColor').value,
                 albumArt: document.getElementById('albumArt').value || null,
-                embedType: (embedUrl && embedType !== 'none') ? embedType : null,
-                embedUrl: (embedUrl && embedType !== 'none') ? embedUrl : null,
                 tracks: collectTracks()
             };
             
-            if (isEditing && editingFirebaseId) {
-                await updateReviewInFirebase(editingFirebaseId, reviewData);
-                const index = reviews.findIndex(r => r.firebaseId === editingFirebaseId);
-                if (index !== -1) reviews[index] = { ...reviewData, firebaseId: editingFirebaseId };
-                alert(`✏️ Review updated successfully!`);
-            } else {
-                const newReview = await addReviewToFirebase(reviewData);
-                if (newReview) reviews.unshift(newReview);
-                alert(`✅ Review added successfully! ${reviewData.tracks.length} tracks reviewed.`);
-            }
-            
-            saveReviewsToStorage();
-            displayReviewsInAdmin();
-            cancelEdit();
+            await addDoc(collection(db, 'reviews'), newReview);
+            alert('Review added!');
+            e.target.reset();
+            document.getElementById('tracksContainer').innerHTML = '';
+            loadReviews();
         });
-        
-        async function deleteReview(id) {
-            if (confirm('Are you sure you want to delete this review?')) {
-                const reviewToDelete = reviews.find(r => r.firebaseId === id || r.id == id);
-                if (reviewToDelete?.firebaseId) {
-                    await deleteReviewFromFirebase(reviewToDelete.firebaseId);
-                }
-                reviews = reviews.filter(review => (review.firebaseId !== id) && (review.id != id));
-                saveReviewsToStorage();
-                displayReviewsInAdmin();
-                alert('🗑️ Review deleted!');
-                if (editingFirebaseId === id) cancelEdit();
-            }
+
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('adminPanel').classList.remove('hidden');
+            loadReviews();
         }
-        
-        window.migrateToFirebase = async function() {
-            const result = await migrateLocalStorageToFirebase();
-            if (result.success) {
-                alert(`✅ Migrated ${result.count} reviews to Firebase!`);
-                await loadReviewsForAdmin();
-            } else {
-                alert('No reviews to migrate.');
-            }
-        };
-        
-        function exportData() {
-            const dataStr = JSON.stringify(reviews, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', `reviews-backup-${new Date().toISOString().split('T')[0]}.json`);
-            linkElement.click();
-            alert('📥 Reviews exported!');
-        }
-        
-        function importData() {
-            document.getElementById('importFile').click();
-        }
-        
-        function handleImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const importedReviews = JSON.parse(e.target.result);
-                    if (Array.isArray(importedReviews)) {
-                        for (const review of importedReviews) {
-                            const { firebaseId, id, ...reviewData } = review;
-                            await addReviewToFirebase(reviewData);
-                        }
-                        await loadReviewsForAdmin();
-                        alert(`✅ Imported ${importedReviews.length} reviews!`);
-                    } else {
-                        alert('Invalid file format.');
-                    }
-                } catch (error) {
-                    alert('Error parsing file.');
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-        
-        function clearAllData() {
-            if (confirm('⚠️ WARNING: This will delete ALL reviews! Type "DELETE" to confirm:')) {
-                const confirmation = prompt('Type "DELETE" to confirm:');
-                if (confirmation === 'DELETE') {
-                    reviews = [];
-                    saveReviewsToStorage();
-                    displayReviewsInAdmin();
-                    cancelEdit();
-                    alert('All reviews deleted.');
-                }
-            }
-        }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        window.toggleUserDropdown = function() {
-            const dropdown = document.getElementById('userDropdown');
-            if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-        };
-        
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            updateMobileAuth(user);
-        });
-        
-        if (isAdminLoggedIn()) showAdminPanel();
-        
-        initMobileNav();
-        
-        document.getElementById('signOutBtn')?.addEventListener('click', async () => { await signOut(auth); window.location.href = 'index.html'; });
-        document.getElementById('mobileSignOutBtn')?.addEventListener('click', async () => { await signOut(auth); window.location.href = 'index.html'; });
-        
-        document.addEventListener('click', (e) => {
-            const dropdown = document.getElementById('userDropdown');
-            const avatarBtn = document.getElementById('userAvatarBtn');
-            if (dropdown && avatarBtn && !avatarBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
-        });
     </script>
 </body>
 </html>
