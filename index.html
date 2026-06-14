@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Honestly, it.....</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -88,8 +88,8 @@
                 <div class="results-count"><span id="resultsCount">0</span> reviews</div>
             </div>
             
-            <div class="reviews-grid" id="reviewsGrid">
-                <!-- Reviews will be loaded here -->
+            <div id="reviewsGrid" class="reviews-grid">
+                <div style="text-align: center; padding: 3rem;">Loading reviews from cloud...</div>
             </div>
         </div>
     </section>
@@ -117,7 +117,7 @@
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
   authDomain: "honestly-it.firebaseapp.com",
@@ -148,22 +148,17 @@ const firebaseConfig = {
             const fullStars = Math.floor(rating / 2);
             const decimal = rating / 2 - fullStars;
             let starsHTML = '';
-            for (let i = 0; i < fullStars; i++) {
-                starsHTML += '<span style="color: #ffd700;">★</span>';
-            }
-            if (decimal >= 0.5) {
-                starsHTML += '<span style="color: #ffd700;">½</span>';
-            }
+            for (let i = 0; i < fullStars; i++) starsHTML += '<span style="color: #ffd700;">★</span>';
+            if (decimal >= 0.5) starsHTML += '<span style="color: #ffd700;">½</span>';
             const emptyStars = 5 - Math.ceil(rating / 2);
-            for (let i = 0; i < emptyStars; i++) {
-                starsHTML += '<span style="color: var(--text-muted);">☆</span>';
-            }
+            for (let i = 0; i < emptyStars; i++) starsHTML += '<span style="color: var(--text-muted);">☆</span>';
             return starsHTML;
         }
 
         // Load reviews from Firebase
         async function loadReviewsFromFirebase() {
             try {
+                console.log("Attempting to load reviews from Firebase...");
                 const reviewsRef = collection(db, 'reviews');
                 const q = query(reviewsRef, orderBy('dateAdded', 'desc'));
                 const querySnapshot = await getDocs(q);
@@ -173,10 +168,20 @@ const firebaseConfig = {
                     reviews.push({ firebaseId: doc.id, ...doc.data() });
                 });
                 
-                console.log(`Loaded ${reviews.length} reviews from Firebase`);
+                console.log(`✅ Successfully loaded ${reviews.length} reviews from Firebase`);
+                
+                // Save to localStorage as backup
+                localStorage.setItem('musicReviews', JSON.stringify(reviews));
+                
                 return reviews;
             } catch (error) {
-                console.error('Error loading from Firebase:', error);
+                console.error('❌ Error loading from Firebase:', error);
+                // Fallback to localStorage
+                const stored = localStorage.getItem('musicReviews');
+                if (stored) {
+                    console.log("Using localStorage backup");
+                    return JSON.parse(stored);
+                }
                 return [];
             }
         }
@@ -240,34 +245,6 @@ const firebaseConfig = {
                     </div>
                 </div>
             `).join('');
-        }
-
-        // Display featured review
-        async function displayFeaturedReview() {
-            const featuredDiv = document.getElementById('featuredReview');
-            if (!featuredDiv) return;
-            
-            const reviews = await loadReviewsFromFirebase();
-            if (reviews.length === 0) return;
-            
-            const topReview = [...reviews].sort((a, b) => b.rating - a.rating)[0];
-            
-            featuredDiv.innerHTML = `
-                <div class="featured-image" style="background: ${topReview.coverColor || '#ff1493'}">
-                    <div class="featured-icon">🎵</div>
-                </div>
-                <div class="featured-content">
-                    <span class="featured-badge">EDITOR'S PICK</span>
-                    <p class="featured-artist">${escapeHtml(topReview.artist)} • ${topReview.year || 'N/A'}</p>
-                    <h2 class="featured-title">${escapeHtml(topReview.title)}</h2>
-                    <div class="featured-rating">
-                        <span class="featured-rating-number">${topReview.rating}</span>
-                        <span>/10</span>
-                    </div>
-                    <p class="featured-review">${escapeHtml(topReview.review.substring(0, 200))}...</p>
-                    <a href="review.html?id=${topReview.firebaseId}" class="featured-read-more" style="color: #ff1493; font-weight: 600; text-decoration: none;">Read full review →</a>
-                </div>
-            `;
         }
 
         // Setup sort buttons
@@ -446,7 +423,7 @@ const firebaseConfig = {
         displayReviews();
         setupSortButtons();
         
-        console.log('Index page loading reviews from Firebase');
+        console.log('Index page loaded - Firebase config ready');
     </script>
 </body>
 </html>
