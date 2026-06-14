@@ -89,6 +89,7 @@
             align-items: center;
             border: 1px solid var(--border-color);
             flex-wrap: wrap;
+            gap: 1rem;
         }
         
         .review-actions button {
@@ -170,6 +171,12 @@
             font-size: 1rem;
             font-weight: 600;
         }
+        
+        .migrate-btn {
+            background: #28a745;
+            color: white;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -187,7 +194,7 @@
     </nav>
 
     <div class="container">
-        <!-- LOGIN SECTION -->
+        <!-- LOGIN SECTION (visible first) -->
         <div id="loginSection" class="admin-container">
             <div class="login-form">
                 <h2>🔐 Admin Login</h2>
@@ -198,21 +205,22 @@
             </div>
         </div>
 
-        <!-- ADMIN PANEL -->
+        <!-- ADMIN PANEL (hidden until login) -->
         <div id="adminPanel" class="admin-container hidden">
             <h2>🎛️ Admin Control Panel</h2>
             <div class="warning">
                 ⚠️ Only you should have access to this page.
             </div>
             
-            <!-- Migrate Button - IMPORTANT! -->
+            <!-- MIGRATE SECTION -->
             <div class="admin-section">
-                <h3>☁️ Sync to Cloud</h3>
-                <p>Click this button to upload all your local reviews to Firebase (syncs across all devices)</p>
-                <button onclick="migrateToFirebase()" class="export-btn" style="background: #28a745; color: white; width: 100%;">📤 Migrate Local Reviews to Firebase</button>
+                <h3>☁️ Sync Existing Reviews to Cloud</h3>
+                <p>Click this button to upload your local reviews to Firebase (syncs across all devices)</p>
+                <button onclick="migrateToFirebase()" class="export-btn migrate-btn">📤 Migrate Local Reviews to Firebase</button>
+                <div id="migrateResult" style="margin-top: 1rem;"></div>
             </div>
             
-            <!-- Add Review -->
+            <!-- ADD REVIEW -->
             <div class="admin-section">
                 <h3>➕ Add New Review</h3>
                 <form id="reviewForm" class="admin-form">
@@ -242,6 +250,7 @@
                     <input type="text" id="shortPreview" placeholder="Short preview" required>
                     <input type="number" id="year" placeholder="Year">
                     
+                    <h4>Track-by-Track (Optional)</h4>
                     <div id="tracksContainer"></div>
                     <button type="button" class="add-track-btn" onclick="addTrackField()">+ Add Track</button>
                     
@@ -250,7 +259,7 @@
                 </form>
             </div>
 
-            <!-- Manage Reviews -->
+            <!-- MANAGE REVIEWS -->
             <div class="admin-section">
                 <h3>📝 Manage Reviews</h3>
                 <div id="reviewsList">Loading...</div>
@@ -268,7 +277,6 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -284,26 +292,25 @@ const firebaseConfig = {
 
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
-
+        
+        // CHANGE THIS TO YOUR PASSWORD
         const ADMIN_PASSWORD = "admin123";
         
         let reviews = [];
-        let trackCounter = 0;
 
         function addTrackField(trackData = null) {
             const container = document.getElementById('tracksContainer');
             const div = document.createElement('div');
             div.className = 'track-item';
             div.innerHTML = `
-                <div style="display: flex; justify-content: space-between;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                     <strong>Track ${container.children.length + 1}</strong>
-                    <button type="button" onclick="this.parentElement.parentElement.remove()" style="background:#ff1493; color:white; border:none; border-radius:5px; padding:2px 8px;">Remove</button>
+                    <button type="button" onclick="this.parentElement.parentElement.remove()" style="background:#ff1493; color:white; border:none; border-radius:5px; padding:2px 8px; cursor:pointer;">Remove</button>
                 </div>
-                <input type="text" placeholder="Track name" value="${trackData ? trackData.name : ''}" style="width:100%; margin:5px 0;">
-                <textarea placeholder="Track review" rows="2" style="width:100%;">${trackData ? trackData.review : ''}</textarea>
-                <input type="text" placeholder="Track rating (0-10) - optional" value="${trackData ? trackData.rating : ''}" style="width:100%;">
+                <input type="text" placeholder="Track name" value="${trackData ? trackData.name : ''}" style="width:100%; margin-bottom:5px; padding:5px;">
+                <textarea placeholder="Track review" rows="2" style="width:100%; margin-bottom:5px; padding:5px;">${trackData ? trackData.review : ''}</textarea>
+                <input type="text" placeholder="Track rating (0-10) - optional" value="${trackData ? trackData.rating : ''}" style="width:100%; padding:5px;">
             `;
             container.appendChild(div);
         }
@@ -314,97 +321,103 @@ const firebaseConfig = {
             const tracks = [];
             const items = document.querySelectorAll('.track-item');
             items.forEach((item, i) => {
-                const name = item.querySelector('input[placeholder="Track name"]').value;
+                const name = item.querySelector('input[placeholder="Track name"]')?.value;
                 if (name) {
                     tracks.push({
                         number: i + 1,
                         name: name,
-                        review: item.querySelector('textarea').value,
-                        rating: item.querySelector('input[placeholder="Track rating (0-10) - optional"]').value || null
+                        review: item.querySelector('textarea')?.value || '',
+                        rating: item.querySelector('input[placeholder="Track rating (0-10) - optional"]')?.value || null
                     });
                 }
             });
             return tracks;
         }
 
-        function checkPassword() {
-            const entered = document.getElementById('adminPassword').value;
-            if (entered === ADMIN_PASSWORD) {
+        window.checkPassword = function() {
+            const enteredPassword = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (enteredPassword === ADMIN_PASSWORD) {
                 sessionStorage.setItem('adminLoggedIn', 'true');
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('adminPanel').classList.remove('hidden');
                 loadReviews();
+                errorDiv.innerHTML = '';
             } else {
-                document.getElementById('loginError').innerHTML = '❌ Wrong password!';
+                errorDiv.innerHTML = '❌ Incorrect password!';
             }
-        }
-
-        window.checkPassword = checkPassword;
+        };
 
         async function loadReviews() {
+            const container = document.getElementById('reviewsList');
             try {
                 const querySnapshot = await getDocs(collection(db, 'reviews'));
                 reviews = [];
                 querySnapshot.forEach((doc) => {
                     reviews.push({ firebaseId: doc.id, ...doc.data() });
                 });
-                displayReviews();
+                
+                if (reviews.length === 0) {
+                    container.innerHTML = '<p>No reviews in Firebase yet. Click "Migrate" to upload your existing reviews.</p>';
+                } else {
+                    container.innerHTML = reviews.map(review => `
+                        <div class="review-item">
+                            <div>
+                                <strong>${escapeHtml(review.title)}</strong> - ${escapeHtml(review.artist)}<br>
+                                <small>Rating: ${review.rating}/10 | ${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre}</small>
+                            </div>
+                            <div class="review-actions">
+                                <button class="delete-btn" onclick="deleteReview('${review.firebaseId}')">Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
             } catch (error) {
                 console.error("Error loading:", error);
-                const stored = localStorage.getItem('musicReviews');
-                reviews = stored ? JSON.parse(stored) : [];
-                displayReviews();
+                container.innerHTML = '<p>Error loading reviews. Check Firebase connection.</p>';
             }
-        }
-
-        function displayReviews() {
-            const container = document.getElementById('reviewsList');
-            if (reviews.length === 0) {
-                container.innerHTML = '<p>No reviews yet. Add your first review!</p>';
-                return;
-            }
-            container.innerHTML = reviews.map(review => `
-                <div class="review-item">
-                    <div>
-                        <strong>${review.title}</strong> - ${review.artist}<br>
-                        <small>Rating: ${review.rating}/10 | Genres: ${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre}</small>
-                    </div>
-                    <div class="review-actions">
-                        <button class="delete-btn" onclick="deleteReview('${review.firebaseId}')">Delete</button>
-                    </div>
-                </div>
-            `).join('');
         }
 
         window.deleteReview = async function(id) {
             if (confirm('Delete this review?')) {
                 await deleteDoc(doc(db, 'reviews', id));
                 loadReviews();
+                alert('Review deleted!');
             }
         };
 
         window.migrateToFirebase = async function() {
+            const resultDiv = document.getElementById('migrateResult');
+            resultDiv.innerHTML = '<div class="success">Migrating...</div>';
+            
             const stored = localStorage.getItem('musicReviews');
             if (!stored) {
-                alert('No reviews found in localStorage!');
+                resultDiv.innerHTML = '<div class="warning">No reviews found in localStorage!</div>';
                 return;
             }
             
             const localReviews = JSON.parse(stored);
-            let count = 0;
+            let successCount = 0;
+            let errorCount = 0;
             
             for (const review of localReviews) {
                 const { id, firebaseId, ...reviewData } = review;
                 try {
                     await addDoc(collection(db, 'reviews'), reviewData);
-                    count++;
+                    successCount++;
                 } catch (error) {
                     console.error('Error migrating:', error);
+                    errorCount++;
                 }
             }
             
-            alert(`Migrated ${count} reviews to Firebase! Refresh the page.`);
+            resultDiv.innerHTML = `<div class="success">✅ Migrated ${successCount} reviews to Firebase! ${errorCount > 0 ? `(${errorCount} failed)` : ''}</div>`;
             loadReviews();
+            
+            if (successCount > 0) {
+                alert(`Success! ${successCount} reviews are now in the cloud. Refresh your phone to see them.`);
+            }
         };
 
         document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
@@ -415,7 +428,7 @@ const firebaseConfig = {
             const newReview = {
                 title: document.getElementById('title').value,
                 artist: document.getElementById('artist').value,
-                genre: selectedGenres,
+                genre: selectedGenres.length ? selectedGenres : ['Uncategorized'],
                 rating: parseFloat(document.getElementById('rating').value),
                 review: document.getElementById('review').value,
                 shortPreview: document.getElementById('shortPreview').value,
@@ -426,13 +439,25 @@ const firebaseConfig = {
                 tracks: collectTracks()
             };
             
-            await addDoc(collection(db, 'reviews'), newReview);
-            alert('Review added!');
-            e.target.reset();
-            document.getElementById('tracksContainer').innerHTML = '';
-            loadReviews();
+            try {
+                await addDoc(collection(db, 'reviews'), newReview);
+                alert('✅ Review added to cloud! It will appear on all devices.');
+                e.target.reset();
+                document.getElementById('tracksContainer').innerHTML = '';
+                loadReviews();
+            } catch (error) {
+                alert('Error adding review: ' + error.message);
+            }
         });
 
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Check if already logged in (session persists)
         if (sessionStorage.getItem('adminLoggedIn') === 'true') {
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('adminPanel').classList.remove('hidden');
