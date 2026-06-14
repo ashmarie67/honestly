@@ -841,61 +841,81 @@ function loadTracksIntoForm(tracks) {
         
         window.cancelEdit = cancelEdit;
         
-        // Submit form
-        document.getElementById('reviewForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
+        // FIXED: Add Review Button Handler
+const reviewForm = document.getElementById('reviewForm');
+if (reviewForm) {
+    reviewForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log("Form submitted!"); // Debug log
+        
+        try {
             const embedType = document.getElementById('embedType').value;
             let embedUrl = document.getElementById('embedUrl').value;
             
             if (embedType === 'youtube' && embedUrl) {
-                const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
-                const match = embedUrl.match(youtubeRegex);
+                const match = embedUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
                 if (match) embedUrl = `https://www.youtube.com/embed/${match[1]}`;
             }
             
-            if (embedType === 'spotify' && embedUrl) {
-                if (embedUrl.includes('track')) {
-                    const trackId = embedUrl.split('/track/')[1]?.split('?')[0];
-                    if (trackId) embedUrl = `https://open.spotify.com/embed/track/${trackId}`;
-                } else if (embedUrl.includes('album')) {
-                    const albumId = embedUrl.split('/album/')[1]?.split('?')[0];
-                    if (albumId) embedUrl = `https://open.spotify.com/embed/album/${albumId}`;
-                }
-            }
+            const artistInput = document.getElementById('artist').value;
+            const artistsArray = artistInput.split(',').map(a => a.trim()).filter(a => a);
             
-            const selectedGenres = getSelectedGenres();
+            // Get all track data
+            const tracks = [];
+            document.querySelectorAll('.track-item').forEach((item, idx) => {
+                const name = item.querySelector('.track-name')?.value;
+                if (name?.trim()) {
+                    tracks.push({
+                        number: idx + 1,
+                        name: name.trim(),
+                        featuring: item.querySelector('.track-featuring')?.value || '',
+                        review: item.querySelector('.track-review')?.value || '',
+                        rating: item.querySelector('.track-rating')?.value || null
+                    });
+                }
+            });
             
             const reviewData = {
                 title: document.getElementById('title').value,
-                artist: document.getElementById('artist').value,  // keep for old reviews
-    artists: document.getElementById('artist').value.split(',').map(a => a.trim()).filter(a => a),
-    
-                genre: selectedGenres,
+                artist: artistInput,
+                artists: artistsArray,
+                genre: getSelectedGenres(),
                 rating: parseFloat(document.getElementById('rating').value),
                 review: document.getElementById('review').value,
                 shortPreview: document.getElementById('shortPreview').value,
                 year: parseInt(document.getElementById('year').value) || new Date().getFullYear(),
-                dateAdded: isEditing ? reviews.find(r => r.firebaseId === editingFirebaseId)?.dateAdded : new Date().toISOString().split('T')[0],
+                dateAdded: new Date().toISOString().split('T')[0],
                 coverColor: document.getElementById('coverColor').value,
                 albumArt: document.getElementById('albumArt').value || null,
                 embedType: (embedUrl && embedType !== 'none') ? embedType : null,
                 embedUrl: (embedUrl && embedType !== 'none') ? embedUrl : null,
-                tracks: collectTracks()
+                tracks: tracks
             };
             
+            console.log("Review data:", reviewData);
+            
             if (isEditing && editingFirebaseId) {
-                const reviewRef = doc(db, 'reviews', editingFirebaseId);
-                await updateDoc(reviewRef, reviewData);
-                alert(`✏️ Review updated successfully!`);
+                await updateDoc(doc(db, 'reviews', editingFirebaseId), reviewData);
+                alert('✅ Review updated successfully!');
             } else {
                 await addDoc(collection(db, 'reviews'), reviewData);
-                alert(`✅ Review added successfully! ${reviewData.tracks.length} tracks reviewed.`);
+                alert('✅ Review added successfully!');
             }
             
-            await loadReviewsForAdmin();
+            // Reset form
             cancelEdit();
-        });
+            await loadReviewsForAdmin();
+            
+        } catch (error) {
+            console.error("Submit error:", error);
+            alert('Error: ' + error.message);
+        }
+    });
+} else {
+    console.error("reviewForm element not found!");
+}
         
         // Delete review
         window.deleteReview = async function(id) {
