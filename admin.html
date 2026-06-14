@@ -619,7 +619,11 @@ const firebaseConfig = {
         }
 
         function openEditForm(id) {
-            const review = reviews.find(r => r.firebaseId === id);
+    if (!currentUser || !allowedEmails.includes(currentUser.email)) {
+        alert('You do not have permission to edit reviews.');
+        return;
+    }
+    const review = reviews.find(r => r.firebaseId === id);
             if (!review) return;
             isEditing = true;
             editingFirebaseId = id;
@@ -685,7 +689,7 @@ const firebaseConfig = {
                 return;
             }
 
-            const allowedEmails = ['admin@yourdomain.com'];  // CHANGE THIS TO YOUR EMAIL
+            const allowedEmails = ['ash.parsons@protonmail.com'];  // CHANGE THIS TO YOUR EMAIL
     if (!allowedEmails.includes(currentUser.email)) {
         alert('You do not have permission to add reviews.');
         return;
@@ -734,12 +738,13 @@ const firebaseConfig = {
         });
 
         window.deleteReview = async (id) => {
-            if (confirm('Delete this review?')) {
-                await deleteDoc(doc(db, 'reviews', id));
-                await loadReviewsForAdmin();
-                if (editingFirebaseId === id) cancelEdit();
-                alert('Deleted!');
-            }
+    if (!currentUser || !allowedEmails.includes(currentUser.email)) {
+        alert('You do not have permission to delete reviews.');
+        return;
+    }
+    if (confirm('Delete this review?')) {
+        // ... rest of delete code
+    }
         };
 
         window.loginWithEmail = async () => {
