@@ -271,14 +271,17 @@
         import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyArSLD6TCMLWGo9uPb_IqwiOr_tkhDe1ag",
+  authDomain: "honestly-it.firebaseapp.com",
+  projectId: "honestly-it",
+  storageBucket: "honestly-it.firebasestorage.app",
+  messagingSenderId: "938783642355",
+  appId: "1:938783642355:web:330ad714c0f79b7eb25d86",
+  measurementId: "G-R8Q5308Y8K"
+};
+
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
