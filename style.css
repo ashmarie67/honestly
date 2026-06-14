@@ -2018,3 +2018,16 @@ body.auth-ready .auth-sensitive {
         font-size: 1.2rem;
     }
 }
+
+.track-featuring {
+    background: rgba(255, 20, 147, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem;
+    width: 100%;
+}
+
+.track-featuring:focus {
+    outline: none;
+    border-color: #ff1493;
+}

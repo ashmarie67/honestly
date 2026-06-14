@@ -439,12 +439,6 @@
                     </div>
                     <div class="selected-genres-display" id="selectedGenresDisplay"></div>
 
-                    <!-- Multiple Artists Section -->
-<label class="form-label">🎤 Artists (select all that apply)</label>
-<div class="artists-grid" id="artistsGrid">
-    <!-- Artists checkboxes will be loaded here -->
-</div>
-<div class="selected-artists-display" id="selectedArtistsDisplay"></div>
                     
                     <!-- ALBUM ART URL -->
                     <label class="form-label">🎨 Album Art</label>
@@ -635,23 +629,28 @@ const firebaseConfig = {
         
         // Track management
         function addTrackField(trackData = null) {
-            const container = document.getElementById('tracksContainer');
-            const trackId = Date.now() + trackCounter++;
-            
-            const trackDiv = document.createElement('div');
-            trackDiv.className = 'track-item';
-            trackDiv.id = `track-${trackId}`;
-            trackDiv.innerHTML = `
-                <div class="track-header">
-                    <span class="track-number">Track ${container.children.length + 1}</span>
-                    <button type="button" class="remove-track" onclick="this.closest('.track-item').remove(); renumberTracks();">Remove</button>
-                </div>
-                <input type="text" placeholder="Track name" value="${trackData ? escapeHtml(trackData.name) : ''}" class="track-name" style="width: 100%; margin-bottom: 0.5rem;">
-                <textarea placeholder="Your analysis/review of this track..." rows="3" class="track-review" style="width: 100%; margin-bottom: 0.5rem;">${trackData ? escapeHtml(trackData.review) : ''}</textarea>
-                <input type="text" placeholder="Rating for this track (0-10) - optional" value="${trackData ? trackData.rating : ''}" class="track-rating" style="width: 100%;">
-            `;
-            container.appendChild(trackDiv);
-        }
+    const container = document.getElementById('tracksContainer');
+    const trackId = Date.now() + trackCounter++;
+    
+    const trackDiv = document.createElement('div');
+    trackDiv.className = 'track-item';
+    trackDiv.id = `track-${trackId}`;
+    trackDiv.innerHTML = `
+        <div class="track-header">
+            <span class="track-number">Track ${container.children.length + 1}</span>
+            <button type="button" class="remove-track" onclick="this.closest('.track-item').remove(); renumberTracks();">Remove</button>
+        </div>
+        <input type="text" placeholder="Track name" value="${trackData ? escapeHtml(trackData.name) : ''}" class="track-name" style="width: 100%; margin-bottom: 0.5rem;">
+        
+        <!-- Featuring Artists Field - NEW -->
+        <input type="text" placeholder="Featuring artists (separate with commas, e.g.: SZA, Travis Scott)" value="${trackData ? escapeHtml(trackData.featuring || '') : ''}" class="track-featuring" style="width: 100%; margin-bottom: 0.5rem;">
+        <small style="display: block; margin-top: -0.3rem; margin-bottom: 0.5rem; color: var(--text-muted);">Optional: Add featured artists</small>
+        
+        <textarea placeholder="Your analysis/review of this track..." rows="3" class="track-review" style="width: 100%; margin-bottom: 0.5rem;">${trackData ? escapeHtml(trackData.review) : ''}</textarea>
+        <input type="text" placeholder="Rating for this track (0-10) - optional" value="${trackData ? trackData.rating : ''}" class="track-rating" style="width: 100%;">
+    `;
+    container.appendChild(trackDiv);
+}
         
         window.addTrackField = addTrackField;
         
@@ -666,32 +665,33 @@ const firebaseConfig = {
         }
         
         function collectTracks() {
-            const tracks = [];
-            const trackItems = document.querySelectorAll('.track-item');
-            trackItems.forEach((item, index) => {
-                const name = item.querySelector('.track-name').value;
-                if (name && name.trim()) {
-                    tracks.push({
-                        number: index + 1,
-                        name: name.trim(),
-                        review: item.querySelector('.track-review').value,
-                        rating: item.querySelector('.track-rating').value || null
-                    });
-                }
+    const tracks = [];
+    const trackItems = document.querySelectorAll('.track-item');
+    trackItems.forEach((item, index) => {
+        const name = item.querySelector('.track-name').value;
+        if (name && name.trim()) {
+            tracks.push({
+                number: index + 1,
+                name: name.trim(),
+                featuring: item.querySelector('.track-featuring')?.value || '',
+                review: item.querySelector('.track-review').value,
+                rating: item.querySelector('.track-rating').value || null
             });
-            return tracks;
         }
+    });
+    return tracks;
+}
         
-        function loadTracksIntoForm(tracks) {
-            const container = document.getElementById('tracksContainer');
-            container.innerHTML = '';
-            trackCounter = 0;
-            if (tracks && tracks.length) {
-                tracks.forEach(track => {
-                    addTrackField(track);
-                });
-            }
-        }
+function loadTracksIntoForm(tracks) {
+    const container = document.getElementById('tracksContainer');
+    container.innerHTML = '';
+    trackCounter = 0;
+    if (tracks && tracks.length) {
+        tracks.forEach(track => {
+            addTrackField(track);
+        });
+    }
+}
         
         // Password check
         window.checkPassword = function() {
