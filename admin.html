@@ -108,6 +108,15 @@
             width: auto;
         }
         
+        .track-featuring {
+            background: rgba(255, 20, 147, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
         .review-item {
             background: var(--bg-primary);
             padding: 1rem;
@@ -218,7 +227,16 @@
             margin-top: 1rem;
         }
         
-        /* EASY GENRE SELECTION - Checkbox grid */
+        .logout-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        
         .genre-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -238,17 +256,6 @@
             padding: 0.25rem;
         }
         
-        .genre-checkbox input {
-            width: 18px;
-            height: 18px;
-            margin: 0;
-            cursor: pointer;
-        }
-        
-        .genre-checkbox span {
-            font-size: 0.85rem;
-        }
-        
         .selected-genres-display {
             display: flex;
             flex-wrap: wrap;
@@ -263,49 +270,7 @@
             border-radius: 20px;
             font-size: 0.8rem;
         }
-
-        .artists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.75rem;
-    margin: 0.5rem 0 1rem 0;
-    padding: 1rem;
-    background: var(--bg-primary);
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-}
-
-.artist-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    padding: 0.25rem;
-}
-
-.artist-checkbox input {
-    width: 18px;
-    height: 18px;
-    margin: 0;
-    cursor: pointer;
-}
-
-.selected-artists-display {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 0.5rem 0;
-}
-
-.artist-tag {
-    background: linear-gradient(135deg, #ff1493, #ffd700);
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-}
         
-        /* SIMPLE EMBED SECTION - Clean buttons */
         .embed-buttons {
             display: flex;
             gap: 1rem;
@@ -324,17 +289,12 @@
             cursor: pointer;
             font-weight: 500;
             text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .embed-option:hover {
-            border-color: #ff1493;
         }
         
         .embed-option.selected {
             background: linear-gradient(135deg, #ff1493, #ffd700);
-            border-color: transparent;
             color: white;
+            border-color: transparent;
         }
         
         .form-label {
@@ -344,13 +304,9 @@
             display: block;
         }
         
-        .form-label:first-of-type {
-            margin-top: 0;
-        }
-        
         small {
             display: block;
-            margin-top: 0.25rem;
+            margin-top: -0.3rem;
             margin-bottom: 0.5rem;
             color: var(--text-muted);
             font-size: 0.75rem;
@@ -366,15 +322,21 @@
             margin-bottom: 1rem;
         }
         
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
         @media (max-width: 768px) {
             .genre-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
             .embed-buttons {
                 flex-direction: column;
-            }
-            .embed-option {
-                width: 100%;
             }
         }
     </style>
@@ -397,77 +359,65 @@
         <div id="loginSection" class="admin-container">
             <div class="login-form">
                 <h2>🔐 Admin Login</h2>
-                <p style="color: var(--text-secondary);">Enter your password to access the admin panel</p>
-                <input type="password" id="adminPassword" placeholder="Enter admin password">
-                <button onclick="checkPassword()" class="login-btn">Login</button>
+                <p style="color: var(--text-secondary);">Sign in with your admin account</p>
+                <input type="email" id="adminEmail" placeholder="Email">
+                <input type="password" id="adminPassword" placeholder="Password">
+                <button onclick="loginWithEmail()" class="login-btn">Login</button>
                 <div id="loginError" style="color: #ff1493; margin-top: 1rem;"></div>
             </div>
         </div>
 
         <!-- ADMIN PANEL -->
         <div id="adminPanel" class="admin-container hidden">
-            <h2>🎛️ Admin Control Panel</h2>
-            <div class="warning">
-                ⚠️ Only you should have access to this page. Keep this password safe!
+            <div class="user-info">
+                <span>👤 Logged in as: <strong id="userEmailDisplay"></strong></span>
+                <button onclick="logout()" class="logout-btn">Sign Out</button>
             </div>
+            <h2>🎛️ Admin Control Panel</h2>
+            <div class="warning">⚠️ Only admins should have access to this page.</div>
             
-            <!-- MIGRATE SECTION -->
             <div class="admin-section">
                 <h3>☁️ Sync to Cloud</h3>
-                <p>Upload all your local reviews to Firebase so they sync across all devices</p>
-                <button onclick="migrateToFirebase()" class="migrate-btn" style="width: 100%; background: #28a745;">📤 Migrate Local Reviews to Firebase</button>
+                <button onclick="migrateToFirebase()" class="migrate-btn" style="width:100%;">📤 Migrate Local Reviews to Firebase</button>
                 <div id="migrateResult" style="margin-top: 1rem;"></div>
             </div>
             
-            <!-- ADD/EDIT REVIEW SECTION -->
             <div class="admin-section">
                 <div id="editModeIndicator" style="display: none;">
                     <span class="edit-mode-badge">✏️ EDIT MODE</span>
                 </div>
                 <h3 id="formTitle">➕ Add New Album Review</h3>
                 <form id="reviewForm" class="admin-form">
-                    <input type="hidden" id="editId" value="">
                     <input type="hidden" id="editFirebaseId" value="">
                     
                     <input type="text" id="title" placeholder="Album Title" required>
-                    <input type="text" id="artist" placeholder="Artist Name (separate multiple with commas, e.g.: Kendrick Lamar, SZA, Jay-Z)" required>
+                    <input type="text" id="artist" placeholder="Artist Name (separate multiple with commas)" required>
+                    <small>Example: Kendrick Lamar, SZA, Jay-Z</small>
                     
-                    <!-- EASY GENRE SELECTION - Checkbox grid -->
                     <label class="form-label">🎵 Genres (check all that apply)</label>
-                    <div class="genre-grid" id="genreGrid">
-                        <!-- Genres will be loaded here by JavaScript -->
-                    </div>
+                    <div class="genre-grid" id="genreGrid"></div>
                     <div class="selected-genres-display" id="selectedGenresDisplay"></div>
-
                     
-                    <!-- ALBUM ART URL -->
                     <label class="form-label">🎨 Album Art</label>
                     <input type="url" id="albumArt" placeholder="Paste image URL">
-                    <small>Find album art on Google Images, right-click and select "Copy Image Address"</small>
                     
-                    <!-- SIMPLE EMBED SECTION -->
-                    <label class="form-label">🔊 Music Streaming Embed (Optional)</label>
+                    <label class="form-label">🔊 Music Streaming Embed</label>
                     <div class="embed-buttons">
-                        <div class="embed-option" data-embed="youtube">🎬 YouTube</div>
-                        <div class="embed-option" data-embed="spotify">🟢 Spotify</div>
-                        <div class="embed-option" data-embed="apple">🎵 Apple Music</div>
-                        <div class="embed-option selected" data-embed="none">❌ None</div>
+                        <div class="embed-option" data-embed="youtube">YouTube</div>
+                        <div class="embed-option" data-embed="spotify">Spotify</div>
+                        <div class="embed-option" data-embed="none" selected>None</div>
                     </div>
                     <input type="hidden" id="embedType" value="none">
                     <input type="url" id="embedUrl" placeholder="Paste URL here">
-                    <small>YouTube: Paste video URL | Spotify: Paste track or album URL</small>
                     
-                    <!-- Rating & Review -->
-                    <input type="number" id="rating" placeholder="Overall Rating (0-10)" min="0" max="10" step="0.1" required>
-                    <textarea id="review" placeholder="Overall album review..." rows="4" required></textarea>
-                    <input type="text" id="shortPreview" placeholder="Short preview (one sentence)" required>
-                    <input type="number" id="year" placeholder="Release year">
+                    <input type="number" id="rating" placeholder="Rating (0-10)" step="0.1" required>
+                    <textarea id="review" placeholder="Album review..." rows="4" required></textarea>
+                    <input type="text" id="shortPreview" placeholder="Short preview" required>
+                    <input type="number" id="year" placeholder="Year">
                     
-                    <!-- TRACK-BY-TRACK SECTION -->
-                    <label class="form-label">🎵 Track-by-Track Reviews</label>
-                    <small>Add each song from the album with your analysis</small>
+                    <label class="form-label">🎵 Track-by-Track</label>
                     <div id="tracksContainer"></div>
-                    <button type="button" class="add-track-btn" onclick="addTrackField()">+ Add Track</button>
+                    <button type="button" class="add-track-btn" id="addTrackBtn">+ Add Track</button>
                     
                     <input type="color" id="coverColor" value="#ff1493">
                     
@@ -478,23 +428,19 @@
                 </form>
             </div>
 
-            <!-- MANAGE REVIEWS SECTION -->
             <div class="admin-section">
-                <h3>📝 Manage Existing Reviews</h3>
-                <div id="reviewsList">
-                    <p>Loading reviews...</p>
-                </div>
+                <h3>📝 Manage Reviews</h3>
+                <div id="reviewsList">Loading...</div>
             </div>
 
-            <!-- BACKUP SECTION -->
             <div class="admin-section">
-                <h3>💾 Backup & Restore</h3>
+                <h3>💾 Backup</h3>
                 <div class="data-buttons">
-                    <button onclick="exportData()" class="export-btn">📥 Export Reviews</button>
-                    <button onclick="importData()" class="import-btn">📤 Import Reviews</button>
+                    <button onclick="exportData()" class="export-btn">📥 Export</button>
+                    <button onclick="importData()" class="import-btn">📤 Import</button>
                 </div>
                 <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImport(event)">
-                <button onclick="clearAllData()" class="delete-btn" style="margin-top: 1rem; width: 100%;">🗑️ Delete All Reviews</button>
+                <button onclick="clearAllData()" class="delete-btn" style="margin-top:1rem; width:100%;">🗑️ Delete All</button>
             </div>
         </div>
     </div>
@@ -502,13 +448,14 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-bottom">
-                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
+                <p>&copy; 2026 Honestly, it..... All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -522,349 +469,82 @@ const firebaseConfig = {
   measurementId: "G-R8Q5308Y8K"
 };
 
-
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const ADMIN_PASSWORD = "admin123";
-        
         let reviews = [];
         let isEditing = false;
-        let editingId = null;
         let editingFirebaseId = null;
-        let trackCounter = 0;
-        
-        // All available genres
-        const allGenres = [
-            "Rock", "Pop", "Hip Hop", "Electronic", "R&B", "Jazz", 
-            "Alternative", "Indie", "Ballad", "Classical", "Country", 
-            "Blues", "Folk", "Metal", "Punk", "Soul", "Funk", "Reggae", 
-            "Latin", "K-Pop", "Dance", "Gospel", "Ambient", "House", 
-            "Techno", "Lo-Fi", "Singer-Songwriter", "Rap", "Retro"
-        ];
+        let currentUser = null;
 
-    
+        const allGenres = ["Rock", "Pop", "Hip Hop", "Electronic", "R&B", "Jazz", "Alternative", "Indie", "Country", "Metal", "Classical", "K-Pop", "Latin"];
 
-        // Build genre grid
         function buildGenreGrid(selectedGenres = []) {
             const grid = document.getElementById('genreGrid');
             if (!grid) return;
-            
             grid.innerHTML = '';
             allGenres.forEach(genre => {
                 const isChecked = selectedGenres.includes(genre);
-                grid.innerHTML += `
-                    <label class="genre-checkbox">
-                        <input type="checkbox" value="${genre}" ${isChecked ? 'checked' : ''} onchange="updateSelectedGenresDisplay()">
-                        <span>${genre}</span>
-                    </label>
-                `;
+                grid.innerHTML += `<label class="genre-checkbox"><input type="checkbox" value="${genre}" ${isChecked ? 'checked' : ''} onchange="updateSelectedGenresDisplay()"><span>${genre}</span></label>`;
             });
-
-            
             updateSelectedGenresDisplay();
         }
-        
+
         function updateSelectedGenresDisplay() {
-            const checkboxes = document.querySelectorAll('#genreGrid input[type="checkbox"]');
-            const selected = [];
-            checkboxes.forEach(cb => {
-                if (cb.checked) {
-                    selected.push(cb.value);
-                }
-            });
-            
+            const checkboxes = document.querySelectorAll('#genreGrid input');
+            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
             const display = document.getElementById('selectedGenresDisplay');
             if (display) {
-                if (selected.length === 0) {
-                    display.innerHTML = '<small style="color: var(--text-muted);">No genres selected. Please select at least one.</small>';
-                } else {
-                    display.innerHTML = selected.map(genre => `<span class="genre-tag">${genre}</span>`).join('');
-                }
+                display.innerHTML = selected.length ? selected.map(g => `<span class="genre-tag">${g}</span>`).join('') : '<small>No genres selected</small>';
             }
         }
-        
+
         function getSelectedGenres() {
-    const checkboxes = document.querySelectorAll('#genreGrid input');
-    const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-    console.log("Selected genres:", selected);
-    
-    // If no genres selected, return a default genre
-    if (selected.length === 0) {
-        console.log("No genres selected, using default 'Uncategorized'");
-        return ['Uncategorized'];
-    }
-    return selected;
-}
-        
-        function setSelectedGenres(genres) {
-            const checkboxes = document.querySelectorAll('#genreGrid input[type="checkbox"]');
-            checkboxes.forEach(cb => {
-                cb.checked = genres.includes(cb.value);
-            });
-            updateSelectedGenresDisplay();
+            const checkboxes = document.querySelectorAll('#genreGrid input');
+            return Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
         }
-        
-        // Setup embed buttons
+
         function setupEmbedButtons() {
             const embedOptions = document.querySelectorAll('.embed-option');
-            embedOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    embedOptions.forEach(opt => opt.classList.remove('selected'));
-                    option.classList.add('selected');
-                    const embedType = option.getAttribute('data-embed');
-                    document.getElementById('embedType').value = embedType;
-                    
-                    if (embedType === 'none') {
-                        document.getElementById('embedUrl').value = '';
-                        document.getElementById('embedUrl').disabled = true;
-                    } else {
-                        document.getElementById('embedUrl').disabled = false;
-                    }
+            embedOptions.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    embedOptions.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    const type = opt.getAttribute('data-embed');
+                    document.getElementById('embedType').value = type;
+                    document.getElementById('embedUrl').disabled = type === 'none';
                 });
             });
-            
-            if (document.getElementById('embedType').value === 'none') {
-                document.getElementById('embedUrl').disabled = true;
-            }
         }
-        
-        // Track management
-        function addTrackField(trackData = null) {
-    const container = document.getElementById('tracksContainer');
-    const trackId = Date.now() + trackCounter++;
-    
-    const trackDiv = document.createElement('div');
-    trackDiv.className = 'track-item';
-    trackDiv.id = `track-${trackId}`;
-    trackDiv.innerHTML = `
-        <div class="track-header">
-            <span class="track-number">Track ${container.children.length + 1}</span>
-            <button type="button" class="remove-track" onclick="this.closest('.track-item').remove(); renumberTracks();">Remove</button>
-        </div>
-        <input type="text" placeholder="Track name" value="${trackData ? escapeHtml(trackData.name) : ''}" class="track-name" style="width: 100%; margin-bottom: 0.5rem;">
-        
-        <!-- Featuring Artists Field - NEW -->
-        <input type="text" placeholder="Featuring artists (separate with commas, e.g.: SZA, Travis Scott)" value="${trackData ? escapeHtml(trackData.featuring || '') : ''}" class="track-featuring" style="width: 100%; margin-bottom: 0.5rem;">
-        <small style="display: block; margin-top: -0.3rem; margin-bottom: 0.5rem; color: var(--text-muted);">Optional: Add featured artists</small>
-        
-        <textarea placeholder="Your analysis/review of this track..." rows="3" class="track-review" style="width: 100%; margin-bottom: 0.5rem;">${trackData ? escapeHtml(trackData.review) : ''}</textarea>
-        <input type="text" placeholder="Rating for this track (0-10) - optional" value="${trackData ? trackData.rating : ''}" class="track-rating" style="width: 100%;">
-    `;
-    container.appendChild(trackDiv);
-}
-        
-        window.addTrackField = addTrackField;
-        
-        function renumberTracks() {
-            const tracks = document.querySelectorAll('.track-item');
-            tracks.forEach((track, index) => {
-                const numberSpan = track.querySelector('.track-number');
-                if (numberSpan) {
-                    numberSpan.textContent = `Track ${index + 1}`;
-                }
-            });
-        }
-        
-        function collectTracks() {
-    const tracks = [];
-    const trackItems = document.querySelectorAll('.track-item');
-    trackItems.forEach((item, index) => {
-        const name = item.querySelector('.track-name').value;
-        if (name && name.trim()) {
-            tracks.push({
-                number: index + 1,
-                name: name.trim(),
-                featuring: item.querySelector('.track-featuring')?.value || '',
-                review: item.querySelector('.track-review').value,
-                rating: item.querySelector('.track-rating').value || null
-            });
-        }
-    });
-    return tracks;
-}
-        
-function loadTracksIntoForm(tracks) {
-    const container = document.getElementById('tracksContainer');
-    container.innerHTML = '';
-    trackCounter = 0;
-    if (tracks && tracks.length) {
-        tracks.forEach(track => {
-            addTrackField(track);
-        });
-    }
-}
-        
-        // Password check
-        window.checkPassword = function() {
-            const enteredPassword = document.getElementById('adminPassword').value;
-            const errorDiv = document.getElementById('loginError');
-            
-            if (enteredPassword === ADMIN_PASSWORD) {
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                errorDiv.textContent = '';
-                showAdminPanel();
-            } else {
-                errorDiv.textContent = '❌ Incorrect password!';
-            }
-        };
-        
-        function isAdminLoggedIn() {
-            return sessionStorage.getItem('adminLoggedIn') === 'true';
-        }
-        
-        function showAdminPanel() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('adminPanel').classList.remove('hidden');
-            loadReviewsForAdmin();
-            buildGenreGrid();
-            setupEmbedButtons();
-        }
-        
-        // Review management
-        async function loadReviewsForAdmin() {
-            try {
-                const reviewsRef = collection(db, 'reviews');
-                const q = query(reviewsRef, orderBy('dateAdded', 'desc'));
-                const querySnapshot = await getDocs(q);
-                reviews = [];
-                querySnapshot.forEach((doc) => {
-                    reviews.push({ firebaseId: doc.id, ...doc.data() });
-                });
-                displayReviewsInAdmin();
-            } catch (error) {
-                console.error("Error loading:", error);
-                const stored = localStorage.getItem('musicReviews');
-                reviews = stored ? JSON.parse(stored) : [];
-                displayReviewsInAdmin();
-            }
-        }
-        
-        function displayReviewsInAdmin() {
-            const container = document.getElementById('reviewsList');
-            if (!container) return;
-            
-            if (reviews.length === 0) {
-                container.innerHTML = '<p>No reviews yet. Add your first review above!</p>';
-                return;
-            }
-            
-            container.innerHTML = reviews.map(review => `
-                <div class="review-item">
-                    <div class="review-info">
-                        <strong>${escapeHtml(review.title)}</strong> - ${escapeHtml(review.artist)}
-                        <br>
-                        <small>Rating: ${review.rating}/10 | Genres: ${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre} | Tracks: ${review.tracks ? review.tracks.length : 0}</small>
-                        ${review.embedUrl ? `<br><small>🔊 Has streaming embed</small>` : ''}
-                    </div>
-                    <div class="review-actions">
-                        <button onclick="openEditForm('${review.firebaseId}')" class="edit-btn">✏️ Edit</button>
-                        <button onclick="deleteReview('${review.firebaseId}')" class="delete-btn">🗑️ Delete</button>
-                    </div>
+
+        window.addTrack = function() {
+            const container = document.getElementById('tracksContainer');
+            const trackId = Date.now();
+            const trackDiv = document.createElement('div');
+            trackDiv.className = 'track-item';
+            trackDiv.id = `track-${trackId}`;
+            trackDiv.innerHTML = `
+                <div class="track-header">
+                    <span class="track-number">Track ${container.children.length + 1}</span>
+                    <button type="button" class="remove-track" onclick="this.closest('.track-item').remove(); renumberTracks();">Remove</button>
                 </div>
-            `).join('');
-        }
-        
-        function openEditForm(id) {
-            const review = reviews.find(r => r.firebaseId === id);
-            if (!review) return;
-            
-            isEditing = true;
-            editingFirebaseId = id;
-            
-            document.getElementById('formTitle').innerHTML = '✏️ Edit Album Review';
-            document.getElementById('submitBtn').innerHTML = '💾 Save Changes';
-            document.getElementById('cancelBtn').style.display = 'inline-block';
-            document.getElementById('editModeIndicator').style.display = 'block';
-            
-            document.getElementById('title').value = review.title || '';
-            document.getElementById('artist').value = review.artist || '';
-            
-            let genresToSet = review.genre;
-            if (typeof review.genre === 'string') genresToSet = [review.genre];
-            setSelectedGenres(genresToSet);
-            
-            document.getElementById('albumArt').value = review.albumArt || '';
-            document.getElementById('rating').value = review.rating || '';
-            document.getElementById('review').value = review.review || '';
-            document.getElementById('shortPreview').value = review.shortPreview || '';
-            document.getElementById('year').value = review.year || '';
-            document.getElementById('coverColor').value = review.coverColor || '#ff1493';
-            document.getElementById('embedUrl').value = review.embedUrl || '';
-            
-            const embedType = review.embedType || 'none';
-            document.getElementById('embedType').value = embedType;
-            const embedOptions = document.querySelectorAll('.embed-option');
-            embedOptions.forEach(opt => {
-                if (opt.getAttribute('data-embed') === embedType) {
-                    opt.classList.add('selected');
-                } else {
-                    opt.classList.remove('selected');
-                }
+                <input type="text" placeholder="Track name" class="track-name" style="width:100%; margin-bottom:0.5rem;">
+                <input type="text" placeholder="Featuring artists (separate with commas)" class="track-featuring" style="width:100%; margin-bottom:0.5rem;">
+                <textarea placeholder="Track review" rows="3" class="track-review" style="width:100%; margin-bottom:0.5rem;"></textarea>
+                <input type="text" placeholder="Rating (0-10) - optional" class="track-rating" style="width:100%;">
+            `;
+            container.appendChild(trackDiv);
+        };
+
+        function renumberTracks() {
+            document.querySelectorAll('.track-item').forEach((track, idx) => {
+                const span = track.querySelector('.track-number');
+                if (span) span.textContent = `Track ${idx + 1}`;
             });
-            
-            if (embedType === 'none') {
-                document.getElementById('embedUrl').disabled = true;
-            } else {
-                document.getElementById('embedUrl').disabled = false;
-            }
-            
-            loadTracksIntoForm(review.tracks || []);
-            
-            document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
         }
-        
-        function cancelEdit() {
-            document.getElementById('reviewForm').reset();
-            document.getElementById('tracksContainer').innerHTML = '';
-            document.getElementById('coverColor').value = '#ff1493';
-            document.getElementById('embedUrl').disabled = true;
-            trackCounter = 0;
-            
-            const embedOptions = document.querySelectorAll('.embed-option');
-            embedOptions.forEach(opt => {
-                if (opt.getAttribute('data-embed') === 'none') {
-                    opt.classList.add('selected');
-                } else {
-                    opt.classList.remove('selected');
-                }
-            });
-            document.getElementById('embedType').value = 'none';
-            setSelectedGenres([]);
-            
-            document.getElementById('formTitle').innerHTML = '➕ Add New Album Review';
-            document.getElementById('submitBtn').innerHTML = '➕ Add Review';
-            document.getElementById('cancelBtn').style.display = 'none';
-            document.getElementById('editModeIndicator').style.display = 'none';
-            
-            isEditing = false;
-            editingFirebaseId = null;
-        }
-        
-        window.cancelEdit = cancelEdit;
-        
-        // FIXED: Add Review Button Handler
-const reviewForm = document.getElementById('reviewForm');
-if (reviewForm) {
-    reviewForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        console.log("Form submitted!"); // Debug log
-        
-        try {
-            const embedType = document.getElementById('embedType').value;
-            let embedUrl = document.getElementById('embedUrl').value;
-            
-            if (embedType === 'youtube' && embedUrl) {
-                const match = embedUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
-                if (match) embedUrl = `https://www.youtube.com/embed/${match[1]}`;
-            }
-            
-            const artistInput = document.getElementById('artist').value;
-            const artistsArray = artistInput.split(',').map(a => a.trim()).filter(a => a);
-            
-            // Get all track data
+
+        function collectTracks() {
             const tracks = [];
             document.querySelectorAll('.track-item').forEach((item, idx) => {
                 const name = item.querySelector('.track-name')?.value;
@@ -878,6 +558,142 @@ if (reviewForm) {
                     });
                 }
             });
+            return tracks;
+        }
+
+        function loadTracksIntoForm(tracks) {
+            const container = document.getElementById('tracksContainer');
+            container.innerHTML = '';
+            if (tracks?.length) {
+                tracks.forEach(track => {
+                    const trackDiv = document.createElement('div');
+                    trackDiv.className = 'track-item';
+                    trackDiv.innerHTML = `
+                        <div class="track-header">
+                            <span class="track-number">Track ${track.number}</span>
+                            <button type="button" class="remove-track" onclick="this.closest('.track-item').remove(); renumberTracks();">Remove</button>
+                        </div>
+                        <input type="text" placeholder="Track name" value="${escapeHtml(track.name)}" class="track-name" style="width:100%; margin-bottom:0.5rem;">
+                        <input type="text" placeholder="Featuring artists" value="${escapeHtml(track.featuring || '')}" class="track-featuring" style="width:100%; margin-bottom:0.5rem;">
+                        <textarea placeholder="Track review" rows="3" class="track-review" style="width:100%; margin-bottom:0.5rem;">${escapeHtml(track.review)}</textarea>
+                        <input type="text" placeholder="Rating (0-10)" value="${track.rating || ''}" class="track-rating" style="width:100%;">
+                    `;
+                    container.appendChild(trackDiv);
+                });
+                renumberTracks();
+            }
+        }
+
+        async function loadReviewsForAdmin() {
+            try {
+                const q = query(collection(db, 'reviews'), orderBy('dateAdded', 'desc'));
+                const snapshot = await getDocs(q);
+                reviews = [];
+                snapshot.forEach(doc => reviews.push({ firebaseId: doc.id, ...doc.data() }));
+                displayReviewsInAdmin();
+            } catch (error) {
+                console.error(error);
+                reviews = [];
+                displayReviewsInAdmin();
+            }
+        }
+
+        function displayReviewsInAdmin() {
+            const container = document.getElementById('reviewsList');
+            if (reviews.length === 0) {
+                container.innerHTML = '<p>No reviews yet. Add your first review!</p>';
+                return;
+            }
+            container.innerHTML = reviews.map(review => `
+                <div class="review-item">
+                    <div class="review-info">
+                        <strong>${escapeHtml(review.title)}</strong> - ${escapeHtml(review.artist)}<br>
+                        <small>Rating: ${review.rating}/10 | Tracks: ${review.tracks?.length || 0}</small>
+                    </div>
+                    <div class="review-actions">
+                        <button class="edit-btn" onclick="openEditForm('${review.firebaseId}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteReview('${review.firebaseId}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openEditForm(id) {
+            const review = reviews.find(r => r.firebaseId === id);
+            if (!review) return;
+            isEditing = true;
+            editingFirebaseId = id;
+            
+            document.getElementById('formTitle').innerHTML = '✏️ Edit Album Review';
+            document.getElementById('submitBtn').innerHTML = '💾 Save Changes';
+            document.getElementById('cancelBtn').style.display = 'inline-block';
+            document.getElementById('editModeIndicator').style.display = 'block';
+            
+            document.getElementById('title').value = review.title || '';
+            document.getElementById('artist').value = review.artist || '';
+            document.getElementById('albumArt').value = review.albumArt || '';
+            document.getElementById('rating').value = review.rating || '';
+            document.getElementById('review').value = review.review || '';
+            document.getElementById('shortPreview').value = review.shortPreview || '';
+            document.getElementById('year').value = review.year || '';
+            document.getElementById('coverColor').value = review.coverColor || '#ff1493';
+            document.getElementById('embedUrl').value = review.embedUrl || '';
+            
+            const embedType = review.embedType || 'none';
+            document.getElementById('embedType').value = embedType;
+            document.querySelectorAll('.embed-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.getAttribute('data-embed') === embedType);
+            });
+            document.getElementById('embedUrl').disabled = embedType === 'none';
+            
+            const genres = Array.isArray(review.genre) ? review.genre : [review.genre];
+            document.querySelectorAll('#genreGrid input').forEach(cb => {
+                cb.checked = genres.includes(cb.value);
+            });
+            updateSelectedGenresDisplay();
+            
+            loadTracksIntoForm(review.tracks || []);
+            document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            document.getElementById('reviewForm').reset();
+            document.getElementById('tracksContainer').innerHTML = '';
+            document.getElementById('coverColor').value = '#ff1493';
+            document.getElementById('embedUrl').disabled = true;
+            document.querySelectorAll('.embed-option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelector('.embed-option[data-embed="none"]').classList.add('selected');
+            document.getElementById('embedType').value = 'none';
+            document.querySelectorAll('#genreGrid input').forEach(cb => cb.checked = false);
+            updateSelectedGenresDisplay();
+            
+            document.getElementById('formTitle').innerHTML = '➕ Add New Album Review';
+            document.getElementById('submitBtn').innerHTML = '➕ Add Review';
+            document.getElementById('cancelBtn').style.display = 'none';
+            document.getElementById('editModeIndicator').style.display = 'none';
+            isEditing = false;
+            editingFirebaseId = null;
+        }
+
+        window.cancelEdit = cancelEdit;
+
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert('You must be logged in to add reviews');
+                return;
+            }
+            
+            const embedType = document.getElementById('embedType').value;
+            let embedUrl = document.getElementById('embedUrl').value;
+            if (embedType === 'youtube' && embedUrl) {
+                const match = embedUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+                if (match) embedUrl = `https://www.youtube.com/embed/${match[1]}`;
+            }
+            
+            const artistInput = document.getElementById('artist').value;
+            const artistsArray = artistInput.split(',').map(a => a.trim()).filter(a => a);
             
             const reviewData = {
                 title: document.getElementById('title').value,
@@ -893,137 +709,131 @@ if (reviewForm) {
                 albumArt: document.getElementById('albumArt').value || null,
                 embedType: (embedUrl && embedType !== 'none') ? embedType : null,
                 embedUrl: (embedUrl && embedType !== 'none') ? embedUrl : null,
-                tracks: tracks
+                tracks: collectTracks()
             };
             
-            console.log("Review data:", reviewData);
-            
-            if (isEditing && editingFirebaseId) {
-                await updateDoc(doc(db, 'reviews', editingFirebaseId), reviewData);
-                alert('✅ Review updated successfully!');
-            } else {
-                await addDoc(collection(db, 'reviews'), reviewData);
-                alert('✅ Review added successfully!');
+            try {
+                if (isEditing && editingFirebaseId) {
+                    await updateDoc(doc(db, 'reviews', editingFirebaseId), reviewData);
+                    alert('✅ Review updated!');
+                } else {
+                    await addDoc(collection(db, 'reviews'), reviewData);
+                    alert('✅ Review added!');
+                }
+                await loadReviewsForAdmin();
+                cancelEdit();
+            } catch (error) {
+                alert('Error: ' + error.message);
             }
-            
-            // Reset form
-            cancelEdit();
-            await loadReviewsForAdmin();
-            
-        } catch (error) {
-            console.error("Submit error:", error);
-            alert('Error: ' + error.message);
-        }
-    });
-} else {
-    console.error("reviewForm element not found!");
-}
-        
-        // Delete review
-        window.deleteReview = async function(id) {
-            if (confirm('Are you sure you want to delete this review?')) {
+        });
+
+        window.deleteReview = async (id) => {
+            if (confirm('Delete this review?')) {
                 await deleteDoc(doc(db, 'reviews', id));
                 await loadReviewsForAdmin();
                 if (editingFirebaseId === id) cancelEdit();
-                alert('🗑️ Review deleted!');
+                alert('Deleted!');
             }
         };
-        
-        // Migrate to Firebase
-        window.migrateToFirebase = async function() {
-            const resultDiv = document.getElementById('migrateResult');
-            resultDiv.innerHTML = '<div class="success">Migrating...</div>';
+
+        window.loginWithEmail = async () => {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
             
-            const stored = localStorage.getItem('musicReviews');
-            if (!stored) {
-                resultDiv.innerHTML = '<div class="warning">No reviews found in localStorage!</div>';
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                errorDiv.textContent = '';
+            } catch (error) {
+                errorDiv.textContent = 'Login failed: ' + error.message;
+            }
+        };
+
+        window.logout = async () => {
+            await signOut(auth);
+        };
+
+        window.migrateToFirebase = async () => {
+            if (!currentUser) {
+                alert('You must be logged in to migrate');
                 return;
             }
-            
+            const stored = localStorage.getItem('musicReviews');
+            if (!stored) { alert('No reviews found!'); return; }
             const localReviews = JSON.parse(stored);
-            let successCount = 0;
-            
+            let count = 0;
             for (const review of localReviews) {
-                const { id, firebaseId, ...reviewData } = review;
-                try {
-                    await addDoc(collection(db, 'reviews'), reviewData);
-                    successCount++;
-                } catch (error) {
-                    console.error('Error migrating:', error);
-                }
+                const { firebaseId, id, ...reviewData } = review;
+                await addDoc(collection(db, 'reviews'), reviewData);
+                count++;
             }
-            
-            resultDiv.innerHTML = `<div class="success">✅ Migrated ${successCount} reviews to Firebase!</div>`;
+            alert(`Migrated ${count} reviews!`);
             await loadReviewsForAdmin();
-            alert(`${successCount} reviews are now in the cloud! Refresh your phone to see them.`);
         };
-        
-        // Backup functions
+
         function exportData() {
             const dataStr = JSON.stringify(reviews, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', `reviews-backup-${new Date().toISOString().split('T')[0]}.json`);
-            linkElement.click();
-            alert('📥 Reviews exported!');
+            const link = document.createElement('a');
+            link.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+            link.download = `reviews-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
         }
-        
-        function importData() {
-            document.getElementById('importFile').click();
-        }
-        
+
+        function importData() { document.getElementById('importFile').click(); }
         async function handleImport(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const importedReviews = JSON.parse(e.target.result);
-                    if (Array.isArray(importedReviews)) {
-                        for (const review of importedReviews) {
-                            const { firebaseId, id, ...reviewData } = review;
-                            await addDoc(collection(db, 'reviews'), reviewData);
-                        }
-                        await loadReviewsForAdmin();
-                        alert(`✅ Imported ${importedReviews.length} reviews!`);
-                    } else {
-                        alert('Invalid file format.');
-                    }
-                } catch (error) {
-                    alert('Error parsing file.');
+            reader.onload = async (e) => {
+                const imported = JSON.parse(e.target.result);
+                for (const review of imported) {
+                    const { firebaseId, id, ...reviewData } = review;
+                    await addDoc(collection(db, 'reviews'), reviewData);
                 }
+                await loadReviewsForAdmin();
+                alert(`Imported ${imported.length} reviews!`);
             };
             reader.readAsText(file);
-            event.target.value = '';
         }
-        
+
         async function clearAllData() {
-            if (confirm('⚠️ WARNING: This will delete ALL reviews! Type "DELETE" to confirm:')) {
-                const confirmation = prompt('Type "DELETE" to confirm:');
-                if (confirmation === 'DELETE') {
-                    const querySnapshot = await getDocs(collection(db, 'reviews'));
-                    for (const doc of querySnapshot.docs) {
-                        await deleteDoc(doc.ref);
-                    }
+            if (confirm('Delete ALL reviews? Type "DELETE" to confirm:')) {
+                if (prompt('Type "DELETE":') === 'DELETE') {
+                    const snapshot = await getDocs(collection(db, 'reviews'));
+                    for (const doc of snapshot.docs) await deleteDoc(doc.ref);
                     await loadReviewsForAdmin();
                     cancelEdit();
                     alert('All reviews deleted.');
                 }
             }
         }
-        
+
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        
-        // Check login on page load
-        if (isAdminLoggedIn()) {
-            showAdminPanel();
-        }
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const loginSection = document.getElementById('loginSection');
+            const adminPanel = document.getElementById('adminPanel');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            
+            if (user) {
+                loginSection.style.display = 'none';
+                adminPanel.classList.remove('hidden');
+                if (userEmailDisplay) userEmailDisplay.textContent = user.email;
+                loadReviewsForAdmin();
+                buildGenreGrid();
+                setupEmbedButtons();
+                document.getElementById('addTrackBtn').addEventListener('click', window.addTrack);
+            } else {
+                loginSection.style.display = 'block';
+                adminPanel.classList.add('hidden');
+            }
+        });
     </script>
 </body>
 </html>
