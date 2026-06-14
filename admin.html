@@ -585,15 +585,17 @@ const firebaseConfig = {
         }
         
         function getSelectedGenres() {
-            const checkboxes = document.querySelectorAll('#genreGrid input[type="checkbox"]');
-            const selected = [];
-            checkboxes.forEach(cb => {
-                if (cb.checked) {
-                    selected.push(cb.value);
-                }
-            });
-            return selected.length > 0 ? selected : ['Uncategorized'];
-        }
+    const checkboxes = document.querySelectorAll('#genreGrid input');
+    const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+    console.log("Selected genres:", selected);
+    
+    // If no genres selected, return a default genre
+    if (selected.length === 0) {
+        console.log("No genres selected, using default 'Uncategorized'");
+        return ['Uncategorized'];
+    }
+    return selected;
+}
         
         function setSelectedGenres(genres) {
             const checkboxes = document.querySelectorAll('#genreGrid input[type="checkbox"]');
