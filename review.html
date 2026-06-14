@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Review - Honestly, it.....</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=5">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         .review-page {
@@ -201,42 +201,6 @@
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
-            font-family: inherit;
-        }
-        
-        .auth-prompt {
-            text-align: center;
-            padding: 2rem;
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            margin-bottom: 2rem;
-        }
-        
-        .auth-prompt-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-        
-        .auth-prompt-btn {
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            font-family: inherit;
-        }
-        
-        .auth-prompt-btn.signin {
-            background: none;
-            border: 2px solid #ff1493;
-            color: #ff1493;
-        }
-        
-        .auth-prompt-btn.signup {
-            background: linear-gradient(135deg, #ff1493, #ffd700);
-            border: none;
-            color: white;
         }
         
         .comment-item {
@@ -287,12 +251,6 @@
             word-break: break-word;
         }
         
-        .no-comments {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-        }
-        
         @media (max-width: 768px) {
             .review-header {
                 flex-direction: column;
@@ -301,9 +259,6 @@
             }
             .review-title {
                 font-size: 1.75rem;
-            }
-            .review-album-art {
-                flex: 0 0 auto;
             }
             .review-album-art img,
             .review-album-art .no-image {
@@ -375,7 +330,7 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-bottom">
-                <p>&copy; 2026 Honestly, it..... All rights reserved.</p>
+                <p>&copy; 2024 Honestly, it..... All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -393,7 +348,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -410,8 +365,11 @@ const firebaseConfig = {
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Get review ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const reviewId = urlParams.get('id');
+        
+        console.log("Looking for review ID:", reviewId);
         
         let currentUser = null;
 
@@ -433,25 +391,147 @@ const firebaseConfig = {
             return starsHTML;
         }
 
-        function getRelativeTime(timestamp) {
-            if (!timestamp) return 'Just now';
-            const commentDate = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            const diffMs = Date.now() - commentDate;
-            const diffMins = Math.floor(diffMs / 60000);
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins} min ago`;
-            const diffHours = Math.floor(diffMins / 60);
-            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-            const diffDays = Math.floor(diffHours / 24);
-            if (diffDays === 1) return 'Yesterday';
-            if (diffDays < 7) return `${diffDays} days ago`;
-            const diffWeeks = Math.floor(diffDays / 7);
-            if (diffWeeks < 4) return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ago`;
-            const diffMonths = Math.floor(diffDays / 30);
-            if (diffMonths < 12) return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
-            const diffYears = Math.floor(diffDays / 365);
-            return `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
+        async function loadReviewData() {
+            const container = document.getElementById('reviewContent');
+            
+            if (!reviewId) {
+                container.innerHTML = '<div style="text-align: center; padding: 3rem;">No review ID provided. <a href="index.html" class="back-button">← Back to Home</a></div>';
+                return;
+            }
+            
+            try {
+                // First try to find by firebaseId (document ID)
+                const reviewsRef = collection(db, 'reviews');
+                const q = query(reviewsRef, where('__name__', '==', reviewId));
+                const querySnapshot = await getDocs(q);
+                
+                let review = null;
+                
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        review = { firebaseId: doc.id, ...doc.data() };
+                    });
+                } else {
+                    // If not found by ID, try to find by the id field
+                    const q2 = query(reviewsRef, where('id', '==', parseInt(reviewId)));
+                    const querySnapshot2 = await getDocs(q2);
+                    if (!querySnapshot2.empty) {
+                        querySnapshot2.forEach((doc) => {
+                            review = { firebaseId: doc.id, ...doc.data() };
+                        });
+                    }
+                }
+                
+                console.log("Found review:", review);
+                
+                if (!review) {
+                    container.innerHTML = `<div style="text-align: center; padding: 3rem;"><h2>Review not found</h2><p>ID: ${reviewId}</p><a href="index.html" class="back-button">← Back to Home</a></div>`;
+                    return;
+                }
+                
+                let albumArtHtml = review.albumArt ? `<img src="${review.albumArt}" onerror="this.parentElement.innerHTML='<div class=\'no-image\'>🎵</div>'">` : '<div class="no-image">🎵</div>';
+                
+                let embedHtml = '';
+                if (review.embedUrl && review.embedType === 'youtube') {
+                    embedHtml = `<div class="embed-container"><iframe src="${review.embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+                } else if (review.embedUrl && review.embedType === 'spotify') {
+                    embedHtml = `<div class="spotify-embed"><iframe src="${review.embedUrl}" width="100%" height="152" frameborder="0" allow="encrypted-media"></iframe></div>`;
+                }
+                
+                let tracksHtml = '';
+                if (review.tracks && review.tracks.length) {
+                    tracksHtml = '<div class="track-list"><h3>🎵 Track-by-Track Review</h3>';
+                    review.tracks.forEach(track => {
+                        tracksHtml += `
+                            <div class="track-item-page">
+                                <div class="track-header-page">
+                                    <span class="track-name-page">${track.number}. ${escapeHtml(track.name)}</span>
+                                    ${track.rating ? `<span class="track-rating-page">${track.rating}/10</span>` : ''}
+                                </div>
+                                <p>${escapeHtml(track.review)}</p>
+                            </div>
+                        `;
+                    });
+                    tracksHtml += '</div>';
+                }
+                
+                // Display artist(s)
+                let artistDisplay = '';
+                if (review.artists && review.artists.length) {
+                    artistDisplay = review.artists.join(', ');
+                } else if (review.artist) {
+                    artistDisplay = review.artist;
+                } else {
+                    artistDisplay = 'Unknown Artist';
+                }
+                
+                container.innerHTML = `
+                    <a href="index.html" class="back-button">← Back to Reviews</a>
+                    <div class="review-header">
+                        <div class="review-album-art">${albumArtHtml}</div>
+                        <div class="review-info">
+                            <span class="review-genre">${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre}</span>
+                            <h1 class="review-title">${escapeHtml(review.title)}</h1>
+                            <p class="review-artist">${escapeHtml(artistDisplay)}</p>
+                            <p class="review-year">${review.year || 'Release year N/A'}</p>
+                            <div class="review-rating">
+                                <span class="review-rating-number">${review.rating}</span>
+                                <span>/10</span>
+                                <div>${renderStars(review.rating)}</div>
+                            </div>
+                        </div>
+                    </div>
+                    ${embedHtml}
+                    <div class="review-section">
+                        <h3>📝 Overall Review</h3>
+                        <p>${escapeHtml(review.review)}</p>
+                    </div>
+                    ${tracksHtml}
+                    <div class="comments-section" id="commentsSection"></div>
+                `;
+                
+                loadCommentsUI();
+                
+            } catch (error) {
+                console.error("Error loading review:", error);
+                container.innerHTML = `<div style="text-align: center; padding: 3rem;"><h2>Error loading review</h2><p>${error.message}</p><a href="index.html" class="back-button">← Back to Home</a></div>`;
+            }
         }
+
+        function loadCommentsUI() {
+            const commentsSection = document.getElementById('commentsSection');
+            if (!commentsSection) return;
+            
+            if (currentUser) {
+                commentsSection.innerHTML = `
+                    <h3>💬 Comments</h3>
+                    <div class="comment-form">
+                        <textarea id="commentInput" class="comment-input" rows="3" placeholder="Share your thoughts..."></textarea>
+                        <button onclick="postComment()" class="post-comment-btn">Post Comment</button>
+                    </div>
+                    <div id="commentsList"></div>
+                `;
+            } else {
+                commentsSection.innerHTML = `
+                    <h3>💬 Comments</h3>
+                    <div class="auth-prompt"><p>Join the discussion! Sign in to leave a comment.</p></div>
+                    <div id="commentsList"></div>
+                `;
+            }
+            loadComments();
+        }
+
+        function loadComments() {
+            // Comment loading logic here
+            const commentsList = document.getElementById('commentsList');
+            if (commentsList) {
+                commentsList.innerHTML = '<div style="text-align: center; padding: 2rem;">Comments coming soon...</div>';
+            }
+        }
+
+        window.postComment = async function() {
+            alert('Comment feature coming soon!');
+        };
 
         // Mobile Navigation
         function initMobileNav() {
@@ -460,12 +540,10 @@ const firebaseConfig = {
             const navMenu = document.getElementById('mobileNavMenu');
             const navClose = document.getElementById('mobileNavClose');
             if (!menuBtn) return;
-            function openMenu() { navMenu.classList.add('open'); navOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; }
-            function closeMenu() { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; }
-            menuBtn.addEventListener('click', openMenu);
-            navClose.addEventListener('click', closeMenu);
-            navOverlay.addEventListener('click', closeMenu);
-            document.querySelectorAll('.mobile-nav-links a').forEach(link => link.addEventListener('click', closeMenu));
+            menuBtn.addEventListener('click', () => { navMenu.classList.add('open'); navOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; });
+            navClose.addEventListener('click', () => { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; });
+            navOverlay.addEventListener('click', () => { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; });
+            document.querySelectorAll('.mobile-nav-links a').forEach(link => link.addEventListener('click', () => { navMenu.classList.remove('open'); navOverlay.style.display = 'none'; document.body.style.overflow = ''; }));
         }
 
         function updateMobileAuth(user) {
@@ -505,7 +583,6 @@ const firebaseConfig = {
             document.body.style.overflow = '';
         }
 
-        // Auth Modal
         function showAuthModal(type) {
             const modal = document.getElementById('authModal');
             const title = document.getElementById('authModalTitle');
@@ -519,11 +596,14 @@ const firebaseConfig = {
                     <button id="doLoginBtn" class="auth-btn-primary">Sign In</button>
                     <div class="auth-divider"><span>or</span></div>
                     <div class="auth-switch">New here? <a id="switchToSignup">Create an account</a></div>
-                    <div class="auth-switch"><a id="forgotPasswordLink">Forgot password?</a></div>
                 `;
-                document.getElementById('doLoginBtn')?.addEventListener('click', handleLogin);
+                document.getElementById('doLoginBtn')?.addEventListener('click', async () => {
+                    const email = document.getElementById('loginEmail')?.value;
+                    const password = document.getElementById('loginPassword')?.value;
+                    try { await signInWithEmailAndPassword(auth, email, password); closeAuthModal(); } 
+                    catch (error) { document.getElementById('loginError').style.display = 'block'; document.getElementById('loginError').textContent = error.message; }
+                });
                 document.getElementById('switchToSignup')?.addEventListener('click', () => showAuthModal('signup'));
-                document.getElementById('forgotPasswordLink')?.addEventListener('click', showForgotPassword);
             } else {
                 title.innerHTML = 'Create Account';
                 body.innerHTML = `
@@ -535,216 +615,20 @@ const firebaseConfig = {
                     <div class="auth-divider"><span>or</span></div>
                     <div class="auth-switch">Already have an account? <a id="switchToLogin">Sign In</a></div>
                 `;
-                document.getElementById('doSignupBtn')?.addEventListener('click', handleSignup);
+                document.getElementById('doSignupBtn')?.addEventListener('click', async () => {
+                    const name = document.getElementById('signupName')?.value;
+                    const email = document.getElementById('signupEmail')?.value;
+                    const password = document.getElementById('signupPassword')?.value;
+                    if (password.length < 6) { alert('Password must be at least 6 characters'); return; }
+                    try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await updateProfile(userCredential.user, { displayName: name }); closeAuthModal(); } 
+                    catch (error) { document.getElementById('signupError').style.display = 'block'; document.getElementById('signupError').textContent = error.message; }
+                });
                 document.getElementById('switchToLogin')?.addEventListener('click', () => showAuthModal('login'));
             }
             modal.style.display = 'flex';
         }
 
         function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
-
-        async function handleLogin() {
-            const email = document.getElementById('loginEmail')?.value;
-            const password = document.getElementById('loginPassword')?.value;
-            const errorDiv = document.getElementById('loginError');
-            if (!email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter both email and password'; return; }
-            errorDiv.style.display = 'none';
-            try { await signInWithEmailAndPassword(auth, email, password); closeAuthModal(); } 
-            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
-        }
-
-        async function handleSignup() {
-            const name = document.getElementById('signupName')?.value;
-            const email = document.getElementById('signupEmail')?.value;
-            const password = document.getElementById('signupPassword')?.value;
-            const errorDiv = document.getElementById('signupError');
-            if (!name || !email || !password) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please fill in all fields'; return; }
-            if (password.length < 6) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Password must be at least 6 characters'; return; }
-            errorDiv.style.display = 'none';
-            try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await updateProfile(userCredential.user, { displayName: name }); closeAuthModal(); } 
-            catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
-        }
-
-        async function showForgotPassword() {
-            const title = document.getElementById('authModalTitle');
-            const body = document.getElementById('authModalBody');
-            title.innerHTML = 'Reset Password';
-            body.innerHTML = `
-                <div id="resetError" class="auth-error" style="display: none;"></div>
-                <p>Enter your email to receive a reset link.</p>
-                <div class="auth-input-group"><input type="email" id="resetEmail" class="auth-input" placeholder="Email address"></div>
-                <button id="sendResetBtn" class="auth-btn-primary">Send Reset Link</button>
-                <div class="auth-switch"><a id="backToLogin">Back to Sign In</a></div>
-            `;
-            document.getElementById('sendResetBtn')?.addEventListener('click', async () => {
-                const email = document.getElementById('resetEmail')?.value;
-                const errorDiv = document.getElementById('resetError');
-                if (!email) { errorDiv.style.display = 'block'; errorDiv.textContent = 'Please enter your email'; return; }
-                try { await sendPasswordResetEmail(auth, email); errorDiv.style.display = 'block'; errorDiv.textContent = `Reset email sent to ${email}!`; setTimeout(() => closeAuthModal(), 3000); } 
-                catch (error) { errorDiv.style.display = 'block'; errorDiv.textContent = error.message; }
-            });
-            document.getElementById('backToLogin')?.addEventListener('click', () => showAuthModal('login'));
-        }
-
-        async function loadReviewData() {
-            const container = document.getElementById('reviewContent');
-            
-            // Load from Firebase
-            let reviews = [];
-            try {
-                const { loadReviewsFromFirebase } = await import('./firebase-reviews.js');
-                reviews = await loadReviewsFromFirebase();
-            } catch (error) {
-                console.error('Error loading from Firebase:', error);
-                const stored = localStorage.getItem('musicReviews');
-                reviews = stored ? JSON.parse(stored) : [];
-            }
-            
-            const review = reviews.find(r => r.firebaseId === reviewId || r.id == reviewId);
-            
-            if (!review) {
-                container.innerHTML = `<div style="text-align: center; padding: 3rem;"><h2>Review not found</h2><a href="index.html" class="back-button">← Back to Home</a></div>`;
-                return;
-            }
-            
-            let albumArtHtml = review.albumArt ? `<img src="${review.albumArt}" onerror="this.parentElement.innerHTML='<div class=\'no-image\'>🎵</div>'">` : '<div class="no-image">🎵</div>';
-            let embedHtml = '';
-            if (review.embedUrl && review.embedType === 'youtube') {
-                embedHtml = `<div class="embed-container"><iframe src="${review.embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
-            } else if (review.embedUrl && review.embedType === 'spotify') {
-                embedHtml = `<div class="spotify-embed"><iframe src="${review.embedUrl}" width="100%" height="152" frameborder="0" allow="encrypted-media"></iframe></div>`;
-            }
-            
-            let tracksHtml = '';
-            if (review.tracks && review.tracks.length) {
-                tracksHtml = '<div class="track-list"><h3>🎵 Track-by-Track Review</h3>';
-                review.tracks.forEach(track => {
-                    tracksHtml += `<div class="track-item-page"><div class="track-header-page"><span class="track-name-page">${track.number}. ${escapeHtml(track.name)}</span>${track.rating ? `<span class="track-rating-page">${track.rating}/10</span>` : ''}</div><p>${escapeHtml(track.review)}</p></div>`;
-                });
-                tracksHtml += '</div>';
-            }
-            
-            container.innerHTML = `
-                <a href="index.html" class="back-button">← Back to Reviews</a>
-                <div class="review-header">
-                    <div class="review-album-art">${albumArtHtml}</div>
-                    <div class="review-info">
-                        <span class="review-genre">${Array.isArray(review.genre) ? review.genre.join(', ') : review.genre}</span>
-                        <h1 class="review-title">${escapeHtml(review.title)}</h1>
-                        <p class="review-artist">${escapeHtml(review.artist)}</p>
-                        <p class="review-year">${review.year || 'Release year N/A'}</p>
-                        <div class="review-rating"><span class="review-rating-number">${review.rating}</span><span>/10</span><div>${renderStars(review.rating)}</div></div>
-                    </div>
-                </div>
-                ${embedHtml}
-                <div class="review-section"><h3>📝 Overall Review</h3><p>${escapeHtml(review.review)}</p></div>
-                ${tracksHtml}
-                <div class="comments-section" id="commentsSection"></div>
-            `;
-            loadCommentsUI();
-        }
-
-        function loadCommentsUI() {
-            const commentsSection = document.getElementById('commentsSection');
-            if (!commentsSection) return;
-            if (currentUser) {
-                commentsSection.innerHTML = `
-                    <h3>💬 Comments</h3>
-                    <div class="comment-form">
-                        <textarea id="commentInput" class="comment-input" rows="3" placeholder="Share your thoughts..."></textarea>
-                        <button onclick="postComment()" class="post-comment-btn">Post Comment</button>
-                    </div>
-                    <div id="commentsList"></div>
-                `;
-            } else {
-                commentsSection.innerHTML = `
-                    <h3>💬 Comments</h3>
-                    <div class="auth-prompt"><p>Join the discussion! Sign in to leave a comment.</p><div class="auth-prompt-buttons"><a href="javascript:void(0)" onclick="showAuthModal('login')" class="auth-prompt-btn signin">Sign In</a><a href="javascript:void(0)" onclick="showAuthModal('signup')" class="auth-prompt-btn signup">Create Account</a></div></div>
-                    <div id="commentsList"></div>
-                `;
-            }
-            loadComments();
-        }
-
-        function loadComments() {
-            if (!reviewId) return;
-            const commentsRef = collection(db, 'reviews', reviewId, 'comments');
-            const q = query(commentsRef, orderBy('timestamp', 'desc'));
-            onSnapshot(q, (snapshot) => {
-                const commentsList = document.getElementById('commentsList');
-                if (!commentsList) return;
-                if (snapshot.empty) { commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first!</div>'; return; }
-                commentsList.innerHTML = '';
-                snapshot.forEach((doc) => {
-                    const comment = doc.data();
-                    const commentId = doc.id;
-                    const relativeTime = getRelativeTime(comment.timestamp);
-                    const isOwn = currentUser && comment.userId === currentUser.uid;
-                    const userInitial = comment.userName?.charAt(0).toUpperCase() || 'U';
-                    const editedBadge = comment.edited ? '<span style="font-size: 0.7rem; color: var(--text-muted); margin-left: 0.5rem;">(edited)</span>' : '';
-                    commentsList.innerHTML += `
-                        <div class="comment-item" data-comment-id="${commentId}">
-                            <div><div class="comment-avatar-img">${userInitial}</div></div>
-                            <div class="comment-content">
-                                <div class="comment-header">
-                                    <span class="comment-username">${escapeHtml(comment.userName)}</span>
-                                    <span class="comment-date">${relativeTime}</span>${editedBadge}
-                                </div>
-                                <div class="comment-text" id="comment-text-${commentId}">${escapeHtml(comment.text)}</div>
-                                ${isOwn ? `<div style="margin-top: 0.5rem;"><button class="edit-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem; margin-right: 0.5rem;" onclick="editComment('${commentId}', '${escapeHtml(comment.text).replace(/'/g, "\\'")}')">Edit</button><button class="delete-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="deleteComment('${commentId}')">Delete</button></div>` : ''}
-                            </div>
-                        </div>
-                    `;
-                });
-            });
-        }
-
-        window.postComment = async function() {
-            if (!currentUser) { alert('Please sign in'); return; }
-            const commentText = document.getElementById('commentInput')?.value;
-            if (!commentText?.trim()) { alert('Please enter a comment'); return; }
-            const displayName = currentUser.displayName || currentUser.email.split('@')[0];
-            try {
-                await addDoc(collection(db, 'reviews', reviewId, 'comments'), {
-                    text: commentText.trim(),
-                    userName: displayName,
-                    userId: currentUser.uid,
-                    timestamp: new Date()
-                });
-                document.getElementById('commentInput').value = '';
-            } catch (error) { alert('Error: ' + error.message); }
-        };
-
-        window.editComment = function(commentId, currentText) {
-            const textDiv = document.getElementById(`comment-text-${commentId}`);
-            textDiv.innerHTML = `
-                <textarea id="edit-${commentId}" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 0.5rem;" rows="2">${escapeHtml(currentText)}</textarea>
-                <div><button class="save-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem; margin-right: 0.5rem;" onclick="saveEdit('${commentId}')">Save</button><button class="cancel-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="cancelEdit('${commentId}', '${escapeHtml(currentText).replace(/'/g, "\\'")}')">Cancel</button></div>
-            `;
-        };
-
-        window.saveEdit = async function(commentId) {
-            const newText = document.getElementById(`edit-${commentId}`).value;
-            if (!newText.trim()) { alert('Comment cannot be empty'); return; }
-            try {
-                await updateDoc(doc(db, 'reviews', reviewId, 'comments', commentId), {
-                    text: newText.trim(),
-                    edited: true,
-                    editedAt: new Date()
-                });
-            } catch (error) { alert('Error: ' + error.message); }
-        };
-
-        window.cancelEdit = function(commentId, originalText) {
-            document.getElementById(`comment-text-${commentId}`).innerHTML = escapeHtml(originalText);
-        };
-
-        window.deleteComment = async function(commentId) {
-            if (confirm('Delete this comment?')) {
-                try { await deleteDoc(doc(db, 'reviews', reviewId, 'comments', commentId)); }
-                catch (error) { alert('Error: ' + error.message); }
-            }
-        };
 
         window.toggleUserDropdown = function() {
             const dropdown = document.getElementById('userDropdown');
@@ -759,8 +643,7 @@ const firebaseConfig = {
             if (user) { authDiv.style.display = 'none'; avatarDiv.style.display = 'block'; if (userEmailDisplay) userEmailDisplay.textContent = user.email; }
             else { authDiv.style.display = 'flex'; avatarDiv.style.display = 'none'; }
             updateMobileAuth(user);
-            if (document.getElementById('commentsSection')) loadCommentsUI();
-            else loadReviewData();
+            loadReviewData();
         });
 
         document.getElementById('signOutBtn')?.addEventListener('click', async () => { await signOut(auth); window.location.href = 'index.html'; });
@@ -775,7 +658,6 @@ const firebaseConfig = {
         });
 
         initMobileNav();
-        loadReviewData();
     </script>
 </body>
 </html>
