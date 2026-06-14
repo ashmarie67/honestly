@@ -684,6 +684,12 @@ const firebaseConfig = {
                 alert('You must be logged in to add reviews');
                 return;
             }
+
+            const allowedEmails = ['admin@yourdomain.com'];  // CHANGE THIS TO YOUR EMAIL
+    if (!allowedEmails.includes(currentUser.email)) {
+        alert('You do not have permission to add reviews.');
+        return;
+    }
             
             const embedType = document.getElementById('embedType').value;
             let embedUrl = document.getElementById('embedUrl').value;
